@@ -1,0 +1,55 @@
+{
+	"name": "Next.js Dev Container",
+	"image": "mcr.microsoft.com/devcontainers/javascript-node:0-20",
+
+	"workspaceFolder": "${localWorkspaceFolder}",
+
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"editor.tabSize": 2,
+				"files.exclude": {
+					"node_modules": true
+				},
+				"typescript.tsserver.experimental.enableProjectDiagnostics": true,
+				"terminal.integrated.defaultProfile.linux": "zsh",
+				"terminal.integrated.shell.linux": "zsh",
+				"terminal.integrated.profiles.linux": {
+					"zsh": {
+						"path": "/bin/zsh",
+						"overrideName": true
+					},
+				}
+			},
+			"extensions": [
+				"dbaeumer.vscode-eslint",
+				"esbenp.prettier-vscode",
+				"streetsidesoftware.code-spell-checker",
+				"github.copilot",
+				"dsznajder.es7-react-js-snippets"
+			]
+		}
+	},
+
+	"forwardPorts": [3000],
+
+	"portsAttributes": {
+		"3000": {
+			"label": "Next.js Dev Server",
+			"onAutoForward": "notify"
+		}
+	},
+
+	"postCreateCommand": "npm install",
+
+	"postStartCommand": "sh ${localWorkspaceFolder}/.devcontainer/setup-oh-my-zsh.sh",
+
+	"remoteUser": "node",
+
+	"mounts": [
+		"source=${localWorkspaceFolder},target=${localWorkspaceFolder},type=bind,consistency=cached",
+		"source=${localEnv:HOME}/.gitconfig,target=/home/node/.gitconfig,type=bind,consistency=cached",
+		"source=${localWorkspaceFolder}/.git,target=${localWorkspaceFolder}/.git,type=bind,consistency=cached",
+		"source=${localEnv:HOME}/.ssh,target=/home/node/.ssh,type=bind,consistency=cached"
+	]
+}

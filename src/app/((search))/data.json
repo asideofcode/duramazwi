@@ -1,0 +1,873 @@
+[
+  {
+    "word": "tete",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Aunt, especially father's sister.",
+            "example": "Tete vakabika sadza nehuku mangwanani."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tete",
+    "meanings": [
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Thin or slender in size.",
+            "example": "Ndakaona munhu tete achifamba nemugwagwa."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tevedzera",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To imitate or follow someone's example.",
+            "example": "Munhu wose anofanira tevedzera tsika dzakanaka."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tezvara",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Father-in-law, husband's or wife's father.",
+            "example": "Tezvara vangu vanogara kumusha."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "ti",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To say or state something.",
+            "example": "Vakati huya pano nekukurumidza."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tii",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Tea, a hot beverage made from tea leaves.",
+            "example": "Ndinoda kapu yetii usiku."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tiipoti",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Teapot, a container for brewing tea.",
+            "example": "Tiipoti iyi yakabva kuChina."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tiivhii",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Television, an electronic device for viewing video broadcasts.",
+            "example": "Tiivhii yakapera magetsi mangwanani ano."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tikiti",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Ticket, a paper or electronic proof for entry or travel.",
+            "example": "Ndakatenga tikiti yechitima zuro."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tireyi",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Tray, a flat surface for carrying items.",
+            "example": "Tireyi iyi inobatsira kubata mabhodhoro."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tiza",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To escape or flee from something.",
+            "example": "Zvakaoma kutiza dambudziko risina kugadziriswa."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tochi",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Torch, a handheld light source.",
+            "example": "Tochi yacho inoda mabhatiri matsva."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tonga",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To govern or rule over something.",
+            "example": "Mutungamiri anofanira kutonga nenzira kwayo."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tora",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To take or fetch something.",
+            "example": "Ndikumbirawo unditore mapepa aya."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tositi",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Toast, sliced bread that has been browned.",
+            "example": "Tositi ndiyo inodiwa nevanhu vazhinji pamangwanani."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "toti",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A small child or tot.",
+            "example": "Toti yangu inofarira kutamba nemaballoon."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "toyi",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A toy or play object.",
+            "example": "Vana vanoda toyi yekutamba nayo."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tsamba",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A letter or written communication.",
+            "example": "Ndakanyorera tsamba shamwari yangu."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tsamwa",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To be sad or upset.",
+            "example": "Usatsamwa, zvichanaka chete."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tsaona",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "An accident or mishap.",
+            "example": "Tsaona iyi yakaitika nenzira inorwadza."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tsauka",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To turn or divert in a different direction.",
+            "example": "Rori yacho yakatsauka panzira huru."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tsenga",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To chew food.",
+            "example": "Ndokumbirawo tsenga chikafu zvakanaka."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tsidzira",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To promise or make a commitment.",
+            "example": "Ndatsidzira kumubatsira nguva dzose."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tsika nemagariro",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Culture and traditions of a society.",
+            "example": "Tsika nemagariro edu anokosha zvikuru."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tsime",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A well, a deep hole for water collection.",
+            "example": "Vanhu vari kuenda kutsime kunotora mvura."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tsinga",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Vein or artery in the body.",
+            "example": "Tsinga dzemawoko angu dziri kubuda."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tsiye",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "An eyelash or lashes.",
+            "example": "Tsiye dzake dzakareba chaizvo."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tsoka",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Foot, the lower part of the leg.",
+            "example": "Tsoka yangu yarwadza nekufamba."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tsono",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Needle, a small sharp object used for sewing.",
+            "example": "Tsono yacho yakarasika mumba."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tsuro",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Hare or rabbit, a small fast-moving animal.",
+            "example": "Tsuro yakamhanya nekukurumidza."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tsvaga",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To search for or look for something.",
+            "example": "Ndichatsvaga basa mangwana."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tsvaira",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To sweep or clean using a broom.",
+            "example": "Mama vari kutsvaira imba yavo."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tsvedza",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To slide or glide smoothly.",
+            "example": "Mwana akatsvedza mutsoka nekuda kwemvura."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tsvigiri",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Sugar, a sweet substance used in cooking.",
+            "example": "Ndinoda kaviri ketsvigiri mutii yangu."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tsvibomwe",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Bachelor, an unmarried man.",
+            "example": "Tsvibomwe iri kugara oga mumusha."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tsvina",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Dirt or filth.",
+            "example": "Usarega tsvina ichiwanda mumba."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tsvoda",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To kiss or show affection through touch.",
+            "example": "Vaviri ava vakatsvoda pakuchata kwavo."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tsvuku",
+    "meanings": [
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Red, a primary color.",
+            "example": "Bhora racho riri tsvuku zvakanaka."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tuhwinha",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To swim or float in water.",
+            "example": "Ziva kuhwinha zvakanaka pasati papinda mvura."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tuma",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To send or dispatch someone or something.",
+            "example": "Ndatuma mwana kunotenga chingwa."
+          }
+        ]
+      }
+    ]
+  }
+,
+  {
+    "word": "turikira",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To interpret or translate spoken or written words.",
+            "example": "Ndichaturikira zvaakataura kune vamwe."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "turura",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To unload or remove items from a container.",
+            "example": "Rori iri kuturura zvinhu zvayo."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "turusi",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Tools, instruments used for building or repair.",
+            "example": "Turusi dzake dziri mumba yehuni."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "twiza",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Giraffe, a tall African animal with a long neck.",
+            "example": "Twiza riri kudya mashizha mumusango."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tya",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To be afraid or fear something.",
+            "example": "Vanhu vakatya mhuka dzemusango."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tyaira",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To drive or operate a vehicle.",
+            "example": "Akatyaira motokari kuenda kuchikoro."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tyisa",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To intimidate or cause fear.",
+            "example": "Vakatsvagirwa nzira yekutyisa mhosva."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tyityidzira",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To frighten or scare someone.",
+            "example": "Zvavakataura zvakatyityidzira vana."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "tyora",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To break or fracture something.",
+            "example": "Tyora chigaro ichi nokuchenjera."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "udza",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To tell or inform someone.",
+            "example": "Ndakamudza chokwadi pamusoro penyaya iyi."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "uipi",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Evil or wickedness.",
+            "example": "Uipi hunofanira kudzivirirwa nemunhu wese."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "ukama",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Relationship, connection between people.",
+            "example": "Ukama hwedu hwakasimba zvikuru."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "umboo",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Evidence or proof of something.",
+            "example": "Vakapihwa umboo hwokuti haana mhosva."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "unamati",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Religion or faith.",
+            "example": "Unamati hwemunhu hunofanira kuremekedzwa."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "unganidza",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To gather or collect things.",
+            "example": "Vanhu vari kuunganidza zvinhu pamusika."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "ungwaru",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Wisdom or intelligence.",
+            "example": "Ungwaru huri kushandiswa mukugadzirisa matambudziko."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "unza",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To bring or deliver something.",
+            "example": "Ndichauya ndichiunza zvinhu zvose."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "uori",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Corruption or dishonesty.",
+            "example": "Uori huri kuparadza nyika."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "upenyu",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Life or existence.",
+            "example": "Upenyu hunokosha kupfuura zvinhu zvose."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "upfumi",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Wealth or riches.",
+            "example": "Upfumi hwake huri kubva kushanda nesimba."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "ura",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Intestine or gut.",
+            "example": "Ura hwekudya hwave kugadzirwa mumakicheni."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "uraya",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To kill or take someone's life.",
+            "example": "Hapana munhu anofanira kuraya mumwe."
+          }
+        ]
+      }
+    ]
+  }
+]
+
+
