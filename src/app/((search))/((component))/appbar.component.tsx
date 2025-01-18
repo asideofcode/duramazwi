@@ -25,7 +25,7 @@ export default function Appbar() {
     <div className={`${inter.className}`}>
       <nav className="flex place-content-between py-6 theme-text-h3 ">
         <SvgIcon
-          className="h-6 w-6 cursor-pointer"
+          className="h-6 w-6 cursor-pointer hover:text-blue-500 hover:scale-110 transition-transform duration-200"
           icon={"Book"}
           onClick={() => router.push("/")}
         />
@@ -43,7 +43,7 @@ export default function Appbar() {
           >
             <div className="flex items-center">
               <SvgIcon
-                className="h-6 w-6 "
+                className="h-6 w-6 cursor-pointer hover:text-blue-500 hover:scale-110 transition-transform duration-200"
                 variant={!darkMode ? "dark" : "light"}
                 icon={"LightDark"}
               />

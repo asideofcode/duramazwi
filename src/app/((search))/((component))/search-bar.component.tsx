@@ -38,7 +38,8 @@ export default function SearchBar({
             className="h-6 w-6 theme-text-sub1"
             onClick={search}
           >
-            <SvgIcon className="h-6 w-6" icon={"Search"} />
+            <SvgIcon className="h-6 w-6 cursor-pointer hover:text-blue-500 hover:scale-110 transition-transform duration-200"
+ icon={"Search"} />
           </button>
         )}
       </div>
