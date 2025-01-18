@@ -39,9 +39,6 @@ export default function Appbar() {
             onClick={() => {
               // setIsDark(!isDark);
               toggleTheme();
-              window.gtag("event", "theme_toggle", {
-                theme: newTheme,
-              });
             }}
           >
             <div className="flex items-center">
