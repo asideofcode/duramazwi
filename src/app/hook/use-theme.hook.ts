@@ -30,6 +30,10 @@ export function useTheme() {
     const newTheme = storage.value === "light" ? "dark" : "light";
     storage.setValue(newTheme);
     applyTheme(newTheme);
+
+    globalThis.gtag?.("event", "theme_toggle", {
+      theme: newTheme,
+    });
   };
 
   return { toggleTheme, darkMode };

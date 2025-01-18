@@ -61,6 +61,13 @@ function SearchSection() {
   const [error, setError] = React.useState<any>(null);
 
   React.useEffect(() => {
+    globalThis.gtag?.("event", "page_view", {
+      page_path: window.location.pathname + window.location.search,
+    });
+  }, [searchQuery]);
+
+  
+  React.useEffect(() => {
     setKeyword(searchQuery); // Update the keyword whenever the query changes
     setError(undefined);
 
@@ -88,6 +95,11 @@ function SearchSection() {
 
         const matchedData = result.map((item) => item.item);
         if (matchedData.length === 0) {
+          globalThis.gtag?.("event", "search_performed", {
+            search_term: query,
+            result_status: "no_results",
+            result_count: 0,
+          });
           // No matches found
           setData(undefined);
           setError({
@@ -96,6 +108,12 @@ function SearchSection() {
           });
           setStatus("failed");
         } else {
+          globalThis.gtag?.("event", "search_performed", {
+            search_term: query,
+            result_status: "success",
+            result_count: matchedData.length,
+          });
+
           // Matches found
           setData(matchedData); // Replace with real API call if needed
           setError(undefined);
@@ -106,6 +124,10 @@ function SearchSection() {
       console.error(error);
       setStatus("failed");
       setError({ message: "An error occurred", resolution: "Try again later" });
+      globalThis.gtag?.("event", "search_error", {
+        search_term: query,
+        error_message: error.message,
+      });
     }
   }
 
@@ -184,6 +206,10 @@ function WordIndex({ groupedWords, setKeyword, router }: any) {
                   onClick={() => {
                     setKeyword(word); // Update the keyword state
                     router.push(`/?q=${word}`); // Update the query parameter
+                    globalThis.gtag?.("event", "word_clicked", {
+                      word: word,
+                      source: "index",
+                    });
                   }}
                   className="text-lg font-medium text-blue-600 hover:text-blue-400 transition-colors duration-200 focus:outline-none"
                 >
