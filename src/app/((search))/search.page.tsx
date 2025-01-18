@@ -6,10 +6,16 @@ import Appbar from "./((component))/appbar.component";
 import SearchBar from "./((component))/search-bar.component";
 import Label from "@/component/atom/label.component";
 import { Prata, Courgette } from "next/font/google";
-import allMyData from "./data.json";
+import allMyDataRaw from "./data.json";
 import Fuse from "fuse.js";
 import { useRouter, useSearchParams } from "next/navigation"; // Import hooks
 
+const allMyData = allMyDataRaw.flat(); // Flatten the data
+allMyData.forEach((item) => {
+  item.meanings.forEach((meaning) => {
+    meaning.definitions[0].example = meaning.example;
+  });
+});
 const spaceMono = Courgette({
   subsets: ["latin"],
   display: "swap",
@@ -202,7 +208,7 @@ function Word({ word, setKeyword, makeSearchQuery }: any) {
             variant="t1"
             className={`text-4xl first-letter:uppercase ${prata.className}`}
           >
-            {word.word}
+            {word.meanings[0].partOfSpeech == "verb" ? "-" : ""}{word.word}
           </Label>
         </div>
       </div>
