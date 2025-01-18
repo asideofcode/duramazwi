@@ -41,6 +41,15 @@ export default function SearchPageWrapper() {
   return (
     <main className="max-w-3xl mx-auto px-4 sm:px-0">
       <Appbar />
+      <div className="mb-6">
+        <h1 className="text-4xl font-bold text-gray-800 dark:text-gray-200">
+          Duramazwi
+        </h1>
+        <p className="text-lg text-gray-600 dark:text-gray-400">
+          Explore the meanings of Shona words or find Shona equivalents for
+          English words.
+        </p>
+      </div>
       <Suspense fallback={<div>Loading search results...</div>}>
         <SearchSection />
       </Suspense>
