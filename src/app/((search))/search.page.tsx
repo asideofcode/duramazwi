@@ -88,6 +88,9 @@ function SearchSection() {
 
   async function handleSearch(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    globalThis.gtag?.("event", "search_requested", {
+      search_term: keyword,
+    });
     router.push(`/?q=${keyword}`); // Navigate to the route with the search query
   }
 
