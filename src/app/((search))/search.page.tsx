@@ -2,7 +2,6 @@
 
 import React, { Suspense } from "react";
 // import { useRouter } from "next/navigation";
-import Appbar from "./((component))/appbar.component";
 import SearchBar from "./((component))/search-bar.component";
 import Label from "@/component/atom/label.component";
 import { Prata, Courgette } from "next/font/google";
@@ -40,21 +39,9 @@ const fuse = new Fuse(allMyData, options);
 
 export default function SearchPageWrapper() {
   return (
-    <main className="max-w-3xl mx-auto px-4 sm:px-0">
-      <Appbar />
-      <div className="mb-6">
-        <h1 className="text-4xl font-bold text-blue-600 dark:text-blue-500">
-          Duramazwi
-        </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-400">
-          Explore the meanings of Shona words or find Shona equivalents for
-          English words.
-        </p>
-      </div>
-      <Suspense fallback={<div>Loading search results...</div>}>
-        <SearchSection />
-      </Suspense>
-    </main>
+    <Suspense fallback={<div>Loading search results...</div>}>
+      <SearchSection />
+    </Suspense>
   );
 }
 
@@ -76,7 +63,6 @@ function SearchSection() {
     });
   }, [searchQuery]);
 
-  
   React.useEffect(() => {
     setKeyword(searchQuery); // Update the keyword whenever the query changes
     setError(undefined);
@@ -182,7 +168,11 @@ function SearchSection() {
         ))
       ) : (
         // Show index of words when no search query
-        <WordIndex groupedWords={groupedWords} setKeyword={setKeyword} router={router} />
+        <WordIndex
+          groupedWords={groupedWords}
+          setKeyword={setKeyword}
+          router={router}
+        />
       )}
       {error && (
         <div className="flex flex-col my-32 text-center">
@@ -247,7 +237,8 @@ function Word({ word, setKeyword, makeSearchQuery }: any) {
             variant="t1"
             className={`text-4xl first-letter:uppercase ${prata.className}`}
           >
-            {word.meanings[0].partOfSpeech == "verb" ? "-" : ""}{word.word}
+            {word.meanings[0].partOfSpeech == "verb" ? "-" : ""}
+            {word.word}
           </Label>
         </div>
       </div>

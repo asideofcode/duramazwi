@@ -1,6 +1,14 @@
 import AnalyticsWrapper from "@/component/analytics.component";
 import "./globals.css";
 import Script from "next/script";
+import Appbar from "./((search))/((component))/appbar.component";
+import { Inter, Source_Serif_4 } from "next/font/google";
+
+const inter = Inter({ subsets: ["latin"] });
+const nunitoSans = Source_Serif_4({
+  subsets: ["latin"],
+  weight: "400",
+});
 
 export const metadata = {
   title: "Duramazwi - Shona Dictionary",
@@ -30,7 +38,6 @@ export const metadata = {
   },
 };
 
-
 export default function RootLayout({
   children,
 }: {
@@ -38,7 +45,21 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className={"bg-default min-h-screen"}>{children}</body>
+      <body className={"bg-default min-h-screen"}>
+        <main className="max-w-3xl mx-auto px-4 sm:px-0">
+          <Appbar />
+          <div className="mb-6">
+            <h1 className="text-4xl font-bold text-blue-600 dark:text-blue-500">
+              Duramazwi
+            </h1>
+            <p className="text-lg text-gray-600 dark:text-gray-400">
+              Explore the meanings of Shona words or find Shona equivalents for
+              English words.
+            </p>
+          </div>
+          <div className={nunitoSans.className}>{children}</div>
+        </main>
+      </body>
       {/* Google Analytics Script */}
       <Script
         strategy="afterInteractive"
