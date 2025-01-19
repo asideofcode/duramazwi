@@ -3,15 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
+    "export-data": "node ./src/data/export.js",
+    "dev": "npm run export-data && next dev --turbopack",
+    "build": "npm run export-data && next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@vercel/analytics": "^1.4.1",
     "classnames": "^2.5.1",
+    "dotenv": "^16.4.7",
     "fuse.js": "^7.0.0",
+    "mongodb": "^6.12.0",
     "next": "15.1.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

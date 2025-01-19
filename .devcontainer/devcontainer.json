@@ -1,6 +1,7 @@
 {
 	"name": "Next.js Dev Container",
-	"image": "mcr.microsoft.com/devcontainers/javascript-node:0-20",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "app",
 
 	"workspaceFolder": "${localWorkspaceFolder}",
 

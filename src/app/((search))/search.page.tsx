@@ -6,7 +6,7 @@ import Appbar from "./((component))/appbar.component";
 import SearchBar from "./((component))/search-bar.component";
 import Label from "@/component/atom/label.component";
 import { Prata, Courgette } from "next/font/google";
-import allMyDataRaw from "./data.json";
+import allMyDataRaw from "@/data/data.json";
 import Fuse from "fuse.js";
 import { useRouter, useSearchParams } from "next/navigation"; // Import hooks
 
@@ -16,6 +16,7 @@ allMyData.forEach((item) => {
     meaning.definitions[0].example = meaning.example;
   });
 });
+
 const spaceMono = Courgette({
   subsets: ["latin"],
   display: "swap",
