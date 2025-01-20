@@ -114,6 +114,7 @@ function SearchResults({ searchQuery, onError, router }: any) {
           className="cursor-pointer text-blue-600 hover:underline"
         >
           <Link
+            prefetch={false}
             href={`/word/${encodeURIComponent(word.word)}`}
             onClick={() => {
               globalThis.gtag?.("event", "word_clicked", {
@@ -166,6 +167,7 @@ function WordIndex({ groupedWords, router }: any) {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
               {words.map((word, index) => (
                 <Link
+                  prefetch={false}
                   href={`/word/${encodeURIComponent(word)}`}
                   key={index}
                   onClick={() => {
