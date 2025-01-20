@@ -1,10 +1,9 @@
-import React from "react";
-import cx from "classnames";
 import BookIcon from "./book.icon";
-import ToggleIcon from "./toggle.icon";
-import SearchIcon from "./search.icon";
 import LightDark from "./light-dark.icon";
 import Play from "./play-pause.icon";
+import PlusIcon from "./plus.icon";
+import SearchIcon from "./search.icon";
+import ToggleIcon from "./toggle.icon";
 type Icons = "Book" | "Toggle" | "Search" | "LightDark" | "Play";
 
 export type SvgIconSize =
@@ -85,6 +84,8 @@ function getSVGIcon(
       );
     case "Search":
       return <SearchIcon size={size} className={className} />;
+    case "Plus":
+      return <PlusIcon size={size} className={className} />;
     case "LightDark":
       return (
         <LightDark

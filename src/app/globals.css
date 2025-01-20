@@ -167,6 +167,7 @@ a {
   .list-disc {
     @apply text-slate-700 dark:text-slate-400;
   }
+  
 
   /** BORDER */
   .theme-border {

@@ -44,7 +44,7 @@ export default function SearchBar({}:
   }, [query]);
 
   return (
-    <form onSubmit={search}>
+    <form onSubmit={search} className="mb-6">
       <div className="theme-input flex ">
         <input
           className="peer w-full bg-surface outline-none placeholder:text-sm theme-text-sub1"
