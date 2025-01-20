@@ -51,7 +51,7 @@ export default function RootLayout({
           <Appbar />
           <div className="mb-6">
             <h1 className="text-4xl font-bold text-blue-600 dark:text-blue-500">
-              Duramazwi
+              Duramazwi (Dictionary)
             </h1>
             <p className="text-lg text-gray-600 dark:text-gray-400">
               Explore the meanings of Shona words or find Shona equivalents for
