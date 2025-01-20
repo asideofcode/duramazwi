@@ -4,6 +4,7 @@ import Label from "@/component/atom/label.component";
 import Loading from "@/component/atom/loader.component";
 import { useSearch } from "@/context/search-context";
 import dataService from "@/services/dataService";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 
@@ -111,15 +112,19 @@ function SearchResults({ searchQuery, onError, router }: any) {
         <li
           key={index}
           className="cursor-pointer text-blue-600 hover:underline"
-          onClick={() => {
-            router.push(`/word/${encodeURIComponent(word.word)}`);
-            globalThis.gtag?.("event", "word_clicked", {
-              word: word.word,
-              source: "search_results",
-            });
-          }}
         >
-          {word.word}
+          <Link
+            href={`/word/${encodeURIComponent(word.word)}`}
+            onClick={() => {
+              globalThis.gtag?.("event", "word_clicked", {
+                word: word.word,
+                source: "search_results",
+              });
+            }}
+            className="text-lg font-medium text-blue-600 hover:text-blue-400 transition-colors duration-200 focus:outline-none"
+          >
+            {word.word}
+          </Link>
         </li>
       ))}
     </ul>
@@ -160,10 +165,10 @@ function WordIndex({ groupedWords, router }: any) {
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
               {words.map((word, index) => (
-                <button
+                <Link
+                  href={`/word/${encodeURIComponent(word)}`}
                   key={index}
                   onClick={() => {
-                    router.push(`/word/${encodeURIComponent(word)}`);
                     globalThis.gtag?.("event", "word_clicked", {
                       word: word,
                       source: "index",
@@ -172,7 +177,7 @@ function WordIndex({ groupedWords, router }: any) {
                   className="text-lg font-medium text-blue-600 hover:text-blue-400 transition-colors duration-200 focus:outline-none"
                 >
                   {word}
-                </button>
+                </Link>
               ))}
             </div>
           </div>
