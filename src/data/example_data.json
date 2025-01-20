@@ -1,0 +1,322 @@
+[
+  {
+    "_id": "678c38ea293b5bcc3a6d5206",
+    "word": "da",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To love; want; like.",
+            "example": "Ndino da mvura inotonhora."
+          }
+        ],
+        "example": "Ndino da mvura inotonhora."
+      }
+    ]
+  },
+  {
+    "_id": "678c38ea293b5bcc3a6d5246",
+    "word": "dzidzo",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Education.",
+            "example": "Dzidzo inoshanda mukusimudzira nharaunda."
+          }
+        ],
+        "example": "Dzidzo inoshanda mukusimudzira nharaunda."
+      }
+    ]
+  },
+  {
+    "_id": "678c38ea293b5bcc3a6d5521",
+    "word": "shiri",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Bird.",
+            "example": "Shiri dzakatiza huni huru dzavira pasi."
+          }
+        ],
+        "example": "Shiri dzakatiza huni huru dzavira pasi."
+      }
+    ]
+  },
+  {
+    "_id": "678c38ea293b5bcc3a6d54a5",
+    "word": "pisi",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Piece.",
+            "example": "Ndakagura pisi diki rekeke."
+          }
+        ],
+        "example": "Ndakagura pisi diki rekeke."
+      }
+    ]
+  },
+  {
+    "_id": "678c38ea293b5bcc3a6d53e2",
+    "word": "muripo",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Fine.",
+            "example": "Vakabhadhara muripo nekuda kwemhosva."
+          }
+        ],
+        "example": "Vakabhadhara muripo nekuda kwemhosva."
+      }
+    ]
+  },
+  {
+    "_id": "678c38ea293b5bcc3a6d5417",
+    "word": "mwenje",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Light.",
+            "example": "Mwenje uri kuvhenekera imba yese."
+          }
+        ],
+        "example": "Mwenje uri kuvhenekera imba yese."
+      }
+    ]
+  },
+  {
+    "_id": "678c38ea293b5bcc3a6d53ce",
+    "word": "munda",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Field.",
+            "example": "Takarima munda wedu nezviyo."
+          }
+        ],
+        "example": "Takarima munda wedu nezviyo."
+      }
+    ]
+  },
+  {
+    "_id": "678c38ea293b5bcc3a6d53a5",
+    "word": "mubvunzo",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Question; inquiry.",
+            "example": "Ndine mubvunzo nezvebasa iri."
+          }
+        ],
+        "example": "Ndine mubvunzo nezvebasa iri."
+      }
+    ]
+  },
+  {
+    "_id": "678c38ea293b5bcc3a6d547f",
+    "word": "pati",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Party.",
+            "example": "Tinoenda kupati yegore idzva."
+          }
+        ],
+        "example": "Tinoenda kupati yegore idzva."
+      }
+    ]
+  },
+  {
+    "_id": "678c38ea293b5bcc3a6d53ab",
+    "word": "mudiwa",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Beloved.",
+            "example": "Mudiwa wangu ndiye anondibatsira zvese."
+          }
+        ],
+        "example": "Mudiwa wangu ndiye anondibatsira zvese."
+      }
+    ]
+  },
+  {
+    "_id": "678c38ea293b5bcc3a6d543f",
+    "word": "nhunzi",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Fly.",
+            "example": "Nhunzi dziri kuwandisa mumba."
+          }
+        ],
+        "example": "Nhunzi dziri kuwandisa mumba."
+      }
+    ]
+  },
+  {
+    "_id": "678c38ea293b5bcc3a6d53b9",
+    "word": "muganho",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Boundary.",
+            "example": "Muganho wemunda wedu unopera pamuti uyu."
+          }
+        ],
+        "example": "Muganho wemunda wedu unopera pamuti uyu."
+      }
+    ]
+  },
+  {
+    "_id": "678c38ea293b5bcc3a6d5460",
+    "word": "nzara",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Fingernail.",
+            "example": "Nzara dzake dzanga dzichingonaka."
+          }
+        ],
+        "example": "Nzara dzake dzanga dzichingonaka."
+      }
+    ]
+  },
+  {
+    "_id": "678c38ea293b5bcc3a6d543e",
+    "word": "nhumwa",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Emissary.",
+            "example": "Nhumwa dzakasvika panguva yakafanira."
+          }
+        ],
+        "example": "Nhumwa dzakasvika panguva yakafanira."
+      }
+    ]
+  },
+  {
+    "_id": "678c38ea293b5bcc3a6d5451",
+    "word": "nyemwerera",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To smile.",
+            "example": "Vana vakanyemwerera vachiona zvipo."
+          }
+        ],
+        "example": "Vana vakanyemwerera vachiona zvipo."
+      }
+    ]
+  },
+  {
+    "_id": "678c38ea293b5bcc3a6d544a",
+    "word": "nyangwe",
+    "meanings": [
+      {
+        "partOfSpeech": "conjunction",
+        "definitions": [
+          {
+            "definition": "Although.",
+            "example": "Nyangwe zvikaita zvakaoma, ticharamba tichiedza."
+          }
+        ],
+        "example": "Nyangwe zvikaita zvakaoma, ticharamba tichiedza."
+      }
+    ]
+  },
+  {
+    "_id": "678c38ea293b5bcc3a6d5466",
+    "word": "nzwa",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To hear; feel; understand.",
+            "example": "Ndinonzwa kusagadzikana mumoyo wangu."
+          }
+        ],
+        "example": "Ndinonzwa kusagadzikana mumoyo wangu."
+      }
+    ]
+  },
+  {
+    "_id": "678c38ea293b5bcc3a6d53a4",
+    "word": "mubvakure",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Foreigner.",
+            "example": "Mubvakure akauya kuzoshanya kwatiri."
+          }
+        ],
+        "example": "Mubvakure akauya kuzoshanya kwatiri."
+      }
+    ]
+  },
+  {
+    "_id": "678c38ea293b5bcc3a6d53ed",
+    "word": "mushanyi",
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Tourist.",
+            "example": "Mushanyi akaenda kunoona nzvimbo dzekufarira."
+          }
+        ],
+        "example": "Mushanyi akaenda kunoona nzvimbo dzekufarira."
+      }
+    ]
+  },
+  {
+    "_id": "678c38ea293b5bcc3a6d5457",
+    "word": "nyora",
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To write.",
+            "example": "Ndanyora tsamba kune shamwari yangu."
+          }
+        ],
+        "example": "Ndanyora tsamba kune shamwari yangu."
+      }
+    ]
+  }
+]
