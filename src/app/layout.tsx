@@ -1,8 +1,9 @@
 import AnalyticsWrapper from "@/component/analytics.component";
-import "./globals.css";
-import Script from "next/script";
-import Appbar from "./((search))/((component))/appbar.component";
+import Appbar from "@/component/appbar.component";
 import { Inter, Source_Serif_4 } from "next/font/google";
+import Script from "next/script";
+import "./globals.css";
+import { SearchProvider } from "@/context/search-context";
 
 const inter = Inter({ subsets: ["latin"] });
 const nunitoSans = Source_Serif_4({
@@ -57,7 +58,9 @@ export default function RootLayout({
               English words.
             </p>
           </div>
-          <div className={nunitoSans.className}>{children}</div>
+          <div className={nunitoSans.className}>
+          <SearchProvider>{children}</SearchProvider>
+          </div>
         </main>
       </body>
       {/* Google Analytics Script */}
