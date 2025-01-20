@@ -3,6 +3,9 @@ import { Suspense } from "react";
 import ResultsPage from "./ResultsPage";
 import Loading from "@/component/atom/loader.component";
 
+export const dynamic = "force-static";
+export const revalidate = false; // Forces static rendering
+
 export default async function HomePage({ searchParams }: { searchParams: { q?: string } }) {
   const { q } = await searchParams; // Extract query parameter
   const searchQuery = q || ""; // Extract query parameter

@@ -1,11 +1,11 @@
 "use client";
 
 import Label from "@/component/atom/label.component";
+import Loading from "@/component/atom/loader.component";
 import { useSearch } from "@/context/search-context";
 import dataService from "@/services/dataService";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
-import Loading from "@/component/atom/loader.component";
 
 export default function ResultsPage() {
   const searchParams = useSearchParams();
@@ -106,7 +106,7 @@ function SearchResults({ searchQuery, onError, router }: any) {
   }
 
   return searchResults ? (
-    <ul className="mt-6">
+    <ul className="mt-6 flex flex-col  list-disc list-outside pl-4">
       {searchResults.map((word: any, index: number) => (
         <li
           key={index}

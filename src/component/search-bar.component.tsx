@@ -3,35 +3,40 @@
 import Loading from "@/component/atom/loader.component";
 import SvgIcon from "@/component/icons/svg-icon";
 import { useSearch } from "@/context/search-context";
-import { useRouter } from "next/navigation"; // Import hooks
+import { useRouter, useSearchParams, usePathname} from "next/navigation";
 import React from "react";
+
 /**
  * Search bar
  *
  */
-
-export default function SearchBar({}: // keyword,
-// status,
-// search,
-// setKeyword = () => {},
+export default function SearchBar({}:
 {
   className?: string;
-  // status: "idle" | "loading" | "failed" | "success";
-  // keyword: string;
-  // setKeyword: React.Dispatch<React.SetStateAction<string>>;
-  // search: (q: string) => void;
 }) {
   const { status, query } = useSearch();
   const [keyword, setKeyword] = React.useState<string>(query);
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
 
   const search = function (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     globalThis.gtag?.("event", "search_requested", {
       search_term: keyword,
     });
-    router.push(`/?q=${keyword}`); // Navigate to the route with the search query
+
+    // Shallow routing to avoid RSC
+    if (pathname === "/") {
+      const params = new URLSearchParams(searchParams.toString())
+      params.set('q', keyword)
+      window.history.pushState(null, '', `?${params.toString()}`)
+    } else {
+    // Complete routing
+      router.push(`/?q=${keyword}`); 
+    }
   };
 
   React.useEffect(() => {

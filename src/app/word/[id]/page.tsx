@@ -32,6 +32,10 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   };
 }
 
+
+export const dynamic = "force-static";
+export const revalidate = false; // Forces static rendering
+
 export default async function DetailsPage({ params }: { params: { id: string } }) {
   const { id } = await params;
   const wordDetails = dataService.getWordDetails(id);

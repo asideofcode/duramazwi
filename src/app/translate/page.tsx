@@ -2,6 +2,9 @@
 
 import React, { useState } from "react";
 
+export const dynamic = "force-static";
+
+
 export default function TranslatePage() {
   const [inputText, setInputText] = useState("");
   const [translatedText, setTranslatedText] = useState("");

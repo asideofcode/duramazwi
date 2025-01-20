@@ -164,6 +164,10 @@ a {
     @apply text-slate-400 dark:text-slate-500;
   }
 
+  .list-disc {
+    @apply text-slate-700 dark:text-slate-400;
+  }
+
   /** BORDER */
   .theme-border {
     @apply border-gray-300 divide-gray-300 dark:border-gray-700 dark:divide-gray-700;
