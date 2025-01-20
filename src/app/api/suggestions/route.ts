@@ -15,10 +15,23 @@ export async function POST(req: Request) {
       originalDefinitionId,
     } = await req.json();
 
-    if (!word || !contributorEmail || !definition || !example) {
-      return NextResponse.json({ message: "Invalid data" }, { status: 400 });
-    }
+    const missingFields: string[] = [];
 
+    if (!word) missingFields.push("word");
+    if (!definition) missingFields.push("definition");
+    if (!example) missingFields.push("example");
+    
+    if (missingFields.length > 0) {
+      return NextResponse.json(
+        {
+          message: `To help us improve the dictionary, please provide the following: ${missingFields
+            .map((field) => `a valid ${field}`)
+            .join(", ")}. Each field is essential for creating accurate and helpful entries.`,
+        },
+        { status: 400 }
+      );
+    }
+    
     const suggestion = {
       schemaVersion: 1,
       word,

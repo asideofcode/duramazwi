@@ -72,7 +72,7 @@ function Word({ word }: any) {
           <Label
             size="h1"
             variant="t1"
-            className={`text-4xl first-letter:uppercase ${prata.className}`}
+            className={`text-2xl first-letter:uppercase ${prata.className}`}
           >
             {word.meanings[0].partOfSpeech == "verb" ? "-" : ""}
             {word.word}

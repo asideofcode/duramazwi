@@ -7,7 +7,7 @@ export default function SuggestPage() {
 
   return (
     <>
-      <h1 className="theme-text-h1 text-xl font-bold mb-4">Suggest Changes</h1>
+      <h1 className="underline theme-text-h1 text-xl font-bold mb-4">Make a suggestion</h1>
       <p className="text-base text-gray-600 dark:text-gray-400 mb-4">
         We rely on community contributions to ensure our dictionary is accurate
         and comprehensive. Share your suggestions for new words, corrections, or
@@ -39,7 +39,7 @@ export default function SuggestPage() {
             } else {
               const errorData = await response.json();
               setMessage({
-                text: `Submission failed: ${errorData.message || "An unknown error occurred."}`,
+                text: `We encountered an error 😭... ${errorData.message || "An unknown error occurred."}`,
                 type: "error",
               });
             }
@@ -124,7 +124,7 @@ function SuggestionForm({ onSubmit }: any) {
         type="submit"
         className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
       >
-        Submit Suggestion
+        Send it over!
       </button>
     </form>
   );

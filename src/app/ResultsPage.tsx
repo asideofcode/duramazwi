@@ -107,28 +107,36 @@ function SearchResults({ searchQuery, onError, router }: any) {
   }
 
   return searchResults ? (
-    <ul className="mt-6 flex flex-col  list-disc list-outside pl-4">
-      {searchResults.map((word: any, index: number) => (
-        <li
-          key={index}
-          className="cursor-pointer text-blue-600 hover:underline"
-        >
-          <Link
-            prefetch={false}
-            href={`/word/${encodeURIComponent(word.word)}`}
-            onClick={() => {
-              globalThis.gtag?.("event", "word_clicked", {
-                word: word.word,
-                source: "search_results",
-              });
-            }}
-            className="text-lg font-medium text-blue-600 hover:text-blue-400 transition-colors duration-200 focus:outline-none"
+    <>
+      <h1 className="theme-text-h1 text-xl font-bold mb-4">
+        Search results
+      </h1>
+      <p className="text-base text-gray-600 dark:text-gray-400 mb-4">
+        Here's what we found for "{searchQuery}". Click on a word to view more.
+      </p>
+      <ul className="mt-6 flex flex-col  list-disc list-outside pl-4">
+        {searchResults.map((word: any, index: number) => (
+          <li
+            key={index}
+            className="cursor-pointer text-blue-600 hover:underline"
           >
-            {word.word}
-          </Link>
-        </li>
-      ))}
-    </ul>
+            <Link
+              prefetch={false}
+              href={`/word/${encodeURIComponent(word.word)}`}
+              onClick={() => {
+                globalThis.gtag?.("event", "word_clicked", {
+                  word: word.word,
+                  source: "search_results",
+                });
+              }}
+              className="text-lg font-medium text-blue-600 hover:text-blue-400 transition-colors duration-200 focus:outline-none"
+            >
+              {word.word}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </>
   ) : (
     <WordIndex groupedWords={dataService.getAllWords()} router={router} />
   );
@@ -150,42 +158,51 @@ function WordIndex({ groupedWords, router }: any) {
   }, [groupedWords]);
 
   return (
-    <div className="my-8 p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
-      <Label
-        size="h2"
-        variant="t1"
-        className="text-center text-gray-800 dark:text-gray-200 mb-8"
-      >
-        Word Index
-      </Label>
-      <div className="space-y-6">
-        {Object.entries(groups).map(([letter, words]) => (
-          <div key={letter}>
-            <h3 className="text-xl font-bold text-gray-700 dark:text-gray-300 mb-4">
-              {letter.toUpperCase()}
-            </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {words.map((word, index) => (
-                <Link
-                  prefetch={false}
-                  href={`/word/${encodeURIComponent(word)}`}
-                  key={index}
-                  onClick={() => {
-                    globalThis.gtag?.("event", "word_clicked", {
-                      word: word,
-                      source: "index",
-                    });
-                  }}
-                  className="text-lg font-medium text-blue-600 hover:text-blue-400 transition-colors duration-200 focus:outline-none"
-                >
-                  {word}
-                </Link>
-              ))}
+    <>
+      <h1 className="underline theme-text-h1 text-xl font-bold mb-4">
+        Our Collection of Shona Words
+      </h1>
+      <p className="theme-text-sub1 mb-4">
+        Explore our modest collection of words from the Shona lexicon. Growing
+        each day with the community's help.
+        <Link href="/suggest">
+          <button className="ml-2 text-blue-600 hover:text-blue-400 underline focus:outline-none">
+            We welcome your suggestions
+          </button>
+          !
+        </Link>
+      </p>
+
+      <div className="my-8 p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
+        <div className="space-y-6">
+          {Object.entries(groups).map(([letter, words]) => (
+            <div key={letter}>
+              <h3 className="text-xl font-bold text-gray-700 dark:text-gray-300 mb-4">
+                {letter.toUpperCase()}
+              </h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                {words.map((word, index) => (
+                  <Link
+                    prefetch={false}
+                    href={`/word/${encodeURIComponent(word)}`}
+                    key={index}
+                    onClick={() => {
+                      globalThis.gtag?.("event", "word_clicked", {
+                        word: word,
+                        source: "index",
+                      });
+                    }}
+                    className="text-lg font-medium text-blue-600 hover:text-blue-400 transition-colors duration-200 focus:outline-none"
+                  >
+                    {word}
+                  </Link>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
