@@ -44,6 +44,7 @@ export default function SearchBar({}:
   }, [query]);
 
   return (
+    <>
     <form onSubmit={search} className="mb-6">
       <div className="theme-input flex ">
         <input
@@ -67,5 +68,7 @@ export default function SearchBar({}:
         )}
       </div>
     </form>
+    <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-700"></hr>
+    </>
   );
 }
