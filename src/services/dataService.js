@@ -46,8 +46,7 @@ const dataService = {
    * @returns {Array} - List of all words sorted alphabetically.
    */
   getAllWords() {
-    return [...allMyData]
-      .map((item) => item.word)
+    return [...new Set(allMyData.map((item) => item.word.toLowerCase()))]
       .sort((a, b) => a.localeCompare(b));
   },
 };

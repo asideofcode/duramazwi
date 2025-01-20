@@ -1,10 +1,7 @@
-"use client";
-
 import Label from "@/component/atom/label.component";
 import SearchBar from "@/component/search-bar.component";
 import dataService from "@/services/dataService";
 import { Courgette, Prata } from "next/font/google";
-import { useParams } from "next/navigation"; // Import hooks
 
 const spaceMono = Courgette({
   subsets: ["latin"],
@@ -18,8 +15,25 @@ const prata = Prata({
   weight: "400",
 });
 
-export default function DetailsPage() {
-  const { id } = useParams();
+
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+  const { id } = await params;
+  const wordDetails = dataService.getWordDetails(id);
+
+  if (wordDetails && wordDetails.length > 0) {
+    return {
+      title: `Definition of "${id}" - Shona Dictionary`,
+      description: `Learn about "${id}" and its meaning.`,
+    };
+  }
+  return {
+    title: "Word Not Found",
+    description: `We couldn't find a definition for "${params.id}".`,
+  };
+}
+
+export default async function DetailsPage({ params }: { params: { id: string } }) {
+  const { id } = await params;
   const wordDetails = dataService.getWordDetails(id);
 
   return (

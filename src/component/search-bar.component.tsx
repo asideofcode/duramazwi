@@ -1,3 +1,5 @@
+"use client";
+
 import Loading from "@/component/atom/loader.component";
 import SvgIcon from "@/component/icons/svg-icon";
 import { useSearch } from "@/context/search-context";

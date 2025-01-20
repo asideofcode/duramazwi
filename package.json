@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "export-data": "node ./src/data/export.js",
-    "dev": "npm run export-data && next dev --turbopack",
-    "build": "npm run export-data && next build",
+    "dev": "npm run export-data -- --overwrite=false && next dev --turbopack",
+    "build": "npm run export-data -- --overwrite && next build",
     "start": "next start",
     "lint": "next lint"
   },
