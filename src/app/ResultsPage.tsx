@@ -159,7 +159,7 @@ function WordIndex({ groupedWords, router }: any) {
 
   return (
     <>
-      <h1 className="underline theme-text-h1 text-xl font-bold mb-4">
+      <h1 className="theme-text-h1 text-xl font-bold mb-4">
         Our Collection of Shona Words
       </h1>
       <p className="theme-text-sub1 mb-4">
