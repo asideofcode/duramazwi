@@ -15,28 +15,34 @@ const prata = Prata({
   weight: "400",
 });
 
-
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: { id: string };
+}): Promise<Metadata> {
   const { id } = await params;
   const wordDetails = dataService.getWordDetails(id);
 
   if (wordDetails && wordDetails.length > 0) {
     return {
-      title: `Definition of "${id}" - Shona Dictionary`,
+      title: `Meaning of "${id}" - Shona Dictionary`,
       description: `Learn about "${id}" and its meaning.`,
     };
   }
   return {
-    title: "Word Not Found",
-    description: `We couldn't find a definition for "${params.id}".`,
+    title: "Word not found",
+    description: `We couldn't find the meaning of "${params.id}".`,
   };
 }
-
 
 export const dynamic = "force-static";
 export const revalidate = false; // Forces static rendering
 
-export default async function DetailsPage({ params }: { params: { id: string } }) {
+export default async function DetailsPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   const { id } = await params;
   const wordDetails = dataService.getWordDetails(id);
 
@@ -44,9 +50,14 @@ export default async function DetailsPage({ params }: { params: { id: string } }
     <div>
       <SearchBar />
       {wordDetails ? (
-        wordDetails.map((word: any, index: number) => (
-          <Word key={index} word={word} />
-        ))
+        <>
+          <h1 className="theme-text-h1 text-xl font-bold mb-4">
+            Meaning of &quot;{id}&quot; in Shona
+          </h1>
+          {wordDetails.map((word: any, index: number) => (
+            <Word key={index} word={word} />
+          ))}
+        </>
       ) : (
         // TODO: maybe just turn this into a search?
         <div className="flex flex-col my-32 text-center">
