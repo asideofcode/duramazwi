@@ -108,9 +108,7 @@ function SearchResults({ searchQuery, onError, router }: any) {
 
   return searchResults ? (
     <>
-      <h1 className="theme-text-h1 text-xl font-bold mb-4">
-        Search results
-      </h1>
+      <h1 className="theme-text-h1 text-xl font-bold mb-4">Search results</h1>
       <p className="text-base text-gray-600 dark:text-gray-400 mb-4">
         Here's what we found for "{searchQuery}". Click on a word to view more.
       </p>
@@ -163,14 +161,25 @@ function WordIndex({ groupedWords, router }: any) {
         Our Collection of Shona Words
       </h1>
       <p className="theme-text-sub1 mb-4">
-        Explore our modest collection of words from the Shona lexicon. Growing
-        each day with the community's help.
+        Welcome to our growing repository of words from the rich and vibrant
+        Shona lexicon. This project is not just a collection of words but a
+        shared effort to preserve and celebrate the language, culture, and
+        heritage of Shona speakers.
+      </p>
+      <p className="theme-text-sub1 mb-4">
+        Our ambition is to build the most comprehensive dataset of
+        Shona words, ensuring future generations have access to this
+        invaluable resource. Each day, our dictionary grows with the help of our
+        incredible community.
+      </p>
+      <p className="theme-text-sub1 mb-4">
         <Link href="/suggest">
-          <button className="ml-2 text-blue-600 hover:text-blue-400 underline focus:outline-none">
-            We welcome your suggestions
+          <button className="text-blue-600 hover:text-blue-400 underline focus:outline-none">
+            Your suggestions
           </button>
-          !
         </Link>
+        {" "}play a vital role in shaping this project. Contribute today and be part
+        of preserving Shona for tomorrow!
       </p>
 
       <div className="my-8 p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
