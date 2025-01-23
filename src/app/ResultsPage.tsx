@@ -162,24 +162,20 @@ function WordIndex({ groupedWords, router }: any) {
       </h1>
       <p className="theme-text-sub1 mb-4">
         Welcome to our growing repository of words from the rich and vibrant
-        Shona lexicon. This project is not just a collection of words but a
-        shared effort to preserve and celebrate the language, culture, and
-        heritage of Shona speakers.
+        Shona lexicon. This project is a community-driven effort to document and
+        celebrate the language.
       </p>
       <p className="theme-text-sub1 mb-4">
-        Our ambition is to build the most comprehensive dataset of
-        Shona words, ensuring future generations have access to this
-        invaluable resource. Each day, our dictionary grows with the help of our
-        incredible community.
+        Our ambition is to build the most comprehensive dataset of Shona words,
+        making it a valuable resource for speakers and learners alike.
       </p>
       <p className="theme-text-sub1 mb-4">
         <Link href="/suggest">
           <button className="text-blue-600 hover:text-blue-400 underline focus:outline-none">
             Your suggestions
           </button>
-        </Link>
-        {" "}play a vital role in shaping this project. Contribute today and be part
-        of preserving Shona for tomorrow!
+        </Link>{" "}
+        play a vital role in shaping this project. Contribute today and be part of the journey!
       </p>
 
       <div className="my-8 p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
