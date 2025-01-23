@@ -15,6 +15,9 @@ const prata = Prata({
   weight: "400",
 });
 
+// TODO: use generateStaticParams and maybe make this static somehow ?
+// See https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes#generating-static-params
+
 export async function generateMetadata({
   params,
 }: {
