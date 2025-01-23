@@ -14,13 +14,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: 'https://dictionary.chishona.org',
       lastModified: new Date().toISOString(),
-      changeFrequency: 'monthly',
+      changeFrequency: 'daily',
       priority: 1,
     },
     {
       url: 'https://dictionary.chishona.org/suggest',
       lastModified: new Date().toISOString(),
-      changeFrequency: 'monthly',
+      changeFrequency: 'daily',
       priority: 0.8,
     },
     ...words
