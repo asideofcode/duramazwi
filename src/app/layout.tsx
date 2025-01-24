@@ -12,23 +12,26 @@ const nunitoSans = Source_Serif_4({
 });
 
 export const metadata = {
-  title: "Duramazwi - Shona Dictionary",
+  title: "Shona Dictionary - Discover the Meaning of Shona Words",
   description:
-    "Duramazwi is a user-friendly Shona dictionary. It provides an intuitive interface to search for Shona words easily and quickly, offering definitions, pronunciations, and usage examples. Expand your Shona vocabulary with related and similar words.",
+    "Your go-to resource for understanding Shona. Find accurate definitions, meanings, and examples of Shona words to enhance your language skills and cultural knowledge.",
+  keywords:
+    "Shona dictionary, Shona words, Shona language, Shona definitions, meanings, learn Shona, Shona-English dictionary, Shona translation, Shona pronunciation",
   url: "https://dictionary.chishona.org",
+  google: "notranslate",
   openGraph: {
     type: "website",
     locale: "en_ZW",
     url: "https://dictionary.chishona.org",
-    title: "Duramazwi - Shona Dictionary",
+    title: "Shona Dictionary - Discover the Meaning of Shona Words",
     description:
-      "Duramazwi is a user-friendly Shona dictionary. It provides an intuitive interface to search for Shona words easily and quickly, offering definitions, pronunciations, and usage examples. Expand your Shona vocabulary with related and similar words.",
+      "Your go-to resource for understanding Shona. Find accurate definitions, meanings, and examples of Shona words to enhance your language skills and cultural knowledge.",
     images: [
       {
-        url: "https://dictionary.chishona.org/og-image.jpg", // Example Open Graph image
+        url: "https://dictionary.chishona.org/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Duramazwi - Shona Dictionary",
+        alt: "Shona Dictionary - Discover the Meaning of Shona Words",
       },
     ],
   },
@@ -50,16 +53,21 @@ export default function RootLayout({
         <main className="max-w-3xl mx-auto px-4 sm:px-0">
           <Appbar />
           <div className="mb-6">
-            <h1 className="text-4xl font-bold text-blue-600 dark:text-blue-500">
-              Duramazwi (Dictionary)
-            </h1>
+            <div
+              role="heading"
+              aria-level={1}
+              className="text-4xl font-bold text-blue-600 dark:text-blue-500"
+            >
+              Shona Dictionary (Duramazwi)
+            </div>
+
             <p className="text-lg text-gray-600 dark:text-gray-400">
               Explore the meanings of Shona words or find Shona equivalents for
               English words.
             </p>
           </div>
           <div className={nunitoSans.className}>
-          <SearchProvider>{children}</SearchProvider>
+            <SearchProvider>{children}</SearchProvider>
           </div>
         </main>
       </body>
