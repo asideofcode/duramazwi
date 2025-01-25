@@ -158,7 +158,7 @@ function WordIndex({ groupedWords, router }: any) {
   return (
     <>
       <h1 className="theme-text-h1 text-xl font-bold mb-4">
-        Our Collection of Shona Words
+        Explore the Shona Dictionary
       </h1>
       <p className="theme-text-sub1 mb-4">
         Welcome to our growing repository of words from the rich and vibrant

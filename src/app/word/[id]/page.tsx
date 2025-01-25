@@ -23,18 +23,26 @@ export async function generateMetadata({
 }: {
   params: { id: string };
 }): Promise<Metadata> {
-  const { id } = await params;
+  const { id: rawId } = await params;
+  const id = decodeURIComponent(rawId);
   const wordDetails = dataService.getWordDetails(id);
 
+  const firstDefinition = wordDetails[0].meanings[0].definitions[0].definition;
   if (wordDetails && wordDetails.length > 0) {
     return {
-      title: `Meaning of "${id}" - Shona Dictionary`,
-      description: `Learn about "${id}" and its meaning.`,
+      title: `Meaning of ${id} in Shona | Shona Dictionary`,
+      description: `The meaning of ${id} in Shona is ${firstDefinition}...`,
+      keywords: `The meaning of ${id} in Shona, define ${id} in Shona, ${id} zvinorevei, Shona dictionary, Shona words, Shona language, Shona definitions, meanings, learn Shona, Shona-English dictionary, Shona translation, Shona pronunciation`,
+
     };
   }
   return {
     title: "Word not found",
-    description: `We couldn't find the meaning of "${params.id}".`,
+    description: `We couldn't find the meaning of ${id} in Shona.`,
+    keywords:
+      "Shona dictionary, Shona words, Shona language, Shona definitions, meanings, learn Shona, Shona-English dictionary, Shona translation, Shona pronunciation",
+    url: `https://dictionary.chishona.org/word/${id}`,
+    google: "notranslate",
   };
 }
 
@@ -46,7 +54,8 @@ export default async function DetailsPage({
 }: {
   params: { id: string };
 }) {
-  const { id } = await params;
+  const { id: rawId } = await params;
+  const id = decodeURIComponent(rawId);
   const wordDetails = dataService.getWordDetails(id);
 
   return (
@@ -55,7 +64,7 @@ export default async function DetailsPage({
       {wordDetails ? (
         <>
           <h1 className="theme-text-h1 text-xl font-bold mb-4">
-            Meaning of &quot;{id}&quot; in Shona
+            Meaning of {id} in Shona
           </h1>
           {wordDetails.map((word: any, index: number) => (
             <Word key={index} word={word} />
