@@ -1,7 +1,9 @@
 import Label from "@/component/atom/label.component";
 import SearchBar from "@/component/search-bar.component";
 import dataService from "@/services/dataService";
+import { createMetadata } from "@/utils/metadata";
 import { Courgette, Prata } from "next/font/google";
+import { Metadata } from "next/types";
 
 const spaceMono = Courgette({
   subsets: ["latin"],
@@ -29,21 +31,24 @@ export async function generateMetadata({
 
   const firstDefinition = wordDetails[0].meanings[0].definitions[0].definition;
   if (wordDetails && wordDetails.length > 0) {
-    return {
-      title: `Meaning of ${id} in Shona | Shona Dictionary`,
-      description: `The meaning of ${id} in Shona is ${firstDefinition}...`,
-      keywords: `The meaning of ${id} in Shona, define ${id} in Shona, ${id} zvinorevei, Shona dictionary, Shona words, Shona language, Shona definitions, meanings, learn Shona, Shona-English dictionary, Shona translation, Shona pronunciation`,
-
-    };
+    return createMetadata(
+      {
+        title: `Meaning of ${id} in Shona | Shona Dictionary`,
+        description: `The meaning of ${id} in Shona is ${firstDefinition}...`,
+        keywords: `The meaning of ${id} in Shona, define ${id} in Shona, ${id} zvinorevei, Shona dictionary, Shona words, Shona language, Shona definitions, meanings, learn Shona, Shona-English dictionary, Shona translation, Shona pronunciation`,
+        openGraph: {
+          url: `https://dictionary.chishona.org/word/${id}`,
+        }
+      }
+    );
   }
-  return {
+  return createMetadata({
     title: "Word not found",
     description: `We couldn't find the meaning of ${id} in Shona.`,
-    keywords:
-      "Shona dictionary, Shona words, Shona language, Shona definitions, meanings, learn Shona, Shona-English dictionary, Shona translation, Shona pronunciation",
-    url: `https://dictionary.chishona.org/word/${id}`,
-    google: "notranslate",
-  };
+    openGraph: {
+      url: `https://dictionary.chishona.org/word/${id}`,
+    }
+  });
 }
 
 export const dynamic = "force-static";
