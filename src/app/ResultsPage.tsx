@@ -14,7 +14,7 @@ export default function ResultsPage({searchQuery}: {searchQuery: (Promise<string
   searchQuery = searchParams.get("q") || "";
 
   const router = useRouter();
-  const { setQuery } : {setQuery: any} = useSearch();
+  const setQuery: any = useSearch();
   const [error, setError] = React.useState<any>(null);
 
   React.useEffect(() => {
