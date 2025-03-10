@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState } from "react";
 
-const SearchContext = createContext(null);
+const SearchContext = createContext('');
 
 export function SearchProvider({ children }: { children: React.ReactNode }) {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
