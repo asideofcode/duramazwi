@@ -8,9 +8,10 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 
-export default function ResultsPage() {
+export default function ResultsPage({searchQuery}: {searchQuery: (Promise<string> | string)}) {
   const searchParams = useSearchParams();
-  const searchQuery = searchParams.get("q") || "";
+  
+  searchQuery = searchParams.get("q") || "";
 
   const router = useRouter();
   const { setQuery } = useSearch();
