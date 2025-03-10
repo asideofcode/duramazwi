@@ -24,7 +24,7 @@ export default function SuggestPage() {
         </div>
       )}
       <SuggestionForm
-        onSubmit={async (suggestion, resetForm) => {
+        onSubmit={async (suggestion: string, resetForm:any) => {
           setMessage({ text: "Submitting your suggestion...", type: "" });
           try {
             const response = await fetch("/api/suggestions", {
@@ -79,7 +79,7 @@ function SuggestionForm({ onSubmit }: any) {
       setEmail("");
     });
   };
-
+  const suggestedWordClassList = "theme-input w-full p-2 rounded peer bg-surface outline-none placeholder:text-sm theme-text-sub1"
   return (
     <form onSubmit={handleSubmit} className="mb-4 p-4 rounded ">
       <div className="mb-4">
@@ -89,7 +89,7 @@ function SuggestionForm({ onSubmit }: any) {
           value={word}
           placeholder="E.g. Chikafu"
           onChange={(e) => setWord(e.target.value)}
-          className="theme-input w-full p-2 rounded peer w-full bg-surface outline-none placeholder:text-sm theme-text-sub1"
+          className={suggestedWordClassList}
         />
       </div>
       <div className="mb-4">
@@ -98,7 +98,7 @@ function SuggestionForm({ onSubmit }: any) {
           value={definition}
           placeholder="Provide the definition of the word, including any relevant details like part of speech (e.g. verb/noun) etc."
           onChange={(e) => setDefinition(e.target.value)}
-          className="theme-input w-full p-2 rounded peer w-full bg-surface outline-none placeholder:text-sm theme-text-sub1"
+          className={suggestedWordClassList}
         />
       </div>
       <div className="mb-4">
@@ -107,7 +107,7 @@ function SuggestionForm({ onSubmit }: any) {
           value={example}
           placeholder="Provide an example sentence using the word, if applicable."
           onChange={(e) => setExample(e.target.value)}
-          className="theme-input w-full p-2 rounded peer w-full bg-surface outline-none placeholder:text-sm theme-text-sub1"
+          className={suggestedWordClassList}
         />
       </div>
       <div className="mb-4">
@@ -117,7 +117,7 @@ function SuggestionForm({ onSubmit }: any) {
           value={email}
           placeholder="Your email address (optional)"
           onChange={(e) => setEmail(e.target.value)}
-          className="theme-input w-full p-2 rounded peer w-full bg-surface outline-none placeholder:text-sm theme-text-sub1"
+          className={suggestedWordClassList}
         />
       </div>
       <button
