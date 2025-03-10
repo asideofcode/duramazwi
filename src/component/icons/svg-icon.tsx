@@ -47,7 +47,7 @@ type SvgIconButtonProps = {
   onClick?: (e: any) => void;
   size?: SvgIconSize;
   variant?: any;
-  title: string;
+  title?: string;
 };
 
 const SvgIcon = ({
