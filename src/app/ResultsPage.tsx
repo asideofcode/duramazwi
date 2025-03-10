@@ -81,7 +81,7 @@ function SearchResults({ searchQuery, onError, router }: any) {
           });
           setStatus("failed");
         } else {
-          globalThis.gtag?.("event", "search_performed", {
+          that.gtag?.("event", "search_performed", {
             search_term: query,
             result_status: "success",
             result_count: matchedData.length,
@@ -143,12 +143,12 @@ function SearchResults({ searchQuery, onError, router }: any) {
   );
 }
 
-function WordIndex({ groupedWords, router }: any) {
+function WordIndex({ groupedWords }: { groupedWords: string[] }) {
   const groups = React.useMemo(() => {
     const sortedWords = groupedWords;
 
-    const groupByFirstLetter = {};
-    sortedWords.forEach((word) => {
+    const groupByFirstLetter:any = {};
+    sortedWords.forEach((word:string) => {
       const firstLetter = word[0].toUpperCase();
       if (!groupByFirstLetter[firstLetter]) {
         groupByFirstLetter[firstLetter] = [];
