@@ -139,7 +139,7 @@ function SearchResults({ searchQuery, onError, router }: any) {
       </ul>
     </>
   ) : (
-    <WordIndex groupedWords={dataService.getAllWords()} router={router} />
+    <WordIndex groupedWords={dataService.getAllWords()} />
   );
 }
 
@@ -183,13 +183,13 @@ function WordIndex({ groupedWords }: { groupedWords: string[] }) {
 
       <div className="my-8 p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
         <div className="space-y-6">
-          {Object.entries(groups).map(([letter, words]) => (
+          {Object.entries(groups).map(([letter, words]:any) => (
             <div key={letter}>
               <h3 className="text-xl font-bold text-gray-700 dark:text-gray-300 mb-4">
                 {letter.toUpperCase()}
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                {words.map((word, index) => (
+                {words.map((word:string, index:number) => (
                   <Link
                     prefetch={false}
                     href={`/word/${encodeURIComponent(word)}`}
