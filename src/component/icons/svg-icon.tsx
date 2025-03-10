@@ -4,7 +4,7 @@ import Play from "./play-pause.icon";
 import PlusIcon from "./plus.icon";
 import SearchIcon from "./search.icon";
 import ToggleIcon from "./toggle.icon";
-type Icons = "Book" | "Toggle" | "Search" | "LightDark" | "Play";
+type Icons = "Book" | "Toggle" | "Search" | "LightDark" | "Play" | "Plus";
 
 export type SvgIconSize =
   | 1
