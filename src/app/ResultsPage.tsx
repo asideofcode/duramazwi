@@ -18,7 +18,8 @@ export default function ResultsPage({searchQuery}: {searchQuery: (Promise<string
   const [error, setError] = React.useState<any>(null);
 
   React.useEffect(() => {
-    globalThis.gtag?.("event", "page_view", {
+    const that: any = globalThis
+    that.gtag?.("event", "page_view", {
       page_path: window.location.pathname + window.location.search,
     });
   }, [searchQuery]);
