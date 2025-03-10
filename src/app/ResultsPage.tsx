@@ -8,6 +8,8 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 
+const that: any = globalThis
+
 export default function ResultsPage({searchQuery}: {searchQuery: (Promise<string> | string)}) {
   const searchParams = useSearchParams();
   
@@ -18,7 +20,6 @@ export default function ResultsPage({searchQuery}: {searchQuery: (Promise<string
   const [error, setError] = React.useState<any>(null);
 
   React.useEffect(() => {
-    const that: any = globalThis
     that.gtag?.("event", "page_view", {
       page_path: window.location.pathname + window.location.search,
     });
@@ -67,7 +68,7 @@ function SearchResults({ searchQuery, onError, router }: any) {
         const matchedData = dataService.search(query);
 
         if (matchedData.length === 0) {
-          globalThis.gtag?.("event", "search_performed", {
+          that.gtag?.("event", "search_performed", {
             search_term: query,
             result_status: "no_results",
             result_count: 0,
@@ -124,7 +125,7 @@ function SearchResults({ searchQuery, onError, router }: any) {
               prefetch={false}
               href={`/word/${encodeURIComponent(word.word)}`}
               onClick={() => {
-                globalThis.gtag?.("event", "word_clicked", {
+                that.gtag?.("event", "word_clicked", {
                   word: word.word,
                   source: "search_results",
                 });
@@ -194,7 +195,7 @@ function WordIndex({ groupedWords, router }: any) {
                     href={`/word/${encodeURIComponent(word)}`}
                     key={index}
                     onClick={() => {
-                      globalThis.gtag?.("event", "word_clicked", {
+                      that.gtag?.("event", "word_clicked", {
                         word: word,
                         source: "index",
                       });
