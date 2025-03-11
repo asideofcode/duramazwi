@@ -29,8 +29,8 @@ export async function generateMetadata({
   const id = decodeURIComponent(rawId);
   const wordDetails = dataService.getWordDetails(id);
 
-  const firstDefinition = wordDetails[0].meanings[0].definitions[0].definition;
   if (wordDetails && wordDetails.length > 0) {
+    const firstDefinition = wordDetails[0].meanings[0].definitions[0].definition;
     return createMetadata(
       {
         title: `Meaning of ${id} in Shona | Shona Dictionary`,
