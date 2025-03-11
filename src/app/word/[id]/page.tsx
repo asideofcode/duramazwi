@@ -4,7 +4,6 @@ import dataService from "@/services/dataService";
 import { createMetadata } from "@/utils/metadata";
 import { Courgette, Prata } from "next/font/google";
 import { Metadata } from "next/types";
-import { notFound } from 'next/navigation';
 
 const spaceMono = Courgette({
   subsets: ["latin"],
@@ -30,8 +29,8 @@ export async function generateMetadata({
   const id = decodeURIComponent(rawId);
   const wordDetails:any = dataService.getWordDetails(id);
 
-  const firstDefinition = wordDetails[0].meanings[0].definitions[0].definition;
   if (wordDetails && wordDetails.length > 0) {
+    const firstDefinition = wordDetails[0].meanings[0].definitions[0].definition;
     return createMetadata(
       {
         title: `Meaning of ${id} in Shona | Shona Dictionary`,
@@ -78,17 +77,16 @@ export default async function DetailsPage({
         </>
       ) : (
         // TODO: maybe just turn this into a search?
-        // <div className="flex flex-col my-32 text-center">
-        //   <Label size="h3" variant="t1">
-        //     Ndineurombo, we couldn't find a meaning for &quot;{id}&quot;.
-        //   </Label>
-        //   <Label variant="s1">
-        //     If it's a Shona word, try checking the spelling. If it's an English
-        //     word, we might not have its Shona equivalent yet. Alternatively,
-        //     head to the web for more information.
-        //   </Label>
-        // </div>
-        notFound()
+        <div className="flex flex-col my-32 text-center">
+          <Label size="h3" variant="t1">
+            Ndineurombo, we couldn't find a meaning for &quot;{id}&quot;.
+          </Label>
+          <Label variant="s1">
+            If it's a Shona word, try checking the spelling. If it's an English
+            word, we might not have its Shona equivalent yet. Alternatively,
+            head to the web for more information.
+          </Label>
+        </div>
       )}
     </div>
   );
