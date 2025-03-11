@@ -26,7 +26,7 @@ const createBaseMetadata = (): Metadata => {
     twitter: {
       // handle: "@duramazwi",
       // site: "@duramazwi",
-      cardType: "summary_large_image",
+      card: "summary_large_image"
     },
   };
 
