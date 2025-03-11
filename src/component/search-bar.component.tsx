@@ -22,9 +22,10 @@ export default function SearchBar({}:
   const pathname = usePathname();
 
 
-  const search = function (e: React.FormEvent<HTMLFormElement>) {
+  const search = function (e: React.MouseEvent<HTMLButtonElement> | React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    globalThis.gtag?.("event", "search_requested", {
+    const that: any = globalThis
+    that.gtag?.("event", "search_requested", {
       search_term: keyword,
     });
 
