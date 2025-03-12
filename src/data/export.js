@@ -11,16 +11,20 @@ const collectionName = "words";
 
 // Output file path
 const outputPath = path.join(__dirname, "./data.json");
+const exampleDataPath = path.join(__dirname, "./example_data.json");
 
 // Parse command-line arguments
 const args = process.argv.slice(2);
 let overwrite = null; // Default to null to detect if flag is explicitly set
+let devMode = false;
 
 args.forEach((arg) => {
   if (arg === "--overwrite=true" || arg === "--overwrite") {
     overwrite = true;
   } else if (arg === "--overwrite=false") {
     overwrite = false;
+  } else if (arg === "--dev") {
+    devMode = true;
   }
 });
 
@@ -36,7 +40,7 @@ async function prompt(question) {
 }
 
 (async function () {
-  console.log("Exporting data from MongoDB...");
+  console.log("Exporting data...");
 
   if (fs.existsSync(outputPath)) {
     if (overwrite === true) {
@@ -53,6 +57,18 @@ async function prompt(question) {
         return;
       }
     }
+  }
+
+  if (devMode && !uri) {
+    console.log("No MongoDB URI found. Running in development mode.");
+    console.log(`Copying ${exampleDataPath} to ${outputPath}...`);
+    try {
+      fs.copyFileSync(exampleDataPath, outputPath);
+      console.log("Data successfully copied.");
+    } catch (error) {
+      console.error("Error copying example data:", error);
+    }
+    return;
   }
 
   const client = new MongoClient(uri);
