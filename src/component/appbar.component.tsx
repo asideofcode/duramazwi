@@ -20,20 +20,23 @@ export default function Appbar() {
   const pathname = usePathname();
 
   const appBarItemClassList = 'h-6 w-6 cursor-pointer hover:text-blue-500 hover:scale-110 transition-transform duration-200';
-
+  const isActive = (route: string): string => pathname === route ? 'active text-blue-600' : ''
+  
   return (
     <div className={`${inter.className} `}>
       <nav className="flex place-content-between py-6 theme-text-h3 ">
         <div>
           <Link href="/">
             <SvgIcon
-              className={`${appBarItemClassList} ${pathname === '/' && 'active'}`}
+              className={`${appBarItemClassList} ${isActive('/')}`.trim()
+            }
               icon={"Book"} title="return to homepage"
             />
           </Link>
           <Link href="/suggest">
             <SvgIcon
-              className={`${appBarItemClassList} ${pathname === '/suggest' && 'active'}`}
+              className={`${appBarItemClassList} ${isActive('/suggest')}`.trim()
+            }
               icon={"Plus"} title="suggest a new word"
             />
           </Link>
