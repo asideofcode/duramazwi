@@ -8,22 +8,25 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 
-export default function ResultsPage() {
+const that: any = globalThis
+
+export default function ResultsPage({searchQuery}: {searchQuery: (Promise<string> | string)}) {
   const searchParams = useSearchParams();
-  const searchQuery = searchParams.get("q") || "";
+  
+  searchQuery = searchParams.get("q") || "";
 
   const router = useRouter();
-  const { setQuery } = useSearch();
+  const setQuery: any = useSearch();
   const [error, setError] = React.useState<any>(null);
 
   React.useEffect(() => {
-    globalThis.gtag?.("event", "page_view", {
+    that.gtag?.("event", "page_view", {
       page_path: window.location.pathname + window.location.search,
     });
   }, [searchQuery]);
 
   React.useEffect(() => {
-    setQuery(searchQuery);
+    if(setQuery instanceof Function) setQuery(searchQuery);
     setError(null);
   }, [searchQuery]);
 
@@ -65,7 +68,7 @@ function SearchResults({ searchQuery, onError, router }: any) {
         const matchedData = dataService.search(query);
 
         if (matchedData.length === 0) {
-          globalThis.gtag?.("event", "search_performed", {
+          that.gtag?.("event", "search_performed", {
             search_term: query,
             result_status: "no_results",
             result_count: 0,
@@ -78,7 +81,7 @@ function SearchResults({ searchQuery, onError, router }: any) {
           });
           setStatus("failed");
         } else {
-          globalThis.gtag?.("event", "search_performed", {
+          that.gtag?.("event", "search_performed", {
             search_term: query,
             result_status: "success",
             result_count: matchedData.length,
@@ -122,7 +125,7 @@ function SearchResults({ searchQuery, onError, router }: any) {
               prefetch={false}
               href={`/word/${encodeURIComponent(word.word)}`}
               onClick={() => {
-                globalThis.gtag?.("event", "word_clicked", {
+                that.gtag?.("event", "word_clicked", {
                   word: word.word,
                   source: "search_results",
                 });
@@ -136,16 +139,16 @@ function SearchResults({ searchQuery, onError, router }: any) {
       </ul>
     </>
   ) : (
-    <WordIndex groupedWords={dataService.getAllWords()} router={router} />
+    <WordIndex groupedWords={dataService.getAllWords()} />
   );
 }
 
-function WordIndex({ groupedWords, router }: any) {
+function WordIndex({ groupedWords }: { groupedWords: string[] }) {
   const groups = React.useMemo(() => {
     const sortedWords = groupedWords;
 
-    const groupByFirstLetter = {};
-    sortedWords.forEach((word) => {
+    const groupByFirstLetter:any = {};
+    sortedWords.forEach((word:string) => {
       const firstLetter = word[0].toUpperCase();
       if (!groupByFirstLetter[firstLetter]) {
         groupByFirstLetter[firstLetter] = [];
@@ -180,19 +183,19 @@ function WordIndex({ groupedWords, router }: any) {
 
       <div className="my-8 p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
         <div className="space-y-6">
-          {Object.entries(groups).map(([letter, words]) => (
+          {Object.entries(groups).map(([letter, words]:any) => (
             <div key={letter}>
               <h3 className="text-xl font-bold text-gray-700 dark:text-gray-300 mb-4">
                 {letter.toUpperCase()}
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                {words.map((word, index) => (
+                {words.map((word:string, index:number) => (
                   <Link
                     prefetch={false}
                     href={`/word/${encodeURIComponent(word)}`}
                     key={index}
                     onClick={() => {
-                      globalThis.gtag?.("event", "word_clicked", {
+                      that.gtag?.("event", "word_clicked", {
                         word: word,
                         source: "index",
                       });

@@ -4,7 +4,7 @@ import Play from "./play-pause.icon";
 import PlusIcon from "./plus.icon";
 import SearchIcon from "./search.icon";
 import ToggleIcon from "./toggle.icon";
-type Icons = "Book" | "Toggle" | "Search" | "LightDark" | "Play";
+type Icons = "Book" | "Toggle" | "Search" | "LightDark" | "Play" | "Plus";
 
 export type SvgIconSize =
   | 1
@@ -47,6 +47,7 @@ type SvgIconButtonProps = {
   onClick?: (e: any) => void;
   size?: SvgIconSize;
   variant?: any;
+  title?: string;
 };
 
 const SvgIcon = ({
@@ -54,10 +55,11 @@ const SvgIcon = ({
   className,
   size = 5,
   variant,
+  title,
   onClick,
 }: SvgIconButtonProps) => {
   return (
-    <span onClick={onClick} style={{ display: "inline-block" }}>
+    <span onClick={onClick} style={{ display: "inline-block" }} title={title}>
       {getSVGIcon(icon, size, className, variant)}
     </span>
   );

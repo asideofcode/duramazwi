@@ -27,7 +27,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id: rawId } = await params;
   const id = decodeURIComponent(rawId);
-  const wordDetails = dataService.getWordDetails(id);
+  const wordDetails:any = dataService.getWordDetails(id);
 
   if (wordDetails && wordDetails.length > 0) {
     const firstDefinition = wordDetails[0].meanings[0].definitions[0].definition;
@@ -61,7 +61,7 @@ export default async function DetailsPage({
 }) {
   const { id: rawId } = await params;
   const id = decodeURIComponent(rawId);
-  const wordDetails = dataService.getWordDetails(id);
+  const wordDetails:any = dataService.getWordDetails(id);
 
   return (
     <div>
@@ -114,7 +114,7 @@ function Word({ word }: any) {
   );
 }
 
-function Meanings({ meanings }) {
+function Meanings({ meanings }: {meanings: string[]}) {
   return meanings.map((meaning: any, index: number) => {
     const { partOfSpeech } = meaning;
     return (

@@ -1,9 +1,8 @@
 import { MetadataRoute } from 'next';
 import data from '@/data/data.json';
 
-
 export default function sitemap(): MetadataRoute.Sitemap {
-  const words = data.map((word) => ({
+  const words: MetadataRoute.Sitemap = data.map((word) => ({
     url: `https://dictionary.chishona.org/word/${encodeURIComponent(word.word)}`,
     lastModified: new Date().toISOString(),
     changeFrequency: 'daily',

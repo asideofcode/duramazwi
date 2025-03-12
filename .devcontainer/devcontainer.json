@@ -19,7 +19,7 @@
 					"zsh": {
 						"path": "/bin/zsh",
 						"overrideName": true
-					},
+					}
 				}
 			},
 			"extensions": [

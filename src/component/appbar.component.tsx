@@ -26,19 +26,20 @@ export default function Appbar() {
           <Link href="/">
             <SvgIcon
               className="h-6 w-6 cursor-pointer hover:text-blue-500 hover:scale-110 transition-transform duration-200"
-              icon={"Book"}
+              icon={"Book"} title="return to homepage"
             />
           </Link>
           <Link href="/suggest">
             <SvgIcon
               className="h-6 w-6 cursor-pointer hover:text-blue-500 hover:scale-110 transition-transform duration-200"
-              icon={"Plus"}
+              icon={"Plus"} title="suggest a new word"
             />
           </Link>
         </div>
         <div className="flex place-content-center gap-2 ">
           <button
             className="flex place-content-center"
+            title="toggle mode"
             onClick={() => {
               toggleTheme();
             }}
