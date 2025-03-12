@@ -19,7 +19,7 @@ export default function Appbar() {
   const { toggleTheme, darkMode } = useTheme();
   const pathname = usePathname();
 
-  const navBarItemClassList = 'h-6 w-6 cursor-pointer hover:text-blue-500 hover:scale-110 transition-transform duration-200';
+  const appBarItemClassList = 'h-6 w-6 cursor-pointer hover:text-blue-500 hover:scale-110 transition-transform duration-200';
 
   return (
     <div className={`${inter.className} `}>
@@ -27,13 +27,13 @@ export default function Appbar() {
         <div>
           <Link href="/">
             <SvgIcon
-              className={`${navBarItemClassList} ${pathname === '/' && 'active'}`}
+              className={`${appBarItemClassList} ${pathname === '/' && 'active'}`}
               icon={"Book"} title="return to homepage"
             />
           </Link>
           <Link href="/suggest">
             <SvgIcon
-              className={`${navBarItemClassList} ${pathname === '/suggest' && 'active'}`}
+              className={`${appBarItemClassList} ${pathname === '/suggest' && 'active'}`}
               icon={"Plus"} title="suggest a new word"
             />
           </Link>
@@ -48,7 +48,7 @@ export default function Appbar() {
           >
             <div className="flex items-center">
               <SvgIcon
-                className={navBarItemClassList}
+                className={appBarItemClassList}
                 variant={!darkMode ? "dark" : "light"}
                 icon={"LightDark"}
               />
