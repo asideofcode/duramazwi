@@ -57,16 +57,17 @@ export default function SearchBar({}:
           }}
           value={keyword}
         />
-        {status === "loading" ? (
-          <Loading className="h-6 w-6" />
-        ) : (
-          <button className="h-6 w-6 theme-text-sub1" title="search word" onClick={search}>
-            <SvgIcon
-              className="h-6 w-6 cursor-pointer hover:text-blue-500 hover:scale-110 transition-transform duration-200"
-              icon={"Search"}
-            />
-          </button>
-        )}
+        {
+          status === "loading" 
+            ?
+          <Loading className="h-6 w-6"/>
+            : 
+          (
+            <button className="h-6 w-6 theme-text-sub1" title="search word" onClick={search}>
+              <SvgIcon icon={"Search"}/>
+            </button>
+          )
+        }
       </div>
     </form>
     <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-700"></hr>
