@@ -19,21 +19,19 @@ export default function Appbar() {
   const { toggleTheme, darkMode } = useTheme();
   const pathname = usePathname();
 
-  const isActive = (route: string): boolean => pathname === route 
-  
   return (
     <div className={`${inter.className}`}>
       <nav className="flex place-content-between py-6 theme-text-h3 ">
         <div>
           <Link href="/">
             <SvgIcon
-              className={isActive('/')}
+              className={pathname === '/'}
               icon={"Book"} title="return to homepage"
             />
           </Link>
           <Link href="/suggest">
             <SvgIcon
-              className={isActive('/suggest')}
+              className={pathname === '/suggest'}
               icon={"Plus"} title="suggest a new word"
             />
           </Link>
