@@ -8,7 +8,10 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 
-const that: any = globalThis
+type Error = {
+  message: string;
+  resolution: string;
+};
 
 export default function ResultsPage({searchQuery}: {searchQuery: (Promise<string> | string)}) {
   const searchParams = useSearchParams();
@@ -16,11 +19,11 @@ export default function ResultsPage({searchQuery}: {searchQuery: (Promise<string
   searchQuery = searchParams.get("q") || "";
 
   const router = useRouter();
-  const setQuery: any = useSearch();
-  const [error, setError] = React.useState<any>(null);
+  const setQuery = useSearch();
+  const [error, setError] = React.useState<Error | null>(null);
 
   React.useEffect(() => {
-    that.gtag?.("event", "page_view", {
+    globalThis.gtag?.("event", "page_view", {
       page_path: window.location.pathname + window.location.search,
     });
   }, [searchQuery]);
@@ -68,7 +71,7 @@ function SearchResults({ searchQuery, onError, router }: any) {
         const matchedData = dataService.search(query);
 
         if (matchedData.length === 0) {
-          that.gtag?.("event", "search_performed", {
+          globalThis.gtag?.("event", "search_performed", {
             search_term: query,
             result_status: "no_results",
             result_count: 0,
@@ -81,7 +84,7 @@ function SearchResults({ searchQuery, onError, router }: any) {
           });
           setStatus("failed");
         } else {
-          that.gtag?.("event", "search_performed", {
+          globalThis.gtag?.("event", "search_performed", {
             search_term: query,
             result_status: "success",
             result_count: matchedData.length,
@@ -125,7 +128,7 @@ function SearchResults({ searchQuery, onError, router }: any) {
               prefetch={false}
               href={`/word/${encodeURIComponent(word.word)}`}
               onClick={() => {
-                that.gtag?.("event", "word_clicked", {
+                globalThis.gtag?.("event", "word_clicked", {
                   word: word.word,
                   source: "search_results",
                 });
@@ -195,7 +198,7 @@ function WordIndex({ groupedWords }: { groupedWords: string[] }) {
                     href={`/word/${encodeURIComponent(word)}`}
                     key={index}
                     onClick={() => {
-                      that.gtag?.("event", "word_clicked", {
+                      globalThis.gtag?.("event", "word_clicked", {
                         word: word,
                         source: "index",
                       });

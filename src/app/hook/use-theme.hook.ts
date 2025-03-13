@@ -31,8 +31,7 @@ export function useTheme() {
     storage.setValue(newTheme);
     applyTheme(newTheme);
 
-    const that:any = globalThis
-    that.gtag?.("event", "theme_toggle", {
+    globalThis.gtag?.("event", "theme_toggle", {
       theme: newTheme,
     });
   };
