@@ -41,7 +41,7 @@ export type SvgIconProps<Config> = {
   config?: Config;
 };
 
-type SvgIconButtonProps = {
+export type SvgIconButtonProps = {
   icon: Icons;
   className?: string;
   onClick?: (e: any) => void;
@@ -50,7 +50,7 @@ type SvgIconButtonProps = {
   title?: string;
 };
 
-const SvgIcon = ({
+export const SvgIcon = ({
   icon,
   className,
   size = 5,
@@ -59,8 +59,12 @@ const SvgIcon = ({
   onClick,
 }: SvgIconButtonProps) => {
   return (
-    <span onClick={onClick} style={{ display: "inline-block" }} title={title}>
-      {getSVGIcon(icon, size, className, variant)}
+    <span onClick={onClick} title={title}>
+      {
+        getSVGIcon(
+          icon, size, className, variant
+        )
+      }
     </span>
   );
 };
