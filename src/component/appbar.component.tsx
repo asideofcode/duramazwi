@@ -12,8 +12,6 @@ const inter = Inter({
   subsets: ["latin"],
   display: "swap",
 });
-
-const defaultSvgIconClassList = 'inline-block h-6 w-6 cursor-pointer hover:text-blue-500 hover:scale-110 transition-transform duration-200';
 /**
  * Appbar component
  */
@@ -27,14 +25,12 @@ export default function Appbar() {
         <div>
           <Link href="/">
             <StyledAppBarSvgIcon
-              className={defaultSvgIconClassList} 
               active={pathname === '/'}
               icon={"Book"} title="Return to homepage"
             />
           </Link>
           <Link href="/suggest">
             <StyledAppBarSvgIcon
-              className={defaultSvgIconClassList}
               active={pathname === '/suggest'}
               icon={"Plus"} title="Suggest a new word"
             />
@@ -48,7 +44,7 @@ export default function Appbar() {
           >
             <div className="flex items-center">
               <SvgIcon
-                className={defaultSvgIconClassList} 
+                className='inline-block h-6 w-6 cursor-pointer hover:text-blue-500 hover:scale-110 transition-transform duration-200'
                 variant={!darkMode ? "dark" : "light"}
                 icon={"LightDark"}
               />
