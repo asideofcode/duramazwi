@@ -24,8 +24,8 @@ export default function SearchBar({}:
 
   const search = function (e: React.MouseEvent<HTMLButtonElement> | React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const that: any = globalThis
-    that.gtag?.("event", "search_requested", {
+
+    globalThis.gtag?.("event", "search_requested", {
       search_term: keyword,
     });
 
