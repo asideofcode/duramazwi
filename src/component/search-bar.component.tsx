@@ -63,7 +63,7 @@ export default function SearchBar({}:
           <Loading className="h-6 w-6"/>
             : 
           (
-            <button className="h-6 w-6 theme-text-sub1" title="search word" onClick={search}>
+            <button className="h-6 w-6 theme-text-sub1" title="Search word" onClick={search}>
               <SvgIcon icon={"Search"}/>
             </button>
           )

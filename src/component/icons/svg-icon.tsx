@@ -5,7 +5,6 @@ import PlusIcon from "./plus.icon";
 import SearchIcon from "./search.icon";
 import ToggleIcon from "./toggle.icon";
 type Icons = "Book" | "Toggle" | "Search" | "LightDark" | "Play" | "Plus";
-import cx from "classnames";
 
 export type SvgIconSize =
   | 1
@@ -42,16 +41,16 @@ export type SvgIconProps<Config> = {
   config?: Config;
 };
 
-type SvgIconButtonProps = {
+export type SvgIconButtonProps = {
   icon: Icons;
-  className?: boolean;
+  className?: string;
   onClick?: (e: any) => void;
   size?: SvgIconSize;
   variant?: any;
   title?: string;
 };
 
-const SvgIcon = ({
+export const SvgIcon = ({
   icon,
   className,
   size = 5,
@@ -63,9 +62,7 @@ const SvgIcon = ({
     <span onClick={onClick} title={title}>
       {
         getSVGIcon(
-          icon, size, 
-          cx('inline-block h-6 w-6 cursor-pointer hover:text-blue-500 hover:scale-110 transition-transform duration-200', {'text-blue-600': className}), 
-          variant
+          icon, size, className, variant
         )
       }
     </span>
