@@ -2,7 +2,7 @@
 
 import { Inter } from "next/font/google";
 
-import { useTheme } from "@/app/hook/use-theme.hook";
+import { useTheme } from "@/hooks/use-theme.hook";
 import SvgIcon from "@/component/icons/svg-icon";
 import StyledAppBarSvgIcon from './icons/styled-appbar-svg-icon';
 import Link from "next/link";

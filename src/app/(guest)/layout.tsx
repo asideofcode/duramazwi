@@ -1,8 +1,9 @@
+import "@/app/globals.css";
+
 import AnalyticsWrapper from "@/component/analytics.component";
 import Appbar from "@/component/appbar.component";
 import { Inter, Source_Serif_4 } from "next/font/google";
 import Script from "next/script";
-import "./globals.css";
 import { SearchProvider } from "@/context/search-context";
 import { createMetadata } from "@/utils/metadata";
 
@@ -20,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body className={"bg-default min-h-screen"}>
         <main className="max-w-3xl mx-auto px-4 sm:px-0">
           <Appbar />
