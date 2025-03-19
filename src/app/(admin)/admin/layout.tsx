@@ -1,8 +1,7 @@
 import "@/app/globals.css";
 
 import { ReactNode } from 'react';
-import { auth } from '@/auth';
-import Link from 'next/link';
+import { auth, signOut } from '@/auth';
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
   const session = await auth()
@@ -19,9 +18,16 @@ export default async function AdminLayout({ children }: { children: ReactNode })
               <p>
                 Logged in as {session.user?.name || 'Unknown User'}
               </p>
-              <Link className="text-blue-600" href="/api/auth/signout">
-                Sign out
-              </Link>
+              <form
+                action={async () => {
+                  "use server"
+                  await signOut()
+                }}
+              >
+                <button className="p-0 text-blue-600">
+                  Sign Out
+                </button>
+    </form>
             </div>
           ) : (
             <p className="mb-4 text-red-600">Not authenticated</p>
