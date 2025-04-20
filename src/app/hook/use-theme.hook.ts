@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import useLocalStorage from "./use-local-storage.hook";
 
 export function useTheme() {
@@ -20,21 +20,40 @@ export function useTheme() {
     }
   };
 
+    // Toggle theme and persist to storage
+    const updateTheme = useCallback((newTheme: string) => {
+      storage.setValue(newTheme);
+      applyTheme(newTheme);
+  
+      globalThis.gtag?.("event", "theme_toggle", {
+        theme: newTheme,
+      });
+    }, [storage]);
+
+    const toggleTheme = () => {
+      const newTheme = storage.value === "light" ? "dark" : "light";
+      updateTheme(newTheme);
+    };
+  
+  
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+  
+    const handleChange = (e: MediaQueryListEvent) => {
+      if (!localStorage.getItem('theme')) {
+        applyTheme(e.matches ? "dark" : "light");
+      }
+    };
+  
+    media.addEventListener('change', handleChange);
+    return () => media.removeEventListener('change', handleChange);
+  }, [updateTheme]);
+  
+
   // Initialize theme on mount
   useEffect(() => {
     applyTheme(storage.value);
   }, [storage.value]);
-
-  // Toggle theme and persist to storage
-  const toggleTheme = () => {
-    const newTheme = storage.value === "light" ? "dark" : "light";
-    storage.setValue(newTheme);
-    applyTheme(newTheme);
-
-    globalThis.gtag?.("event", "theme_toggle", {
-      theme: newTheme,
-    });
-  };
 
   return { toggleTheme, darkMode };
 }

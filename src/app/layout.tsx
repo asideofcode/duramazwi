@@ -14,13 +14,36 @@ const nunitoSans = Source_Serif_4({
 
 export const metadata = createMetadata({});
 
+const themeScript = (function () {
+  try {
+    const stored = localStorage.getItem('theme');
+    const system = window?.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    const theme = stored ?? system;
+
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (_) { /* ignore */ }
+}).toString()
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
+      <head>
+        <script
+          id="theme-script"
+          dangerouslySetInnerHTML={{
+            __html: `(${themeScript})();`,
+          }}
+        />
+      </head>
       <body className={"bg-default min-h-screen"}>
         <main className="max-w-3xl mx-auto px-4 sm:px-0">
           <Appbar />
