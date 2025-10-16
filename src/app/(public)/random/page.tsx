@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation';
 import dataService from "@/services/dataService";
 
+export const dynamic = 'force-dynamic';
+
 interface DictionaryEntry {
   word: string;
   meanings: any[];

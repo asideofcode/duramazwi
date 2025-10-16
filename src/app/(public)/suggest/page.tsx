@@ -2,8 +2,7 @@ import SearchBar from "@/component/search-bar.component";
 import SuggestPage from "./SuggestPage";
 import { createMetadata } from "@/utils/metadata";
 
-export const dynamic = "force-static";
-export const revalidate = false; // Forces static rendering
+export const dynamic = "force-dynamic";
 
 export const metadata = createMetadata({
   title: "Make a suggestion | Shona Dictionary",
