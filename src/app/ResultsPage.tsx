@@ -7,6 +7,7 @@ import dataService from "@/services/dataService";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
+import { DictionaryEntryCompact, DictionaryEntry } from "@/components/dictionary-entry-clean";
 
 type Error = {
   message: string;
@@ -113,34 +114,30 @@ function SearchResults({ searchQuery, onError, router }: any) {
   }
 
   return searchResults ? (
-    <>
+    <div className="max-w-4xl mx-auto px-4">
       <h1 className="theme-text-h1 text-xl font-bold mb-4">Search results</h1>
-      <p className="text-base text-gray-600 dark:text-gray-400 mb-4">
+      <p className="text-base text-gray-600 dark:text-gray-400 mb-6">
         Here's what we found for "{searchQuery}". Click on a word to view more.
       </p>
-      <ul className="mt-6 flex flex-col  list-disc list-outside pl-4">
-        {searchResults.map((word: any, index: number) => (
-          <li
+      <div className="space-y-6">
+        {searchResults.map((word: DictionaryEntry, index: number) => (
+          <Link
             key={index}
-            className="cursor-pointer text-blue-600 hover:underline"
+            prefetch={false}
+            href={`/word/${encodeURIComponent(word.word)}`}
+            onClick={() => {
+              globalThis.gtag?.("event", "word_clicked", {
+                word: word.word,
+                source: "search_results",
+              });
+            }}
+            className="block p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500"
           >
-            <Link
-              prefetch={false}
-              href={`/word/${encodeURIComponent(word.word)}`}
-              onClick={() => {
-                globalThis.gtag?.("event", "word_clicked", {
-                  word: word.word,
-                  source: "search_results",
-                });
-              }}
-              className="text-lg font-medium text-blue-600 hover:text-blue-400 transition-colors duration-200 focus:outline-none"
-            >
-              {word.word}
-            </Link>
-          </li>
+            <DictionaryEntryCompact entry={word} />
+          </Link>
         ))}
-      </ul>
-    </>
+      </div>
+    </div>
   ) : (
     <WordIndex groupedWords={dataService.getAllWords()} />
   );

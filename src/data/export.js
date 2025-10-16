@@ -7,7 +7,7 @@ const { MongoClient } = require("mongodb");
 // MongoDB connection URI and database/collection names
 const uri = process.env.MONGODB_URI; // Ensure this is set in .env.local
 const dbName = "chishona";
-const collectionName = "words";
+const collectionName = "words_new_schema"; // Updated to use new schema collection
 
 // Output file path
 const outputPath = path.join(__dirname, "./data.json");

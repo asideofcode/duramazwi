@@ -45,7 +45,7 @@ export default function RootLayout({
         />
       </head>
       <body className={"bg-default min-h-screen"}>
-        <main className="max-w-3xl mx-auto px-4 sm:px-0">
+        <main className="max-w-3xl mx-auto px-4">
           <Appbar />
           <div className="mb-6">
             <div

@@ -4,6 +4,7 @@ import dataService from "@/services/dataService";
 import { createMetadata } from "@/utils/metadata";
 import { Courgette, Prata } from "next/font/google";
 import { Metadata } from "next/types";
+import DictionaryEntryClean, { DictionaryEntry } from "@/components/dictionary-entry-clean";
 
 const spaceMono = Courgette({
   subsets: ["latin"],
@@ -61,20 +62,19 @@ export default async function DetailsPage({
 }) {
   const { id: rawId } = await params;
   const id = decodeURIComponent(rawId);
-  const wordDetails:any = dataService.getWordDetails(id);
+  const wordDetails: DictionaryEntry[] | null = dataService.getWordDetails(id) as DictionaryEntry[] | null;
 
   return (
     <div>
       <SearchBar />
-      {wordDetails ? (
-        <>
-          <h1 className="theme-text-h1 text-xl font-bold mb-4">
-            Meaning of {id} in Shona
-          </h1>
-          {wordDetails.map((word: any, index: number) => (
-            <Word key={index} word={word} />
+      {wordDetails && wordDetails.length > 0 ? (
+        <div className="mt-8">
+          {wordDetails.map((word: DictionaryEntry, index: number) => (
+            <div key={index} className="mb-12">
+              <DictionaryEntryClean entry={word} />
+            </div>
           ))}
-        </>
+        </div>
       ) : (
         // TODO: maybe just turn this into a search?
         <div className="flex flex-col my-32 text-center">
@@ -92,74 +92,4 @@ export default async function DetailsPage({
   );
 }
 
-function Word({ word }: any) {
-  return (
-    <section className="flex flex-col my-11">
-      <div className="flex place-content-between items-center">
-        <div className="flex flex-col gap-1">
-          <Label
-            size="h1"
-            variant="t1"
-            className={`text-2xl first-letter:uppercase ${prata.className}`}
-          >
-            {word.meanings[0].partOfSpeech == "verb" ? "-" : ""}
-            {word.word}
-          </Label>
-        </div>
-      </div>
-      <div className="flex flex-col">
-        <Meanings meanings={word.meanings} />
-      </div>
-    </section>
-  );
-}
-
-function Meanings({ meanings }: {meanings: string[]}) {
-  return meanings.map((meaning: any, index: number) => {
-    const { partOfSpeech } = meaning;
-    return (
-      <div key={index}>
-        <div className="flex gap-4 items-center my-4">
-          <Label size="h3" variant="t3" className={spaceMono.className}>
-            {partOfSpeech}
-          </Label>
-          <div className="flex-1 border-b h-1 " />
-        </div>
-        <Definition definitions={meaning.definitions} />
-      </div>
-    );
-  });
-}
-
-function Definition({ definitions }: any) {
-  return (
-    <div className="flex flex-col gap-2">
-      <Label variant="s1">Meaning </Label>
-      <div className="flex flex-col gap-1">
-        {definitions.map((item: any, index: number) => (
-          <ul
-            key={index}
-            className="flex flex-col  list-disc list-outside pl-4"
-          >
-            <li key={index}>
-              <Label size="h3" variant="t3">
-                {item.definition}
-              </Label>
-
-              {item.example && (
-                <div className="ml-4">
-                  <Label size="body" variant="s2">
-                    Example:{" "}
-                  </Label>
-                  <Label size="body" variant="s2" className="italic">
-                    {item.example}
-                  </Label>
-                </div>
-              )}
-            </li>
-          </ul>
-        ))}
-      </div>
-    </div>
-  );
-}
+// Old components removed - now using DictionaryEntryClean component

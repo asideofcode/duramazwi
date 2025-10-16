@@ -35,15 +35,17 @@ try {
   process.exit(1);
 }
 
-// Flatten and process the data
-const allMyData = allMyDataRaw.flat();
-allMyData.forEach((item) => {
-  item.meanings.forEach((meaning) => {
-    if (meaning.definitions[0]) {
-      meaning.definitions[0].example = meaning.example || null;
-    }
-  });
-});
+// Process the data (should already be in new schema format)
+const allMyData = Array.isArray(allMyDataRaw) ? allMyDataRaw : [allMyDataRaw];
+
+console.log(`📊 Loaded ${allMyData.length} entries from ${importFilePath}`);
+
+// Validate data format
+const sampleEntry = allMyData[0];
+if (sampleEntry && !sampleEntry.meanings) {
+  console.error("❌ Data appears to be in old format. Please use migrated data with new schema.");
+  process.exit(1);
+}
 
 // MongoDB connection URI from environment variable
 const uri = process.env.MONGODB_URI; // Make sure this is set in .env.local
@@ -55,7 +57,7 @@ if (!uri) {
 
 // MongoDB database and collection name
 const dbName = "chishona";
-const collectionName = "words";
+const collectionName = "words_new_schema"; // Updated to use new schema collection
 
 (async function () {
   const client = new MongoClient(uri);
@@ -68,11 +70,49 @@ const collectionName = "words";
     const db = client.db(dbName);
     const collection = db.collection(collectionName);
 
-    // Insert data into the collection
-    console.log("Inserting data into the collection...");
-    const result = await collection.insertMany(allMyData);
+    // Upsert data into the collection based on _id
+    console.log("🔄 Upserting data into the collection...");
+    
+    let insertedCount = 0;
+    let updatedCount = 0;
+    let errorCount = 0;
+    
+    // Process in batches for better performance
+    const BATCH_SIZE = 100;
+    
+    for (let i = 0; i < allMyData.length; i += BATCH_SIZE) {
+      const batch = allMyData.slice(i, i + BATCH_SIZE);
+      
+      try {
+        // Use bulkWrite for efficient upserts
+        const bulkOps = batch.map(doc => ({
+          replaceOne: {
+            filter: { _id: doc._id },
+            replacement: doc,
+            upsert: true
+          }
+        }));
+        
+        const result = await collection.bulkWrite(bulkOps);
+        
+        insertedCount += result.upsertedCount;
+        updatedCount += result.modifiedCount;
+        
+        console.log(`📈 Progress: ${Math.min(i + BATCH_SIZE, allMyData.length)}/${allMyData.length} (${Math.round(Math.min(i + BATCH_SIZE, allMyData.length)/allMyData.length*100)}%)`);
+        
+      } catch (error) {
+        console.error(`❌ Error processing batch ${i}-${i + BATCH_SIZE}:`, error.message);
+        errorCount += batch.length;
+      }
+    }
 
-    console.log(`Inserted ${result.insertedCount} documents into the collection.`);
+    console.log("\n🎉 Seeding completed!");
+    console.log(`✅ Inserted: ${insertedCount} new documents`);
+    console.log(`🔄 Updated: ${updatedCount} existing documents`);
+    if (errorCount > 0) {
+      console.log(`❌ Errors: ${errorCount} documents failed`);
+    }
+    console.log(`📊 Total processed: ${allMyData.length} documents`);
   } catch (err) {
     console.error("Error occurred while inserting data:", err);
   } finally {

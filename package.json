@@ -3,7 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "export-data": "node ./src/data/export.js",
+    "backup-data": "node ./src/data/backup-data.js",
+    "export-data": "node ./src/data/backup-data.js && node ./src/data/export.js",
+    "migrate-schema": "node ./src/data/migrate-to-new-schema.js",
+    "migrate-schema:dry-run": "node ./src/data/migrate-to-new-schema.js --dry-run",
+    "seed": "node ./src/data/seed.js ./src/data/data.json",
+    "seed:custom": "node ./src/data/seed.js",
     "dev": "npm run export-data -- --overwrite=false --dev && next dev --turbopack",
     "build": "npm run export-data -- --overwrite && next build",
     "start": "next start",
@@ -16,9 +21,10 @@
     "fuse.js": "^7.0.0",
     "mongodb": "^6.12.0",
     "next": "15.1.5",
-    "openai": "^4.79.1",
+    "openai": "^4.104.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
