@@ -7,7 +7,22 @@ const nextConfig: NextConfig = {
   },
   typescript: {
     ignoreBuildErrors: true, // Skip TypeScript errors during builds
-  }
+  },
+  // Exclude admin routes in production builds
+  ...(process.env.NODE_ENV === 'production' && {
+    async rewrites() {
+      return {
+        beforeFiles: [
+          {
+            source: '/admin/:path*',
+            destination: '/404',
+          },
+        ],
+        afterFiles: [],
+        fallback: [],
+      };
+    },
+  }),
 };
 
 export default nextConfig;

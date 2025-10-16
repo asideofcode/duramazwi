@@ -2,21 +2,21 @@ import Label from "@/component/atom/label.component";
 import SearchBar from "@/component/search-bar.component";
 import dataService from "@/services/dataService";
 import { createMetadata } from "@/utils/metadata";
-import { Courgette, Prata } from "next/font/google";
+// import { Courgette, Prata } from "next/font/google";
 import { Metadata } from "next/types";
 import DictionaryEntryClean, { DictionaryEntry } from "@/components/dictionary-entry-clean";
 
-const spaceMono = Courgette({
-  subsets: ["latin"],
-  display: "swap",
-  weight: "400",
-});
+// const spaceMono = Courgette({
+//   subsets: ["latin"],
+//   display: "swap",
+//   weight: "400",
+// });
 
-const prata = Prata({
-  subsets: ["latin"],
-  display: "swap",
-  weight: "400",
-});
+// const prata = Prata({
+//   subsets: ["latin"],
+//   display: "swap",
+//   weight: "400",
+// });
 
 // TODO: use generateStaticParams and maybe make this static somehow ?
 // See https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes#generating-static-params
@@ -66,7 +66,9 @@ export default async function DetailsPage({
 
   return (
     <div>
-      <SearchBar />
+      <div id="search-bar">
+        <SearchBar />
+      </div>
       {wordDetails && wordDetails.length > 0 ? (
         <div className="mt-8">
           {wordDetails.map((word: DictionaryEntry, index: number) => (
@@ -79,7 +81,7 @@ export default async function DetailsPage({
         // TODO: maybe just turn this into a search?
         <div className="flex flex-col my-32 text-center">
           <Label size="h3" variant="t1">
-            Ndineurombo, we couldn't find a meaning for &quot;{id}&quot;.
+            Tineurombo, we couldn't find a meaning for &quot;{id}&quot;.
           </Label>
           <Label variant="s1">
             If it's a Shona word, try checking the spelling. If it's an English

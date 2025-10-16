@@ -49,6 +49,16 @@ const dataService = {
     return [...new Set(allMyData.map((item) => item.word.toLowerCase()))]
       .sort((a, b) => a.localeCompare(b));
   },
+
+  /**
+   * Get a random word from the dictionary.
+   * @returns {Object|null} - A random dictionary entry or null if no data.
+   */
+  getRandomWord() {
+    if (allMyData.length === 0) return null;
+    const randomIndex = Math.floor(Math.random() * allMyData.length);
+    return allMyData[randomIndex];
+  },
 };
 
 export default dataService;

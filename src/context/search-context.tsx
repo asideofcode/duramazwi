@@ -1,6 +1,7 @@
 "use client";
 
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
 type Status = "idle" | "loading" | "success" | "failed";
 type SetStatus = React.Dispatch<React.SetStateAction<Status>>;
@@ -17,6 +18,13 @@ const SearchContext = createContext<SearchContextValue | null>(null);
 export function SearchProvider({ children }: { children: React.ReactNode }) {
   const [status, setStatus] = useState<Status>("idle");
   const [query, setQuery] = useState<string>("");
+  const searchParams = useSearchParams();
+
+  // Sync query with URL parameters
+  useEffect(() => {
+    const urlQuery = searchParams.get("q") || "";
+    setQuery(urlQuery);
+  }, [searchParams]);
 
   return (
     <SearchContext.Provider value={{ status, setStatus, query, setQuery }}>

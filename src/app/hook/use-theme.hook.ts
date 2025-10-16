@@ -1,59 +1,34 @@
 "use client";
 
-import React, { useCallback, useEffect } from "react";
-import useLocalStorage from "./use-local-storage.hook";
+import React, { useEffect, useState } from "react";
 
 export function useTheme() {
-  const storage = useLocalStorage(
-    "theme",
-    globalThis.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light"
-  );
-  const [darkMode, setDarkMode] = React.useState(true);
+  const [darkMode, setDarkMode] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
 
-  const applyTheme = (theme: string) => {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-      setDarkMode(true);
-    } else {
-      document.documentElement.classList.remove("dark");
-      setDarkMode(false);
-    }
-  };
-
-    // Toggle theme and persist to storage
-    const updateTheme = useCallback((newTheme: string) => {
-      storage.setValue(newTheme);
-      applyTheme(newTheme);
-  
-      globalThis.gtag?.("event", "theme_toggle", {
-        theme: newTheme,
-      });
-    }, [storage]);
-
-    const toggleTheme = () => {
-      const newTheme = storage.value === "light" ? "dark" : "light";
-      updateTheme(newTheme);
-    };
-  
-  
+  // Just track system preference for UI state - Tailwind handles the actual theming
   useEffect(() => {
     const media = window.matchMedia('(prefers-color-scheme: dark)');
-  
-    const handleChange = (e: MediaQueryListEvent) => {
-      if (!localStorage.getItem('theme')) {
-        applyTheme(e.matches ? "dark" : "light");
-      }
+    
+    const updateDarkMode = (e: MediaQueryList | MediaQueryListEvent) => {
+      setDarkMode(e.matches);
     };
-  
-    media.addEventListener('change', handleChange);
-    return () => media.removeEventListener('change', handleChange);
-  }, [updateTheme]);
-  
 
-  // Initialize theme on mount
-  useEffect(() => {
-    applyTheme(storage.value);
-  }, [storage.value]);
+    // Set initial state
+    updateDarkMode(media);
+    setIsHydrated(true);
 
-  return { toggleTheme, darkMode };
+    // Listen for changes
+    media.addEventListener('change', updateDarkMode);
+    return () => media.removeEventListener('change', updateDarkMode);
+  }, []);
+
+  // No-op toggle for now - could be used for session-only overrides if needed
+  const toggleTheme = () => {
+    globalThis.gtag?.("event", "theme_toggle", {
+      theme: darkMode ? "light" : "dark",
+    });
+  };
+
+  return { toggleTheme, darkMode, isHydrated };
 }

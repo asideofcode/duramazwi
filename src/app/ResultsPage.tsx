@@ -2,8 +2,8 @@
 
 import Label from "@/component/atom/label.component";
 import Loading from "@/component/atom/loader.component";
-import { useSearch } from "@/context/search-context";
 import dataService from "@/services/dataService";
+import { SearchResultsSkeleton } from "@/component/skeleton-loader.component";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
@@ -15,24 +15,24 @@ type Error = {
 };
 
 export default function ResultsPage({searchQuery}: {searchQuery: (Promise<string> | string)}) {
-  const searchParams = useSearchParams();
-  
-  searchQuery = searchParams.get("q") || "";
-
   const router = useRouter();
-  const setQuery = useSearch();
+  const searchParams = useSearchParams();
   const [error, setError] = React.useState<Error | null>(null);
+
+  // Get query directly from URL parameters
+  const actualQuery = searchParams.get("q") || "";
+  
+  console.log("ResultsPage actualQuery:", actualQuery); // Debug log
 
   React.useEffect(() => {
     globalThis.gtag?.("event", "page_view", {
       page_path: window.location.pathname + window.location.search,
     });
-  }, [searchQuery]);
+  }, [actualQuery]);
 
   React.useEffect(() => {
-    if(setQuery instanceof Function) setQuery(searchQuery);
     setError(null);
-  }, [searchQuery]);
+  }, [actualQuery]);
 
   return error ? (
     <div className="flex flex-col my-32 text-center">
@@ -43,7 +43,7 @@ export default function ResultsPage({searchQuery}: {searchQuery: (Promise<string
     </div>
   ) : (
     <SearchResults
-      searchQuery={searchQuery}
+      searchQuery={actualQuery}
       onError={setError}
       router={router}
     />
@@ -51,8 +51,24 @@ export default function ResultsPage({searchQuery}: {searchQuery: (Promise<string
 }
 
 function SearchResults({ searchQuery, onError, router }: any) {
-  const { status, setStatus } = useSearch();
+  const searchParams = useSearchParams();
+  const [status, setStatus] = React.useState<"idle" | "loading" | "success" | "failed">("idle");
   const [searchResults, setSearchResults] = React.useState<any>(null);
+  
+  // Get current page from URL params, default to 1
+  const currentPage = parseInt(searchParams.get("page") || "1", 10);
+  const RESULTS_PER_PAGE = 10;
+  
+  // Function to navigate to a specific page
+  const navigateToPage = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (page === 1) {
+      params.delete("page"); // Remove page param for page 1 (cleaner URLs)
+    } else {
+      params.set("page", page.toString());
+    }
+    router.push(`?${params.toString()}`);
+  };
 
   React.useEffect(() => {
     setSearchResults(null);
@@ -79,7 +95,7 @@ function SearchResults({ searchQuery, onError, router }: any) {
           });
 
           onError({
-            message: `Ndineurombo, we couldn't find a meaning for "${query}".`,
+            message: `Tineurombo, we couldn't find a meaning for "${query}".`,
             resolution:
               "Try checking the spelling or searching for related words.",
           });
@@ -91,16 +107,9 @@ function SearchResults({ searchQuery, onError, router }: any) {
             result_count: matchedData.length,
           });
 
-          if (
-            matchedData.length === 1 &&
-            matchedData[0].word.toLowerCase() === query.toLowerCase()
-          ) {
-            router.push(`/word/${encodeURIComponent(query)}`);
-            setStatus("idle");
-          } else {
-            setSearchResults(matchedData);
-            setStatus("success");
-          }
+          // Always show results, no automatic redirect
+          setSearchResults(matchedData);
+          setStatus("success");
         }
       }, 1000);
     } catch (error) {
@@ -110,109 +119,149 @@ function SearchResults({ searchQuery, onError, router }: any) {
   }
 
   if (status === "loading" || (status === "idle" && searchQuery)) {
-    return <LoadingFallback />;
+    return <SearchResultsSkeleton />;
+  }
+
+  // Don't render anything if no search query
+  if (!searchQuery) {
+    return null;
   }
 
   return searchResults ? (
     <div className="max-w-4xl mx-auto px-4">
-      <h1 className="theme-text-h1 text-xl font-bold mb-4">Search results</h1>
-      <p className="text-base text-gray-600 dark:text-gray-400 mb-6">
-        Here's what we found for "{searchQuery}". Click on a word to view more.
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Search results</h1>
+      <p className="text-lg text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+        Found {searchResults.length} result{searchResults.length !== 1 ? 's' : ''} for "{searchQuery}". Click on a word to view more.
       </p>
-      <div className="space-y-6">
-        {searchResults.map((word: DictionaryEntry, index: number) => (
-          <Link
-            key={index}
-            prefetch={false}
-            href={`/word/${encodeURIComponent(word.word)}`}
-            onClick={() => {
-              globalThis.gtag?.("event", "word_clicked", {
-                word: word.word,
-                source: "search_results",
-              });
-            }}
-            className="block p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500"
-          >
-            <DictionaryEntryCompact entry={word} />
-          </Link>
-        ))}
-      </div>
-    </div>
-  ) : (
-    <WordIndex groupedWords={dataService.getAllWords()} />
-  );
-}
-
-function WordIndex({ groupedWords }: { groupedWords: string[] }) {
-  const groups = React.useMemo(() => {
-    const sortedWords = groupedWords;
-
-    const groupByFirstLetter:any = {};
-    sortedWords.forEach((word:string) => {
-      const firstLetter = word[0].toUpperCase();
-      if (!groupByFirstLetter[firstLetter]) {
-        groupByFirstLetter[firstLetter] = [];
-      }
-      groupByFirstLetter[firstLetter].push(word);
-    });
-    return groupByFirstLetter;
-  }, [groupedWords]);
-
-  return (
-    <>
-      <h1 className="theme-text-h1 text-xl font-bold mb-4">
-        Explore the Shona Dictionary
-      </h1>
-      <p className="theme-text-sub1 mb-4">
-        Welcome to our growing repository of words from the rich and vibrant
-        Shona lexicon. This project is a community-driven effort to document and
-        celebrate the language.
-      </p>
-      <p className="theme-text-sub1 mb-4">
-        Our ambition is to build the most comprehensive dataset of Shona words,
-        making it a valuable resource for speakers and learners alike.
-      </p>
-      <p className="theme-text-sub1 mb-4">
-        <Link href="/suggest">
-          <button className="text-blue-600 hover:text-blue-400 underline focus:outline-none">
-            Your suggestions
-          </button>
-        </Link>{" "}
-        play a vital role in shaping this project. Contribute today and be part of the journey!
-      </p>
-
-      <div className="my-8 p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
-        <div className="space-y-6">
-          {Object.entries(groups).map(([letter, words]:any) => (
-            <div key={letter}>
-              <h3 className="text-xl font-bold text-gray-700 dark:text-gray-300 mb-4">
-                {letter.toUpperCase()}
-              </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                {words.map((word:string, index:number) => (
-                  <Link
-                    prefetch={false}
-                    href={`/word/${encodeURIComponent(word)}`}
-                    key={index}
-                    onClick={() => {
-                      globalThis.gtag?.("event", "word_clicked", {
-                        word: word,
-                        source: "index",
-                      });
-                    }}
-                    className="text-lg font-medium text-blue-600 hover:text-blue-400 transition-colors duration-200 focus:outline-none"
+      
+      {/* Top Pagination */}
+      {(() => {
+        const totalPages = Math.ceil(searchResults.length / RESULTS_PER_PAGE);
+        const startIndex = (currentPage - 1) * RESULTS_PER_PAGE;
+        const endIndex = startIndex + RESULTS_PER_PAGE;
+        
+        return (
+          <div className="mb-6 flex items-center justify-between">
+            <div className="flex items-center justify-between w-full">
+              {/* Left side - Previous button (always reserve space) */}
+              <div className="w-20">
+                {currentPage > 1 ? (
+                  <button
+                    onClick={() => navigateToPage(currentPage - 1)}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                   >
-                    {word}
-                  </Link>
-                ))}
+                    Previous
+                  </button>
+                ) : (
+                  <div></div>
+                )}
+              </div>
+              
+              {/* Center - Page info */}
+              <div className="flex flex-col items-center space-y-1">
+                <span className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  Showing {startIndex + 1}-{Math.min(endIndex, searchResults.length)} of {searchResults.length} results
+                </div>
+              </div>
+              
+              {/* Right side - Next button (always reserve space) */}
+              <div className="w-20 flex justify-end">
+                {currentPage < totalPages ? (
+                  <button
+                    onClick={() => navigateToPage(currentPage + 1)}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    Next
+                  </button>
+                ) : (
+                  <div></div>
+                )}
               </div>
             </div>
-          ))}
-        </div>
-      </div>
-    </>
-  );
+          </div>
+        );
+      })()}
+      
+      {/* Paginated Results */}
+      {(() => {
+        const totalPages = Math.ceil(searchResults.length / RESULTS_PER_PAGE);
+        const startIndex = (currentPage - 1) * RESULTS_PER_PAGE;
+        const endIndex = startIndex + RESULTS_PER_PAGE;
+        const currentResults = searchResults.slice(startIndex, endIndex);
+        
+        return (
+          <>
+            <div className="space-y-6 mb-8">
+              {currentResults.map((word: DictionaryEntry, index: number) => (
+                <Link
+                  key={startIndex + index}
+                  prefetch={false}
+                  href={`/word/${encodeURIComponent(word.word)}`}
+                  onClick={() => {
+                    globalThis.gtag?.("event", "word_clicked", {
+                      word: word.word,
+                      source: "search_results",
+                    });
+                  }}
+                  className="block p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500"
+                >
+                  <DictionaryEntryCompact entry={word} />
+                </Link>
+              ))}
+            </div>
+            
+            {/* Pagination Controls */}
+            <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between w-full">
+                  {/* Left side - Previous button (always reserve space) */}
+                  <div className="w-20">
+                    {currentPage > 1 ? (
+                      <button
+                        onClick={() => navigateToPage(currentPage - 1)}
+                        className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                      >
+                        Previous
+                      </button>
+                    ) : (
+                      <div></div>
+                    )}
+                  </div>
+                  
+                  {/* Center - Page info */}
+                  <div className="flex flex-col items-center space-y-1">
+                    <span className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">
+                      Page {currentPage} of {totalPages}
+                    </span>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                      Showing {startIndex + 1}-{Math.min(endIndex, searchResults.length)} of {searchResults.length} results
+                    </div>
+                  </div>
+                  
+                  {/* Right side - Next button (always reserve space) */}
+                  <div className="w-20 flex justify-end">
+                    {currentPage < totalPages ? (
+                      <button
+                        onClick={() => navigateToPage(currentPage + 1)}
+                        className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                      >
+                        Next
+                      </button>
+                    ) : (
+                      <div></div>
+                    )}
+                  </div>
+                </div>
+              </div>
+          </>
+        );
+      })()}
+    </div>
+  ) : null;
 }
+
 
 function LoadingFallback() {
   return (

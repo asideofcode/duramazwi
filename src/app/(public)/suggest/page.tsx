@@ -13,7 +13,9 @@ export const metadata = createMetadata({
 export default function SuggestPageWrapper() {
   return (
     <div className="theme-text">
-      <SearchBar />
+      <div id="search-bar">
+        <SearchBar />
+      </div>
       <SuggestPage />
     </div>
   );

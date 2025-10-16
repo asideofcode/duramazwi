@@ -1,9 +1,7 @@
 import AnalyticsWrapper from "@/component/analytics.component";
-import Appbar from "@/component/appbar.component";
 import { Inter, Source_Serif_4 } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
-import { SearchProvider } from "@/context/search-context";
 import { createMetadata } from "@/utils/metadata";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -14,21 +12,7 @@ const nunitoSans = Source_Serif_4({
 
 export const metadata = createMetadata({});
 
-const themeScript = (function () {
-  try {
-    const stored = localStorage.getItem('theme');
-    const system = window?.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    const theme = stored ?? system;
-
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (_) { /* ignore */ }
-}).toString()
+// Root layout - minimal, just provides base HTML structure
 export default function RootLayout({
   children,
 }: {
@@ -37,56 +21,26 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <script
-          id="theme-script"
-          dangerouslySetInnerHTML={{
-            __html: `(${themeScript})();`,
-          }}
-        />
+        {/* Theme handled by useTheme hook on client-side */}
       </head>
-      <body className={"bg-default min-h-screen"}>
-        <main className="max-w-3xl mx-auto px-4">
-          <Appbar />
-          <div className="mb-6">
-            <div
-              role="heading"
-              aria-level={1}
-              className="text-4xl font-bold text-blue-600 dark:text-blue-500"
-            >
-              Shona Dictionary (Duramazwi)
-            </div>
+      <body className={`${inter.className} bg-default min-h-screen text-base`}>
+        {children}
 
-            <p className="text-lg text-gray-600 dark:text-gray-400">
-              Explore the meanings of Shona words or find Shona equivalents for
-              English words.
-            </p>
-          </div>
-          <div className={nunitoSans.className}>
-            <SearchProvider>{children}</SearchProvider>
-          </div>
-        </main>
-      </body>
-      {/* Google Analytics Script */}
-      <Script
-        strategy="afterInteractive"
-        src={`https://www.googletagmanager.com/gtag/js?id=G-Y8JQGYJC4X`}
-      />
-      <Script
-        id="google-analytics"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
+        <AnalyticsWrapper />
+
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-Y8JQGYJC4X"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-
-            gtag('config', 'G-Y8JQGYJC4X', {
-              page_path: window.location.pathname,
-            });
-          `,
-        }}
-      />
-      <AnalyticsWrapper />
+            gtag('config', 'G-Y8JQGYJC4X');
+          `}
+        </Script>
+      </body>
     </html>
   );
 }

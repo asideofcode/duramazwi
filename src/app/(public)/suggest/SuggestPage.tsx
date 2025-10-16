@@ -7,7 +7,7 @@ export default function SuggestPage() {
 
   return (
     <>
-      <h1 className="theme-text-h1 text-xl font-bold mb-4">Make a suggestion</h1>
+    <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Make a suggestion</h1>
       <p className="text-base text-gray-600 dark:text-gray-400 mb-4">
         We rely on community contributions to ensure our dictionary is accurate
         and comprehensive. Share your suggestions for new words, corrections, or
@@ -16,7 +16,7 @@ export default function SuggestPage() {
 
        {message.text && (
         <div
-          className={`mb-4 p-4 rounded ${
+          className={`mb-4 rounded ${
             message.type === "success" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
           }`}
         >
@@ -81,7 +81,7 @@ function SuggestionForm({ onSubmit }: any) {
   };
   const suggestedWordClassList = "theme-input w-full p-2 rounded peer bg-surface outline-none placeholder:text-sm theme-text-sub1"
   return (
-    <form onSubmit={handleSubmit} className="mb-4 p-4 rounded ">
+    <form onSubmit={handleSubmit} className="mb-4 rounded ">
       <div className="mb-4">
         <label className="block font-medium">Word</label>
         <input

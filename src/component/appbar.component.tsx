@@ -1,57 +1,216 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { Inter } from "next/font/google";
-
+import Link from "next/link";
+import { useState, useEffect } from "react";
 import { useTheme } from "@/app/hook/use-theme.hook";
 import SvgIcon from "@/component/icons/svg-icon";
-import StyledAppBarSvgIcon from './icons/styled-appbar-svg-icon';
-import Link from "next/link";
-import {usePathname} from 'next/navigation'
 
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
 });
+
+const navItems = [
+  { href: "/browse", label: "Browse" },
+  { href: "/random", label: "Random Word" },
+  { href: "/suggest", label: "Suggest" },
+];
+
 /**
- * Appbar component
+ * Responsive navigation component with hamburger menu
  */
 export default function Appbar() {
-  const { toggleTheme, darkMode } = useTheme();
   const pathname = usePathname();
+  const { toggleTheme } = useTheme();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      setIsScrolled(scrollTop > 50); // Becomes sticky after 50px scroll (reduced threshold)
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
 
   return (
-    <div className={`${inter.className}`}>
-      <nav className="flex place-content-between py-6 theme-text-h3 ">
-        <div>
-          <Link href="/">
-            <StyledAppBarSvgIcon
-              active={pathname === '/'}
-              icon={"Book"} title="Return to homepage"
+    <>
+      {/* Placeholder to prevent content jumping when header becomes fixed */}
+      {isScrolled && <div className="h-16"></div>}
+      
+      <div className={`${inter.className} ${isScrolled ? 'fixed top-0 left-0 right-0 z-50 bg-default border-b border-gray-200 dark:border-gray-700' : ''} transition-all duration-300`}>
+      <nav className={`${isScrolled ? 'py-2' : 'py-4'} transition-all duration-300`}>
+        <div className="max-w-4xl mx-auto px-4">
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center justify-between">
+          {/* Logo - Left side */}
+          <Link href="/" className="flex items-center space-x-2">
+            <SvgIcon
+              className="h-8 w-8 text-blue-600 dark:text-blue-500"
+              variant="blue"
+              icon="Book"
             />
+            <span className="text-xl font-bold text-gray-900 dark:text-white">
+              Duramazwi
+            </span>
           </Link>
-          <Link href="/suggest">
-            <StyledAppBarSvgIcon
-              active={pathname === '/suggest'}
-              icon={"Plus"} title="Suggest a new word"
-            />
-          </Link>
-        </div>
-        <div className="flex place-content-center gap-2 ">
-          <button
-            className="flex place-content-center"
-            title="Toggle mode"
-            onClick={toggleTheme}
-          >
-            <div className="flex items-center">
+          
+          {/* Navigation Items - Right side */}
+          <div className="flex items-center space-x-1">
+            {navItems.map((item) => {
+              const isActive = pathname === item.href || 
+                (item.href === "/random" && pathname.startsWith("/word/"));
+              
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`px-4 py-2 text-sm font-medium transition-colors ${
+                    isActive
+                      ? "text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400"
+                      : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+            
+            {/* Search Icon - Only show when sticky */}
+            {isScrolled && (
+              <button
+                onClick={() => {
+                  const searchElement = document.getElementById('search-bar');
+                  if (searchElement) {
+                    searchElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // Focus the search input after scrolling
+                    setTimeout(() => {
+                      const input = searchElement.querySelector('input');
+                      if (input) input.focus();
+                    }, 500);
+                  }
+                }}
+                className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors"
+                aria-label="Scroll to search"
+              >
+                <SvgIcon
+                  className="h-4 w-4"
+                  variant="default"
+                  icon="Search"
+                />
+              </button>
+            )}
+            
+            {/* Theme Toggle */}
+            {/* <button
+              onClick={toggleTheme}
+              className="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ml-2"
+              aria-label="Toggle theme"
+            >
               <SvgIcon
-                className='inline-block h-6 w-6 cursor-pointer hover:text-blue-500 hover:scale-110 transition-transform duration-200'
-                variant={!darkMode ? "dark" : "light"}
-                icon={"LightDark"}
+                className="h-5 w-5"
+                variant="default"
+                icon="LightDark"
               />
-            </div>
-          </button>
+            </button> */}
+          </div>
         </div>
+
+        {/* Mobile Navigation */}
+        <div className="md:hidden">
+          <div className="flex items-center justify-between">
+            <Link href="/" className="flex items-center space-x-2">
+              <SvgIcon
+                className="h-8 w-8 text-blue-600 dark:text-blue-500"
+                variant="blue"
+                icon="Book"
+              />
+              <span className="text-xl font-bold text-gray-900 dark:text-white">
+                Duramazwi
+              </span>
+            </Link>
+            
+            <div className="flex items-center space-x-2">
+              {/* Search Icon for Mobile - Only show when sticky */}
+              {isScrolled && (
+                <button
+                  onClick={() => {
+                    const searchElement = document.getElementById('search-bar');
+                    if (searchElement) {
+                      searchElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      setTimeout(() => {
+                        const input = searchElement.querySelector('input');
+                        if (input) input.focus();
+                      }, 500);
+                    }
+                  }}
+                  className="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  aria-label="Scroll to search"
+                >
+                  <SvgIcon
+                    className="h-5 w-5"
+                    variant="default"
+                    icon="Search"
+                  />
+                </button>
+              )}
+
+              <button
+                onClick={toggleMobileMenu}
+                className="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                aria-label="Toggle mobile menu"
+              >
+              <div className="w-6 h-6 flex flex-col justify-center space-y-1">
+                <div className={`h-0.5 bg-current transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></div>
+                <div className={`h-0.5 bg-current transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0' : ''}`}></div>
+                <div className={`h-0.5 bg-current transition-all duration-300 ${isMobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></div>
+              </div>
+            </button>
+            </div>
+          </div>
+
+          {/* Mobile Menu */}
+          {isMobileMenuOpen && (
+            <div className="mt-4 space-y-2">
+              {navItems.map((item) => {
+                const isActive = pathname === item.href || 
+                  (item.href === "/random" && pathname.startsWith("/word/"));
+                
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center space-x-3 px-4 py-3 text-sm font-medium transition-colors ${
+                      isActive
+                        ? "text-blue-600 dark:text-blue-400 border-l-4 border-blue-600 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20"
+                        : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md"
+                    }`}
+                  >
+                    <SvgIcon
+                      className="h-5 w-5"
+                      variant="default"
+                      icon={item.icon}
+                    />
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+        </div>
+        </div>
+
       </nav>
     </div>
+    </>
   );
 }
