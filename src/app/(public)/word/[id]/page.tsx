@@ -4,7 +4,21 @@ import dataService from "@/services/dataService";
 import { createMetadata } from "@/utils/metadata";
 // import { Courgette, Prata } from "next/font/google";
 import { Metadata } from "next/types";
-import DictionaryEntryClean, { DictionaryEntry } from "@/components/dictionary-entry-clean";
+import DictionaryEntryClean, { DictionaryEntry, Meaning } from "@/components/dictionary-entry-clean";
+
+// Helper function to format word display for metadata
+const formatWordForMetadata = (word: string, meanings: Meaning[]) => {
+  // Check if any meaning is a verb
+  const hasVerbMeaning = meanings.some(meaning => 
+    meaning.partOfSpeech && meaning.partOfSpeech.toLowerCase() === 'verb'
+  );
+  
+  if (hasVerbMeaning) {
+    return `${word} / ku${word}`;
+  }
+  
+  return word;
+};
 
 // const spaceMono = Courgette({
 //   subsets: ["latin"],
@@ -28,15 +42,18 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id: rawId } = await params;
   const id = decodeURIComponent(rawId);
-  const wordDetails:any = dataService.getWordDetails(id);
+  const wordDetails: DictionaryEntry[] | null = dataService.getWordDetails(id) as DictionaryEntry[] | null;
 
   if (wordDetails && wordDetails.length > 0) {
-    const firstDefinition = wordDetails[0].meanings[0].definitions[0].definition;
+    const firstEntry = wordDetails[0];
+    const firstDefinition = firstEntry.meanings[0].definitions[0].definition;
+    const formattedWord = formatWordForMetadata(firstEntry.word, firstEntry.meanings);
+    
     return createMetadata(
       {
-        title: `Meaning of ${id} in Shona | Shona Dictionary`,
-        description: `The meaning of ${id} in Shona is ${firstDefinition}...`,
-        keywords: `The meaning of ${id} in Shona, define ${id} in Shona, ${id} zvinorevei, Shona dictionary, Shona words, Shona language, Shona definitions, meanings, learn Shona, Shona-English dictionary, Shona translation, Shona pronunciation`,
+        title: `Meaning of ${formattedWord} in Shona | Shona Dictionary`,
+        description: `The meaning of ${formattedWord} in Shona is ${firstDefinition}...`,
+        keywords: `The meaning of ${formattedWord} in Shona, define ${formattedWord} in Shona, ${id} zvinorevei, ku${id}, Shona dictionary, Shona words, Shona language, Shona definitions, meanings, learn Shona, Shona-English dictionary, Shona translation, Shona pronunciation`,
         openGraph: {
           url: `https://dictionary.chishona.org/word/${id}`,
         }

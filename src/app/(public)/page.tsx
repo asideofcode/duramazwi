@@ -2,8 +2,55 @@ import ResultsPage from "../ResultsPage";
 import Link from "next/link";
 import { Suspense } from "react";
 import SimpleSearchBar from "@/component/simple-search-bar.component";
+import { createMetadata } from "@/utils/metadata";
+import { Metadata } from "next/types";
+import dataService from "@/services/dataService";
+import { Meaning } from "@/components/dictionary-entry-clean";
 
 export const dynamic = "force-dynamic"; // Need dynamic for search params
+
+// Helper function to format word display for metadata (same as in word page)
+const formatWordForMetadata = (word: string, meanings: Meaning[]) => {
+  const hasVerbMeaning = meanings.some(meaning => 
+    meaning.partOfSpeech && meaning.partOfSpeech.toLowerCase() === 'verb'
+  );
+  
+  if (hasVerbMeaning) {
+    return `${word} / ku${word}`;
+  }
+  
+  return word;
+};
+
+export async function generateMetadata({ searchParams }: { searchParams: { q?: string } }): Promise<Metadata> {
+  const { q } = await searchParams;
+  const searchQuery = q || "";
+  
+  if (searchQuery) {
+    // Check if we have results for this search
+    const searchResults = dataService.search(searchQuery);
+    
+    if (searchResults && searchResults.length > 0) {
+      const firstResult = searchResults[0];
+      const formattedWord = formatWordForMetadata(firstResult.word, firstResult.meanings);
+      
+      return createMetadata({
+        title: `Search results for "${searchQuery}" - ${formattedWord} | Shona Dictionary`,
+        description: `Found ${searchResults.length} result${searchResults.length > 1 ? 's' : ''} for "${searchQuery}". Including ${formattedWord} and more Shona words.`,
+        keywords: `${searchQuery}, ${formattedWord}, Shona dictionary search, Shona words, Shona language, Shona definitions`,
+      });
+    } else {
+      return createMetadata({
+        title: `No results for "${searchQuery}" | Shona Dictionary`,
+        description: `We couldn't find any results for "${searchQuery}". Try checking the spelling or searching for related words.`,
+        keywords: `${searchQuery}, Shona dictionary search, Shona words not found`,
+      });
+    }
+  }
+  
+  // Default homepage metadata
+  return createMetadata({});
+}
 
 export default async function HomePage({ searchParams }: { searchParams: { q?: string } }) {
   const { q } = await searchParams; // Extract query parameter
@@ -64,6 +111,7 @@ export default async function HomePage({ searchParams }: { searchParams: { q?: s
             <Link 
               href="/browse" 
               className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline transition-colors duration-200"
+              title="Browse all dictionary entries"
             >
               Browse all entries
             </Link>
@@ -71,6 +119,7 @@ export default async function HomePage({ searchParams }: { searchParams: { q?: s
             <Link 
               href="/random" 
               className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline transition-colors duration-200"
+              title="Get a random Shona word"
             >
               Random word
             </Link>
@@ -78,6 +127,7 @@ export default async function HomePage({ searchParams }: { searchParams: { q?: s
             <Link 
               href="/suggest" 
               className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline transition-colors duration-200"
+              title="Suggest a new word for the dictionary"
             >
               Suggest a word
             </Link>
@@ -119,7 +169,7 @@ function WelcomeContent() {
           making it a valuable resource for speakers and learners alike.
         </p>
         <p>
-          <Link href="/suggest" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline font-medium">
+          <Link href="/suggest" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline font-medium" title="Contribute to the dictionary">
             Your suggestions
           </Link>{" "}
           play a vital role in shaping this project. Contribute today and be part of the journey!
@@ -141,6 +191,7 @@ function WelcomeContent() {
               key={word}
               href={`/word/${encodeURIComponent(word)}`}
               className="text-lg text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium transition-colors"
+              title={`View definition of "${word}"`}
             >
               {word}
             </Link>
@@ -150,6 +201,7 @@ function WelcomeContent() {
           <Link
             href="/browse"
             className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
+            title="Browse all dictionary entries"
           >
             Browse All Words
           </Link>

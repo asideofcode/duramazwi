@@ -14,7 +14,7 @@ export default function AdminLayout({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
-              <Link href="/admin" className="flex items-center space-x-2">
+              <Link href="/admin" className="flex items-center space-x-2" title="Go to admin dashboard">
                 <SvgIcon
                   className="h-8 w-8 text-blue-600 dark:text-blue-500"
                   variant="blue"
@@ -30,18 +30,21 @@ export default function AdminLayout({
               <Link
                 href="/admin"
                 className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium"
+                title="Admin dashboard"
               >
                 Dashboard
               </Link>
               <Link
                 href="/admin/entries"
                 className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium"
+                title="Manage dictionary entries"
               >
                 Manage Entries
               </Link>
               <Link
                 href="/"
                 className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium"
+                title="View public site"
               >
                 View Public Site
               </Link>

@@ -67,6 +67,7 @@ export default function SearchResults({ query }: SearchResultsProps) {
         <button
           onClick={() => window.location.reload()}
           className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline"
+          title="Reload page to try search again"
         >
           Try again
         </button>
@@ -96,6 +97,7 @@ export default function SearchResults({ query }: SearchResultsProps) {
           <Link
             href="/browse"
             className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline"
+            title="Browse all dictionary entries"
           >
             Browse all entries
           </Link>
@@ -126,6 +128,7 @@ export default function SearchResults({ query }: SearchResultsProps) {
               <Link
                 href={`/word/${encodeURIComponent(entry.word.toLowerCase())}`}
                 className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm font-medium"
+                title={`View full definition of "${entry.word}"`}
               >
                 View full entry →
               </Link>

@@ -13,9 +13,9 @@ const inter = Inter({
 });
 
 const navItems = [
-  { href: "/browse", label: "Browse" },
-  { href: "/random", label: "Random Word" },
-  { href: "/suggest", label: "Suggest" },
+  { href: "/browse", label: "Browse", title: "Browse all dictionary entries", icon: "Book" },
+  { href: "/random", label: "Random Word", title: "Get a random Shona word", icon: "Toggle" },
+  { href: "/suggest", label: "Suggest", title: "Suggest a new word for the dictionary", icon: "Plus" },
 ];
 
 /**
@@ -52,6 +52,9 @@ export default function Appbar() {
       }
     };
 
+    // Run handler immediately to check initial scroll position
+    handleScroll();
+    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -74,7 +77,7 @@ export default function Appbar() {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center justify-between">
           {/* Logo - Left side */}
-          <Link href="/" className="flex items-center space-x-2">
+          <Link href="/" className="flex items-center space-x-2" title="Go to homepage">
             <SvgIcon
               className="h-8 w-8 text-blue-600 dark:text-blue-500"
               variant="blue"
@@ -95,6 +98,7 @@ export default function Appbar() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  title={item.title}
                   className={`px-4 py-2 text-sm font-medium transition-colors ${
                     isActive
                       ? "text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400"
@@ -122,6 +126,7 @@ export default function Appbar() {
                 }}
                 className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors"
                 aria-label="Scroll to search"
+                title="Go to search bar"
               >
                 <SvgIcon
                   className="h-4 w-4"
@@ -149,7 +154,7 @@ export default function Appbar() {
         {/* Mobile Navigation */}
         <div className="md:hidden">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center space-x-2">
+            <Link href="/" className="flex items-center space-x-2" title="Go to homepage">
               <SvgIcon
                 className="h-8 w-8 text-blue-600 dark:text-blue-500"
                 variant="blue"
@@ -176,6 +181,7 @@ export default function Appbar() {
                   }}
                   className="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                   aria-label="Scroll to search"
+                  title="Go to search bar"
                 >
                   <SvgIcon
                     className="h-5 w-5"
@@ -189,6 +195,7 @@ export default function Appbar() {
                 onClick={toggleMobileMenu}
                 className="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 aria-label="Toggle mobile menu"
+                title="Open navigation menu"
               >
               <div className="w-6 h-6 flex flex-col justify-center space-y-1">
                 <div className={`h-0.5 bg-current transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></div>
@@ -211,6 +218,7 @@ export default function Appbar() {
                     key={item.href}
                     href={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
+                    title={item.title}
                     className={`flex items-center space-x-3 px-4 py-3 text-sm font-medium transition-colors ${
                       isActive
                         ? "text-blue-600 dark:text-blue-400 border-l-4 border-blue-600 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20"

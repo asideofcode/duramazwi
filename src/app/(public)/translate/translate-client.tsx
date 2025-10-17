@@ -68,6 +68,7 @@ export default function TranslateClient() {
         <button
           type="submit"
           disabled={!inputText.trim() || status === "loading"}
+          title={!inputText.trim() ? "Enter text to translate" : status === "loading" ? "Translation in progress..." : "Translate text"}
           className="px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-md transition-colors font-medium"
         >
           {status === "loading" ? "Translating..." : "Translate"}

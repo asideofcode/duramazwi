@@ -51,6 +51,7 @@ export default function BrowseEntries({ currentWords }: BrowseEntriesProps) {
           prefetch={false}
           href={`/word/${encodeURIComponent(entry.word)}`}
           className="block p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500"
+          title={`View full definition of "${entry.word}"`}
         >
           <DictionaryEntryCompact entry={entry} />
         </Link>

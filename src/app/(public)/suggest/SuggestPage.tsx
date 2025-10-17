@@ -133,6 +133,7 @@ function SuggestionForm({ onSubmit }: any) {
       <button
         type="submit"
         disabled={!isFormValid}
+        title={isFormValid ? "Submit your word suggestion" : "Please fill in all required fields"}
         className={`px-6 py-2 rounded font-medium transition-colors ${
           isFormValid
             ? "bg-blue-600 hover:bg-blue-700 text-white"

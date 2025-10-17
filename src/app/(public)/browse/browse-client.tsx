@@ -55,6 +55,7 @@ function BrowseContent() {
                 ? "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300"
                 : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800"
             }`}
+            title="Show all dictionary entries"
           >
             All
           </Link>
@@ -67,6 +68,7 @@ function BrowseContent() {
                   ? "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300"
                   : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800"
               }`}
+              title={`Show words starting with "${char}"`}
             >
               {char}
             </Link>
@@ -83,6 +85,7 @@ function BrowseContent() {
               <Link
                 href={`/browse?page=${currentPage - 1}${letter ? `&letter=${letter}` : ''}`}
                 className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                title={`Go to page ${currentPage - 1}`}
               >
                 Previous
               </Link>
@@ -107,6 +110,7 @@ function BrowseContent() {
               <Link
                 href={`/browse?page=${currentPage + 1}${letter ? `&letter=${letter}` : ''}`}
                 className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                title={`Go to page ${currentPage + 1}`}
               >
                 Next
               </Link>
@@ -129,6 +133,7 @@ function BrowseContent() {
               <Link
                 href={`/browse?page=${currentPage - 1}${letter ? `&letter=${letter}` : ''}`}
                 className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                title={`Go to page ${currentPage - 1}`}
               >
                 Previous
               </Link>
@@ -153,6 +158,7 @@ function BrowseContent() {
               <Link
                 href={`/browse?page=${currentPage + 1}${letter ? `&letter=${letter}` : ''}`}
                 className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                title={`Go to page ${currentPage + 1}`}
               >
                 Next
               </Link>
