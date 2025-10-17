@@ -17,7 +17,7 @@ export default async function HomePage({ searchParams }: { searchParams: { q?: s
       <div className={`text-center transition-all duration-500 ease-in-out ${
         searchQuery 
           ? 'py-0 mb-0' 
-          : 'py-12 mb-8'
+          : 'py-12 mb-0'
       }`}>
         {/* Title - fades out in search mode */}
         <div className={`transition-all duration-500 ease-in-out ${

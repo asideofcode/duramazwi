@@ -16,6 +16,7 @@ export default function SearchBar({}:
 }) {
   const { status, query } = useSearch();
   const [keyword, setKeyword] = React.useState<string>(query);
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -40,6 +41,17 @@ export default function SearchBar({}:
     }
   };
 
+  const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    // If input is not focused, focus it instead of submitting
+    if (inputRef.current && document.activeElement !== inputRef.current) {
+      e.preventDefault();
+      inputRef.current.focus();
+    } else {
+      // If input is already focused, proceed with search
+      search(e);
+    }
+  };
+
   React.useEffect(() => {
     setKeyword(query);
   }, [query]);
@@ -49,6 +61,7 @@ export default function SearchBar({}:
     <form onSubmit={search} className="mb-6">
       <div className="theme-input flex ">
         <input
+          ref={inputRef}
           className="peer w-full bg-surface outline-none placeholder:text-sm theme-text-sub1"
           placeholder="Search Shona meanings or get translations."
           required={true}
@@ -63,7 +76,7 @@ export default function SearchBar({}:
           <Loading className="h-6 w-6"/>
             : 
           (
-            <button className="h-6 w-6 theme-text-sub1" title="Search word" onClick={search}>
+            <button className="h-6 w-6 theme-text-sub1" title="Search word" onClick={handleButtonClick}>
               <SvgIcon icon={"Search"}/>
             </button>
           )

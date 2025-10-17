@@ -42,6 +42,26 @@ const getPartOfSpeechColor = (partOfSpeech: string): string => {
   return colors[partOfSpeech] || 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600';
 };
 
+// Helper function to format word display with verb prefix
+const formatWordDisplay = (word: string, meanings: Meaning[]) => {
+  // Check if any meaning is a verb
+  const hasVerbMeaning = meanings.some(meaning => meaning.partOfSpeech.toLowerCase() === 'verb');
+  
+  if (hasVerbMeaning) {
+    return {
+      prefix: 'ku-',
+      word: word,
+      hasPrefix: true
+    };
+  }
+  
+  return {
+    prefix: '',
+    word: word,
+    hasPrefix: false
+  };
+};
+
 export default function DictionaryEntryClean({ 
   entry, 
   showExamples = true, 
@@ -51,6 +71,8 @@ export default function DictionaryEntryClean({
     return null;
   }
 
+  const wordDisplay = formatWordDisplay(entry.word, entry.meanings);
+
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Word Header */}
@@ -59,8 +81,21 @@ export default function DictionaryEntryClean({
           <span className="text-lg text-gray-600 dark:text-gray-400 font-medium">
             Meaning of:
           </span>
-          <h1 className="text-3xl font-bold text-blue-600 dark:text-blue-400 leading-tight">
-            {entry.word}
+          <h1 className="text-3xl font-bold leading-tight">
+            {wordDisplay.hasPrefix ? (
+              <>
+                <span className="text-green-600 dark:text-green-400 font-medium">
+                  {wordDisplay.prefix}
+                </span>
+                <span className="text-blue-600 dark:text-blue-400">
+                  {wordDisplay.word}
+                </span>
+              </>
+            ) : (
+              <span className="text-blue-600 dark:text-blue-400">
+                {wordDisplay.word}
+              </span>
+            )}
           </h1>
         </div>
       </div>
@@ -126,13 +161,27 @@ export function DictionaryEntryCompact({
 
   const firstMeaning = entry.meanings[0];
   const firstDefinition = firstMeaning.definitions[0];
+  const wordDisplay = formatWordDisplay(entry.word, entry.meanings);
 
   return (
     <div className={`space-y-2 ${className}`}>
       {/* Word and Part of Speech */}
       <div className="flex items-center gap-3">
-        <h3 className="text-xl font-bold text-blue-600 dark:text-blue-400">
-          {entry.word}
+        <h3 className="text-xl font-bold">
+          {wordDisplay.hasPrefix ? (
+            <>
+              <span className="text-green-600 dark:text-green-400 font-medium">
+                {wordDisplay.prefix}
+              </span>
+              <span className="text-blue-600 dark:text-blue-400">
+                {wordDisplay.word}
+              </span>
+            </>
+          ) : (
+            <span className="text-blue-600 dark:text-blue-400">
+              {wordDisplay.word}
+            </span>
+          )}
         </h3>
         <span className={`
           inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border
