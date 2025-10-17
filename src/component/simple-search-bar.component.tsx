@@ -32,12 +32,23 @@ export default function SimpleSearchBar({
   };
 
   const handleButtonClick = (e: React.MouseEvent) => {
-    // If input is not focused, focus it instead of submitting
-    if (inputRef.current && document.activeElement !== inputRef.current) {
-      e.preventDefault();
-      inputRef.current.focus();
+    // If input is already focused, trigger search
+    e.preventDefault();
+    if (query.trim()) {
+      router.push(`/?q=${encodeURIComponent(query.trim())}`);
+    } else {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
     }
-    // If input is already focused, let the form submit naturally
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    // Handle Enter key and iOS "Done" button
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSearch(e as any);
+    }
   };
 
   return (
@@ -45,10 +56,13 @@ export default function SimpleSearchBar({
       <div className="theme-input flex">
         <input
           ref={inputRef}
+          type="search"
           className="peer w-full bg-surface outline-none placeholder:text-sm theme-text-sub1"
           placeholder={placeholder}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={handleKeyDown}
+          enterKeyHint="search"
           required
         />
         <button 

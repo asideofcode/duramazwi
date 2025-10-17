@@ -42,13 +42,22 @@ export default function SearchBar({}:
   };
 
   const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // If input is not focused, focus it instead of submitting
-    if (inputRef.current && document.activeElement !== inputRef.current) {
-      e.preventDefault();
-      inputRef.current.focus();
-    } else {
-      // If input is already focused, proceed with search
+    // If input is already focused, trigger search
+    e.preventDefault();
+    if (keyword.trim()) {
       search(e);
+    } else {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    // Handle Enter key and iOS "Done" button
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      search(e as any);
     }
   };
 
@@ -62,12 +71,15 @@ export default function SearchBar({}:
       <div className="theme-input flex ">
         <input
           ref={inputRef}
+          type="search"
           className="peer w-full bg-surface outline-none placeholder:text-sm theme-text-sub1"
           placeholder="Search Shona meanings or get translations."
           required={true}
           onChange={(e) => {
             setKeyword(e.target.value);
           }}
+          onKeyDown={handleKeyDown}
+          enterKeyHint="search"
           value={keyword}
         />
         {
