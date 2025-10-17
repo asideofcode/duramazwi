@@ -50,7 +50,7 @@ export default function Appbar() {
       }
       
       // Search icon appears after 50px of scrolling
-      if (scrolled > 100) {
+      if (scrolled > 70) {
         setShowSearchIcon(true);
       } else {
         setShowSearchIcon(false);
@@ -182,17 +182,28 @@ export default function Appbar() {
             </Link>
             
             <div className="flex items-center space-x-2">
-              {/* Search Icon for Mobile - Only show after 50px scroll */}
+              {/* Search Icon for Mobile - Only show after 70px scroll */}
               {showSearchIcon && (
                 <button
                   onClick={() => {
                     const searchElement = document.getElementById('search-bar');
                     if (searchElement) {
+                      // Find the input element immediately (synchronous)
+                      const input = searchElement.querySelector('input') as HTMLInputElement;
+                      
+                      if (input) {
+                        // Focus MUST be synchronous for iOS keyboard to appear
+                        input.focus();
+                        input.click();
+                        
+                        // Set cursor to end of input
+                        if (input.value) {
+                          input.setSelectionRange(input.value.length, input.value.length);
+                        }
+                      }
+                      
+                      // Scroll to element AFTER focusing (non-blocking)
                       searchElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                      setTimeout(() => {
-                        const input = searchElement.querySelector('input');
-                        if (input) input.focus();
-                      }, 500);
                     }
                   }}
                   className="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
