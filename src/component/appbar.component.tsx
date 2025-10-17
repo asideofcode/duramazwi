@@ -27,8 +27,9 @@ export default function Appbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isStuck, setIsStuck] = useState(false);
   const [showSearchIcon, setShowSearchIcon] = useState(false);
-  const [headerHeight, setHeaderHeight] = useState(64);
+  const [headerHeight, setHeaderHeight] = useState(0);
   const headerRef = useRef<HTMLDivElement>(null);
+  const mobileNavRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const header = headerRef.current;
@@ -57,12 +58,31 @@ export default function Appbar() {
       }
     };
 
-    // Run handler immediately to check initial scroll position
+    const handleResize = () => {
+      // Close mobile menu when mobile nav becomes hidden (desktop mode)
+      const mobileNav = mobileNavRef.current;
+      if (mobileNav && isMobileMenuOpen) {
+        // Check if mobile nav is hidden (display: none or visibility: hidden)
+        const computedStyle = window.getComputedStyle(mobileNav);
+        const isHidden = computedStyle.display === 'none' || computedStyle.visibility === 'hidden';
+        
+        if (isHidden) {
+          setIsMobileMenuOpen(false);
+        }
+      }
+    };
+
+    // Run handlers immediately to check initial state
     handleScroll();
+    handleResize();
     
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [isMobileMenuOpen]);
 
   // Update header height when mobile menu state changes
   useEffect(() => {
@@ -173,7 +193,7 @@ export default function Appbar() {
         </div>
 
         {/* Mobile Navigation */}
-        <div className="md:hidden">
+        <div ref={mobileNavRef} className="md:hidden">
           <div className="flex items-center justify-between">
             <Link 
               href="/" 
