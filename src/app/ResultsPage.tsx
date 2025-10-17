@@ -56,18 +56,40 @@ function SearchResults({ searchQuery, onError, router }: any) {
   const [searchResults, setSearchResults] = React.useState<any>(null);
   
   // Get current page from URL params, default to 1
-  const currentPage = parseInt(searchParams.get("page") || "1", 10);
+  const requestedPage = parseInt(searchParams.get("page") || "1", 10);
   const RESULTS_PER_PAGE = 10;
   
+  // Calculate total pages based on search results
+  const totalPages = searchResults ? Math.ceil(searchResults.length / RESULTS_PER_PAGE) : 1;
+  
+  // Clamp the current page to valid bounds
+  const currentPage = Math.max(1, Math.min(requestedPage, totalPages));
+  
+  // Redirect to correct page if URL has invalid page number
+  React.useEffect(() => {
+    if (searchResults && requestedPage !== currentPage) {
+      const params = new URLSearchParams(searchParams.toString());
+      if (currentPage === 1) {
+        params.delete("page");
+      } else {
+        params.set("page", currentPage.toString());
+      }
+      router.push(`?${params.toString()}`, { scroll: false });
+    }
+  }, [searchResults, requestedPage, currentPage, searchParams, router]);
+  
   // Function to navigate to a specific page
-  const navigateToPage = (page: number) => {
+  const navigateToPage = (page: number, shouldScroll: boolean = true) => {
+    // Clamp the target page to valid bounds
+    const clampedPage = Math.max(1, Math.min(page, totalPages));
+    
     const params = new URLSearchParams(searchParams.toString());
-    if (page === 1) {
+    if (clampedPage === 1) {
       params.delete("page"); // Remove page param for page 1 (cleaner URLs)
     } else {
-      params.set("page", page.toString());
+      params.set("page", clampedPage.toString());
     }
-    router.push(`?${params.toString()}`);
+    router.push(`?${params.toString()}`, { scroll: shouldScroll });
   };
 
   React.useEffect(() => {
@@ -161,7 +183,7 @@ function SearchResults({ searchQuery, onError, router }: any) {
               <div className="w-20">
                 {currentPage > 1 ? (
                   <button
-                    onClick={() => navigateToPage(currentPage - 1)}
+                    onClick={() => navigateToPage(currentPage - 1, false)}
                     className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                     title={`Go to page ${currentPage - 1}`}
                   >
@@ -186,7 +208,7 @@ function SearchResults({ searchQuery, onError, router }: any) {
               <div className="w-20 flex justify-end">
                 {currentPage < totalPages ? (
                   <button
-                    onClick={() => navigateToPage(currentPage + 1)}
+                    onClick={() => navigateToPage(currentPage + 1, false)}
                     className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                     title={`Go to page ${currentPage + 1}`}
                   >

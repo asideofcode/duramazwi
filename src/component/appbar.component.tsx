@@ -1,9 +1,9 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Inter } from "next/font/google";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { Inter } from "next/font/google";
 import { useTheme } from "@/app/hook/use-theme.hook";
 import SvgIcon from "@/component/icons/svg-icon";
 
@@ -14,7 +14,7 @@ const inter = Inter({
 
 const navItems = [
   { href: "/browse", label: "Browse", title: "Browse all dictionary entries", icon: "Book" },
-  { href: "/random", label: "Random Word", title: "Get a random Shona word", icon: "Toggle" },
+  { href: "/random", label: "Random Word", title: "Get a random Shona word", icon: "Play" },
   { href: "/suggest", label: "Suggest", title: "Suggest a new word for the dictionary", icon: "Plus" },
 ];
 
@@ -27,10 +27,15 @@ export default function Appbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isStuck, setIsStuck] = useState(false);
   const [showSearchIcon, setShowSearchIcon] = useState(false);
+  const [headerHeight, setHeaderHeight] = useState(64);
+  const headerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const header = document.getElementById('main-header');
+    const header = headerRef.current;
     if (!header) return;
+
+    // Capture initial header height to prevent scroll restoration issues
+    setHeaderHeight(header.offsetHeight);
 
     const sticky = header.offsetTop;
 
@@ -59,6 +64,17 @@ export default function Appbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Update header height when mobile menu state changes
+  useEffect(() => {
+    const header = headerRef.current;
+    if (header) {
+      // Use setTimeout to ensure DOM has updated after menu state change
+      setTimeout(() => {
+        setHeaderHeight(header.offsetHeight);
+      }, 0);
+    }
+  }, [isMobileMenuOpen]);
+
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
@@ -66,11 +82,11 @@ export default function Appbar() {
   return (
     <>
       {/* Placeholder to prevent content jumping when header becomes fixed */}
-      {isStuck && <div className="h-16"></div>}
+      {isStuck && <div style={{ height: `${headerHeight}px` }}></div>}
       
       <div 
-        id="main-header"
-        className={`${inter.className} mb-2 ${isStuck ? 'fixed top-0 left-0 right-0 z-50 border-b border-gray-200 dark:border-gray-700' : ''} bg-default transition-all duration-300`}
+        ref={headerRef}
+        className={`${inter.className} mb-2 ${isStuck ? 'fixed top-0 left-0 right-0 z-50' : ''} ${(isStuck || isMobileMenuOpen) ? 'border-b border-gray-200 dark:border-gray-700' : ''} bg-default transition-all duration-300`}
       >
       <nav className={`${isStuck ? 'py-2' : 'py-4'} transition-all duration-300`}>
         <div className="max-w-4xl mx-auto px-4">
@@ -208,7 +224,7 @@ export default function Appbar() {
 
           {/* Mobile Menu */}
           {isMobileMenuOpen && (
-            <div className="mt-4 space-y-2">
+            <div className="mt-4 pb-4 space-y-2">
               {navItems.map((item) => {
                 const isActive = pathname === item.href || 
                   (item.href === "/random" && pathname.startsWith("/word/"));

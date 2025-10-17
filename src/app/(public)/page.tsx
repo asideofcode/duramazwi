@@ -105,28 +105,28 @@ export default async function HomePage({ searchParams }: { searchParams: { q?: s
         <div className={`transition-all duration-500 ease-in-out ${
           searchQuery 
             ? 'hidden max-h-0 overflow-hidden' 
-            : 'opacity-100 max-h-20 mb-0'
+            : 'opacity-100 mb-0'
         }`}>
-          <div className="flex flex-wrap justify-center gap-4 text-base">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap justify-center items-center gap sm:gap-2 text-base">
             <Link 
               href="/browse" 
-              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline transition-colors duration-200"
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline transition-colors duration-200 px-2 py-1"
               title="Browse all dictionary entries"
             >
               Browse all entries
             </Link>
-            <span className="text-gray-400">•</span>
+            <span className="text-gray-400 text-sm">•</span>
             <Link 
               href="/random" 
-              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline transition-colors duration-200"
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline transition-colors duration-200 px-2 py-1"
               title="Get a random Shona word"
             >
               Random word
             </Link>
-            <span className="text-gray-400">•</span>
+            <span className="text-gray-400 text-sm">•</span>
             <Link 
               href="/suggest" 
-              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline transition-colors duration-200"
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline transition-colors duration-200 px-2 py-1"
               title="Suggest a new word for the dictionary"
             >
               Suggest a word
