@@ -93,7 +93,12 @@ export default function Appbar() {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center justify-between">
           {/* Logo - Left side */}
-          <Link href="/" className="flex items-center space-x-2" title="Go to homepage">
+          <Link 
+            href="/" 
+            className="flex items-center space-x-2" 
+            title="Go to homepage"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
             <SvgIcon
               className="h-8 w-8 text-blue-600 dark:text-blue-500"
               variant="blue"
@@ -170,7 +175,12 @@ export default function Appbar() {
         {/* Mobile Navigation */}
         <div className="md:hidden">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center space-x-2" title="Go to homepage">
+            <Link 
+              href="/" 
+              className="flex items-center space-x-2" 
+              title="Go to homepage"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
               <SvgIcon
                 className="h-8 w-8 text-blue-600 dark:text-blue-500"
                 variant="blue"
