@@ -15,7 +15,7 @@ export default function BrowsePage() {
       <div id="search-bar">
         <SearchBar />
       </div>
-      <div className="py-8">
+      <div className="">
         <BrowseClient />
       </div>
     </div>

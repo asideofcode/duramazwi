@@ -79,30 +79,40 @@ function SuggestionForm({ onSubmit }: any) {
       setEmail("");
     });
   };
+
+  // Basic validation - require at least word and definition
+  const isFormValid = word.trim() && definition.trim();
+  
   const suggestedWordClassList = "theme-input w-full p-2 rounded peer bg-surface outline-none placeholder:text-sm theme-text-sub1"
   return (
     <form onSubmit={handleSubmit} className="mb-4 rounded ">
       <div className="mb-4">
-        <label className="block font-medium">Word</label>
+        <label className="block font-medium mb-2 text-gray-700 dark:text-gray-300">
+          Word <span className="text-red-500">*</span>
+        </label>
         <input
           type="text"
           value={word}
           placeholder="E.g. Chikafu"
           onChange={(e) => setWord(e.target.value)}
           className={suggestedWordClassList}
+          required
         />
       </div>
       <div className="mb-4">
-        <label className="block font-medium">Definition/s</label>
+        <label className="block font-medium mb-2 text-gray-700 dark:text-gray-300">
+          Definition/s <span className="text-red-500">*</span>
+        </label>
         <textarea
           value={definition}
           placeholder="Provide the definition of the word, including any relevant details like part of speech (e.g. verb/noun) etc."
           onChange={(e) => setDefinition(e.target.value)}
           className={suggestedWordClassList}
+          required
         />
       </div>
       <div className="mb-4">
-        <label className="block font-medium">Example/s</label>
+        <label className="block font-medium mb-2 text-gray-700 dark:text-gray-300">Example/s</label>
         <textarea
           value={example}
           placeholder="Provide an example sentence using the word, if applicable."
@@ -111,7 +121,7 @@ function SuggestionForm({ onSubmit }: any) {
         />
       </div>
       <div className="mb-4">
-        <label className="block font-medium">Your Email</label>
+        <label className="block font-medium mb-2 text-gray-700 dark:text-gray-300">Your Email</label>
         <input
           type="email"
           value={email}
@@ -122,7 +132,12 @@ function SuggestionForm({ onSubmit }: any) {
       </div>
       <button
         type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        disabled={!isFormValid}
+        className={`px-6 py-2 rounded font-medium transition-colors ${
+          isFormValid
+            ? "bg-blue-600 hover:bg-blue-700 text-white"
+            : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+        }`}
       >
         Send it over!
       </button>

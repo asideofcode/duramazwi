@@ -70,7 +70,7 @@ export default async function DetailsPage({
         <SearchBar />
       </div>
       {wordDetails && wordDetails.length > 0 ? (
-        <div className="mt-8">
+        <div className="">
           {wordDetails.map((word: DictionaryEntry, index: number) => (
             <div key={index} className="mb-12">
               <DictionaryEntryClean entry={word} />

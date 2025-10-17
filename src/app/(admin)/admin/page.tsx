@@ -117,7 +117,7 @@ export default function AdminDashboard() {
         <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
           Recent Activity
         </h3>
-        <div className="text-center py-8">
+        <div className="text-center pb-16">
           <SvgIcon
             className="h-12 w-12 text-gray-400 mx-auto mb-4"
             variant="default"

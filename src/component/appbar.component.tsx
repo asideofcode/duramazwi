@@ -25,12 +25,31 @@ export default function Appbar() {
   const pathname = usePathname();
   const { toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [isStuck, setIsStuck] = useState(false);
+  const [showSearchIcon, setShowSearchIcon] = useState(false);
 
   useEffect(() => {
+    const header = document.getElementById('main-header');
+    if (!header) return;
+
+    const sticky = header.offsetTop;
+
     const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      setIsScrolled(scrollTop > 50); // Becomes sticky after 50px scroll (reduced threshold)
+      const scrolled = window.pageYOffset;
+      
+      // Sticky behavior
+      if (scrolled > sticky) {
+        setIsStuck(true);
+      } else {
+        setIsStuck(false);
+      }
+      
+      // Search icon appears after 50px of scrolling
+      if (scrolled > 100) {
+        setShowSearchIcon(true);
+      } else {
+        setShowSearchIcon(false);
+      }
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -44,10 +63,13 @@ export default function Appbar() {
   return (
     <>
       {/* Placeholder to prevent content jumping when header becomes fixed */}
-      {isScrolled && <div className="h-16"></div>}
+      {isStuck && <div className="h-16"></div>}
       
-      <div className={`${inter.className} ${isScrolled ? 'fixed top-0 left-0 right-0 z-50 bg-default border-b border-gray-200 dark:border-gray-700' : ''} transition-all duration-300`}>
-      <nav className={`${isScrolled ? 'py-2' : 'py-4'} transition-all duration-300`}>
+      <div 
+        id="main-header"
+        className={`${inter.className} mb-2 ${isStuck ? 'fixed top-0 left-0 right-0 z-50 border-b border-gray-200 dark:border-gray-700' : ''} bg-default transition-all duration-300`}
+      >
+      <nav className={`${isStuck ? 'py-2' : 'py-4'} transition-all duration-300`}>
         <div className="max-w-4xl mx-auto px-4">
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center justify-between">
@@ -84,8 +106,8 @@ export default function Appbar() {
               );
             })}
             
-            {/* Search Icon - Only show when sticky */}
-            {isScrolled && (
+            {/* Search Icon - Only show after 50px scroll */}
+            {showSearchIcon && (
               <button
                 onClick={() => {
                   const searchElement = document.getElementById('search-bar');
@@ -139,8 +161,8 @@ export default function Appbar() {
             </Link>
             
             <div className="flex items-center space-x-2">
-              {/* Search Icon for Mobile - Only show when sticky */}
-              {isScrolled && (
+              {/* Search Icon for Mobile - Only show after 50px scroll */}
+              {showSearchIcon && (
                 <button
                   onClick={() => {
                     const searchElement = document.getElementById('search-bar');

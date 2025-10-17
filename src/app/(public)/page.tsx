@@ -13,48 +13,82 @@ export default async function HomePage({ searchParams }: { searchParams: { q?: s
 
   return (
     <div>
-      {/* Hero Section - Oxford Dictionary Style */}
-      <div className="text-center py-12 mb-8">
-        <h1 className="text-5xl font-bold text-blue-600 dark:text-blue-500 mb-4">
-          Shona Dictionary
-        </h1>
-        <p className="text-xl text-gray-600 dark:text-gray-400 mb-2">
-          Duramazwi
-        </p>
-        <p className="text-xl text-gray-600 dark:text-gray-400 mb-4 max-w-2xl mx-auto leading-relaxed">
-          Explore the meanings of Shona words or find Shona equivalents for English words. 
-          Your comprehensive guide to the Shona language.
-        </p>
-        
-        {/* Prominent Search */}
-        <div id="search-bar" className="max-w-2xl mx-auto mb-6">
-          <SimpleSearchBar initialQuery={searchQuery} />
+      {/* Animated Header - transitions between full hero and compact search */}
+      <div className={`text-center transition-all duration-500 ease-in-out ${
+        searchQuery 
+          ? 'py-0 mb-0' 
+          : 'py-12 mb-8'
+      }`}>
+        {/* Title - fades out in search mode */}
+        <div className={`transition-all duration-500 ease-in-out ${
+          searchQuery 
+            ? 'hidden max-h-0 overflow-hidden' 
+            : 'opacity-100 max-h-20 mb-4'
+        }`}>
+          <h1 className="text-5xl font-bold text-blue-600 dark:text-blue-500 transition-all duration-500">
+            Shona Dictionary
+          </h1>
+        </div>
+
+        {/* Subtitle and Description - fade out when searching */}
+        <div className={`transition-all duration-500 ease-in-out ${
+          searchQuery 
+            ? 'hidden max-h-0 overflow-hidden' 
+            : 'opacity-100 max-h-96'
+        }`}>
+          <p className="text-xl text-gray-600 dark:text-gray-400 mb-2 transition-all duration-300">
+            Duramazwi
+          </p>
+          <p className="text-xl text-gray-600 dark:text-gray-400 mb-4 max-w-2xl mx-auto leading-relaxed transition-all duration-300">
+            Explore the meanings of Shona words or find Shona equivalents for English words. 
+            Your comprehensive guide to the Shona language.
+          </p>
         </div>
         
-        {/* Quick Actions */}
-        <div className="flex flex-wrap justify-center gap-4 text-base">
-          <Link 
-            href="/browse" 
-            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline"
-          >
-            Browse all entries
-          </Link>
-          <span className="text-gray-400">•</span>
-          <Link 
-            href="/random" 
-            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline"
-          >
-            Random word
-          </Link>
-          <span className="text-gray-400">•</span>
-          <Link 
-            href="/suggest" 
-            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline"
-          >
-            Suggest a word
-          </Link>
+        {/* Search Bar - animates width and positioning */}
+        <div className={`mx-auto transition-all duration-500 ease-in-out ${
+          searchQuery ? 'w-full mb-0' : 'max-w-2xl mb-6'
+        }`}>
+          <div id="search-bar">
+            <SimpleSearchBar initialQuery={searchQuery} />
+          </div>
+        </div>
+        
+        {/* Quick Actions - fade out when searching */}
+        <div className={`transition-all duration-500 ease-in-out ${
+          searchQuery 
+            ? 'hidden max-h-0 overflow-hidden' 
+            : 'opacity-100 max-h-20 mb-0'
+        }`}>
+          <div className="flex flex-wrap justify-center gap-4 text-base">
+            <Link 
+              href="/browse" 
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline transition-colors duration-200"
+            >
+              Browse all entries
+            </Link>
+            <span className="text-gray-400">•</span>
+            <Link 
+              href="/random" 
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline transition-colors duration-200"
+            >
+              Random word
+            </Link>
+            <span className="text-gray-400">•</span>
+            <Link 
+              href="/suggest" 
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline transition-colors duration-200"
+            >
+              Suggest a word
+            </Link>
+          </div>
         </div>
       </div>
+
+      {/* Separator for search results */}
+      {searchQuery && (
+        <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-700" />
+      )}
 
       {/* Search Results or Welcome Content */}
       {searchQuery ? (
@@ -93,7 +127,7 @@ function WelcomeContent() {
       </div>
 
       {/* Featured Words Preview */}
-      <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
+      <div className="bg-blue-50 dark:bg-gray-800 border border-blue-100 dark:border-gray-700 rounded-lg p-6">
         <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
           Featured Words
         </h3>

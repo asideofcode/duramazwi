@@ -10,7 +10,7 @@ export default function PublicLayout({
   return (
     <SearchProvider>
       <Appbar />
-      <main className="max-w-4xl mx-auto px-4 pb-16">
+      <main className="max-w-4xl mx-auto px-4 pb-16 min-h-screen">
         {children}
       </main>
     </SearchProvider>

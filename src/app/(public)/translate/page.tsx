@@ -15,7 +15,7 @@ export default function TranslatePage() {
       <div id="search-bar">
         <SearchBar />
       </div>
-      <div className="py-8">
+      <div className="">
         <TranslateClient />
       </div>
     </div>

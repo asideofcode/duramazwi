@@ -94,12 +94,9 @@ function SearchResults({ searchQuery, onError, router }: any) {
             result_count: 0,
           });
 
-          onError({
-            message: `Tineurombo, we couldn't find a meaning for "${query}".`,
-            resolution:
-              "Try checking the spelling or searching for related words.",
-          });
-          setStatus("failed");
+          // Set empty results to show the "Tineurombo" message in SearchResults component
+          setSearchResults([]);
+          setStatus("success");
         } else {
           globalThis.gtag?.("event", "search_performed", {
             search_term: query,
@@ -127,12 +124,28 @@ function SearchResults({ searchQuery, onError, router }: any) {
     return null;
   }
 
-  return searchResults ? (
+  // Always show the search results header, even when no results
+  return (
     <div className="max-w-4xl mx-auto px-4">
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Search results</h1>
-      <p className="text-lg text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
-        Found {searchResults.length} result{searchResults.length !== 1 ? 's' : ''} for "{searchQuery}". Click on a word to view more.
-      </p>
+      {/* Search Results Header with inline X button */}
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Search results</h1>
+        <Link 
+          href="/"
+          className="flex-shrink-0 p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md"
+          aria-label="Clear search"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </Link>
+      </div>
+      
+      {searchResults && searchResults.length > 0 ? (
+        <>
+          <p className="text-lg text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+            Found {searchResults.length} result{searchResults.length !== 1 ? 's' : ''} for "{searchQuery}". Click on a word to view more.
+          </p>
       
       {/* Top Pagination */}
       {(() => {
@@ -258,8 +271,20 @@ function SearchResults({ searchQuery, onError, router }: any) {
           </>
         );
       })()}
+        </>
+      ) : (
+        /* No results - show the "Tineurombo" message with original styling */
+        <div className="flex flex-col my-32 text-center">
+          <span className="text-lg font-bold theme-text-h1">
+            Tineurombo, we couldn't find a meaning for "{searchQuery}".
+          </span>
+          <span className="theme-text-sub1">
+            Try checking the spelling or searching for related words.
+          </span>
+        </div>
+      )}
     </div>
-  ) : null;
+  );
 }
 
 
