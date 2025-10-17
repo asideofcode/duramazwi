@@ -1,13 +1,13 @@
-import { Metadata } from "next/types";
+'use client';
+
 import Link from "next/link";
 import SvgIcon from "@/component/icons/svg-icon";
-
-export const metadata: Metadata = {
-  title: "Admin Dashboard - Duramazwi",
-  description: "Manage dictionary entries and content",
-};
+import { useAdminEntries } from "@/hooks/useAdminEntries";
+import { StatsCardSkeleton } from "@/components/admin/LoadingPlaceholders";
 
 export default function AdminDashboard() {
+  const { stats, loading, error, fetchStats } = useAdminEntries({ autoFetch: true });
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -20,61 +20,118 @@ export default function AdminDashboard() {
         </p>
       </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-          <div className="flex items-center">
-            <SvgIcon
-              className="h-8 w-8 text-blue-600 dark:text-blue-500"
-              variant="blue"
-              icon="Book"
-            />
-            <div className="ml-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Total Entries
-              </h3>
-              <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                Coming Soon
-              </p>
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {loading ? (
+          <>
+            <StatsCardSkeleton />
+            <StatsCardSkeleton />
+            <StatsCardSkeleton />
+            <StatsCardSkeleton />
+          </>
+        ) : (
+          <>
+            {/* Total Entries */}
+            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <SvgIcon
+                    className="h-8 w-8 text-blue-600 dark:text-blue-500"
+                    variant="default"
+                    icon="Book"
+                  />
+                </div>
+                <div className="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                      Total Entries
+                    </dt>
+                    <dd className="text-lg font-medium text-gray-900 dark:text-white">
+                      <p className="text-2xl font-bold text-gray-600 dark:text-gray-400">
+                        {stats?.totalEntries || 0}
+                      </p>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-          <div className="flex items-center">
-            <SvgIcon
-              className="h-8 w-8 text-green-600 dark:text-green-500"
-              variant="default"
-              icon="Plus"
-            />
-            <div className="ml-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Recent Additions
-              </h3>
-              <p className="text-2xl font-bold text-green-600 dark:text-green-400">
-                Coming Soon
-              </p>
+            {/* Published Entries */}
+            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <SvgIcon
+                    className="h-8 w-8 text-green-600 dark:text-green-500"
+                    variant="default"
+                    icon="Toggle"
+                  />
+                </div>
+                <div className="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                      Published
+                    </dt>
+                    <dd className="text-lg font-medium text-gray-900 dark:text-white">
+                      <p className="text-2xl font-bold text-gray-600 dark:text-gray-400">
+                        {stats?.publishedEntries || 0}
+                      </p>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-          <div className="flex items-center">
-            <SvgIcon
-              className="h-8 w-8 text-purple-600 dark:text-purple-500"
-              variant="default"
-              icon="Search"
-            />
-            <div className="ml-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Search Queries
-              </h3>
-              <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-                Coming Soon
-              </p>
+            {/* Draft Entries */}
+            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <SvgIcon
+                    className="h-8 w-8 text-yellow-600 dark:text-yellow-500"
+                    variant="default"
+                    icon="Plus"
+                  />
+                </div>
+                <div className="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                      Drafts
+                    </dt>
+                    <dd className="text-lg font-medium text-gray-900 dark:text-white">
+                      <p className="text-2xl font-bold text-gray-600 dark:text-gray-400">
+                        {stats?.draftEntries || 0}
+                      </p>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+
+            {/* Archived Entries */}
+            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <SvgIcon
+                    className="h-8 w-8 text-gray-600 dark:text-gray-500"
+                    variant="default"
+                    icon="Book"
+                  />
+                </div>
+                <div className="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                      Archived
+                    </dt>
+                    <dd className="text-lg font-medium text-gray-900 dark:text-white">
+                      <p className="text-2xl font-bold text-gray-600 dark:text-gray-400">
+                        {stats?.archivedEntries || 0}
+                      </p>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Action Cards */}

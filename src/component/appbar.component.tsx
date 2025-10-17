@@ -58,6 +58,19 @@ export default function Appbar() {
       }
     };
 
+    // Run handlers immediately to check initial state
+    handleScroll();
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+
     const handleResize = () => {
       // Close mobile menu when mobile nav becomes hidden (desktop mode)
       const mobileNav = mobileNavRef.current;
@@ -68,21 +81,21 @@ export default function Appbar() {
         
         if (isHidden) {
           setIsMobileMenuOpen(false);
+          setHeaderHeight(0);
         }
       }
     };
 
     // Run handlers immediately to check initial state
-    handleScroll();
     handleResize();
     
-    window.addEventListener('scroll', handleScroll);
     window.addEventListener('resize', handleResize);
     return () => {
-      window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleResize);
     };
   }, [isMobileMenuOpen]);
+
+  
 
   // Update header height when mobile menu state changes
   useEffect(() => {

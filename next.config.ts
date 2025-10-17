@@ -8,13 +8,17 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true, // Skip TypeScript errors during builds
   },
-  // Exclude admin routes in production builds
+  // Hide admin routes and API endpoints in production
   ...(process.env.NODE_ENV === 'production' && {
     async rewrites() {
       return {
         beforeFiles: [
           {
             source: '/admin/:path*',
+            destination: '/404',
+          },
+          {
+            source: '/api/admin/:path*',
             destination: '/404',
           },
         ],
