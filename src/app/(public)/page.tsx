@@ -1,11 +1,13 @@
+import { Suspense } from "react";
+import { redirect } from "next/navigation";
+import { Metadata } from "next/types";
+import SimpleSearchBar from "@/component/simple-search-bar.component";
 import ResultsPage from "../ResultsPage";
 import Link from "next/link";
-import { Suspense } from "react";
-import SimpleSearchBar from "@/component/simple-search-bar.component";
-import { createMetadata } from "@/utils/metadata";
-import { Metadata } from "next/types";
+import WebsiteStructuredData from "@/component/website-structured-data.component";
 import dataService from "@/services/dataService";
 import { Meaning } from "@/components/dictionary-entry-clean";
+import { createMetadata } from "@/utils/metadata";
 
 export const dynamic = "force-dynamic"; // Need dynamic for search params
 
@@ -60,6 +62,7 @@ export default async function HomePage({ searchParams }: { searchParams: { q?: s
 
   return (
     <div>
+      <WebsiteStructuredData />
       {/* Animated Header - transitions between full hero and compact search */}
       <div className={`text-center transition-all duration-500 ease-in-out ${
         searchQuery 

@@ -5,6 +5,7 @@ import { createMetadata } from "@/utils/metadata";
 // import { Courgette, Prata } from "next/font/google";
 import { Metadata } from "next/types";
 import DictionaryEntryClean, { DictionaryEntry, Meaning } from "@/components/dictionary-entry-clean";
+import StructuredData from "@/component/structured-data.component";
 
 // Helper function to format word display for metadata
 const formatWordForMetadata = (word: string, meanings: Meaning[]) => {
@@ -19,6 +20,7 @@ const formatWordForMetadata = (word: string, meanings: Meaning[]) => {
   
   return word;
 };
+
 
 // const spaceMono = Courgette({
 //   subsets: ["latin"],
@@ -54,8 +56,11 @@ export async function generateMetadata({
         title: `Meaning of ${formattedWord} in Shona | Shona Dictionary`,
         description: `The meaning of ${formattedWord} in Shona is ${firstDefinition}...`,
         keywords: `The meaning of ${formattedWord} in Shona, define ${formattedWord} in Shona, ${id} zvinorevei, ku${id}, Shona dictionary, Shona words, Shona language, Shona definitions, meanings, learn Shona, Shona-English dictionary, Shona translation, Shona pronunciation`,
+        alternates: {
+          canonical: `https://dictionary.chishona.org/word/${encodeURIComponent(id)}`
+        },
         openGraph: {
-          url: `https://dictionary.chishona.org/word/${id}`,
+          url: `https://dictionary.chishona.org/word/${encodeURIComponent(id)}`,
         }
       }
     );
@@ -83,6 +88,12 @@ export default async function DetailsPage({
 
   return (
     <div>
+      {wordDetails && wordDetails.length > 0 && (
+        <StructuredData 
+          entry={wordDetails[0]} 
+          url={`https://dictionary.chishona.org/word/${encodeURIComponent(id)}`} 
+        />
+      )}
       <div id="search-bar">
         <SearchBar />
       </div>

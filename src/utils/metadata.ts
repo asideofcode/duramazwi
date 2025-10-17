@@ -8,6 +8,9 @@ const createBaseMetadata = (): Metadata => {
     keywords:
       "Shona dictionary, Shona words, Shona language, Shona definitions, meanings, learn Shona, Shona-English dictionary, Shona translation, Shona pronunciation",
     google: "notranslate",
+    alternates: {
+      canonical: "https://dictionary.chishona.org"
+    },
     openGraph: {
       type: "website",
       locale: "en_ZW",
@@ -26,7 +29,7 @@ const createBaseMetadata = (): Metadata => {
     twitter: {
       // handle: "@duramazwi",
       // site: "@duramazwi",
-      card: "summary_large_image"
+      card: "summary_large_image" as const
     },
   };
 
@@ -37,6 +40,10 @@ function mergeMetadata(base: Metadata, overrides: Partial<Metadata>): Metadata {
   return {
     ...base,
     ...overrides,
+    alternates: {
+      ...base.alternates,
+      ...overrides.alternates,
+    },
     openGraph: {
       ...base.openGraph,
       ...overrides.openGraph,
