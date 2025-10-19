@@ -18,6 +18,8 @@ const navItems = [
   { href: "/suggest", label: "Suggest", title: "Suggest a new word for the dictionary", icon: "Plus" },
 ];
 
+const AppTitle = "Shona Dictionary (Duramazwi)";
+
 /**
  * Responsive navigation component with hamburger menu
  */
@@ -138,7 +140,7 @@ export default function Appbar() {
               icon="Book"
             />
             <span className="text-xl font-bold text-gray-900 dark:text-white">
-              Duramazwi
+              {AppTitle}
             </span>
           </Link>
           
@@ -220,7 +222,7 @@ export default function Appbar() {
                 icon="Book"
               />
               <span className="text-xl font-bold text-gray-900 dark:text-white">
-                Duramazwi
+                {AppTitle}
               </span>
             </Link>
             
