@@ -39,12 +39,21 @@ async function prompt(question) {
   }));
 }
 
+function backupExistingData(outputPath) {
+  const backupPath = path.join(__dirname, "./data-backup-" + Date.now() + ".json");
+  console.log("📦 Backing up existing data.json...");
+  fs.copyFileSync(outputPath, backupPath);
+  console.log(`✅ Backup created: ${backupPath}`);
+  return backupPath;
+}
+
 (async function () {
   console.log("Exporting data...");
 
   if (fs.existsSync(outputPath)) {
     if (overwrite === true) {
       console.log(`Overwrite flag is true. Will overwrite ${outputPath}.`);
+      backupExistingData(outputPath); // Backup before overwriting
     } else if (overwrite === false) {
       console.log("Overwrite flag is false. Skipping export.");
       return;
@@ -56,6 +65,7 @@ async function prompt(question) {
         console.log("Skipping export.");
         return;
       }
+      backupExistingData(outputPath); // Backup before overwriting
     }
   }
 

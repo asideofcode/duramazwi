@@ -3,8 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "backup-data": "node ./src/data/backup-data.js",
-    "export-data": "node ./src/data/backup-data.js && node ./src/data/export.js",
+    "export-data": "node ./src/data/export.js",
     "migrate-schema": "node ./src/data/migrate-to-new-schema.js",
     "migrate-schema:dry-run": "node ./src/data/migrate-to-new-schema.js --dry-run",
     "seed": "node ./src/data/seed.js ./src/data/data.json",
@@ -17,7 +16,7 @@
   "dependencies": {
     "@vercel/analytics": "^1.4.1",
     "classnames": "^2.5.1",
-    "dotenv": "^16.4.7",
+    "dotenv": "^17.2.3",
     "fuse.js": "^7.0.0",
     "mongodb": "^6.12.0",
     "next": "15.1.5",
