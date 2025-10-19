@@ -49,7 +49,7 @@ If you're using VS Code with Dev Containers:
 ## Contribution Guide
 We welcome contributions! Here's how you can help:
 ### Suggest new words
-Use the [Suggest Page](https://dictionary.chishona.org/suggest).
+Use the [Suggest Page](https://shonadictionary.com/suggest).
 ### Fix errors
 Report issues (or submit feature requests) via GitHub.
 

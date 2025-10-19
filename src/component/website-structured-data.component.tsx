@@ -4,7 +4,7 @@ export default function WebsiteStructuredData() {
     "@type": "WebSite",
     "name": "Shona Dictionary",
     "alternateName": "Duramazwi",
-    "url": "https://dictionary.chishona.org",
+    "url": "https://shonadictionary.com",
     "description": "Your comprehensive guide to the Shona language. Explore the meanings of Shona words or find Shona equivalents for English words.",
     "inLanguage": ["en", "sn"],
     "about": {
@@ -18,23 +18,23 @@ export default function WebsiteStructuredData() {
       "name": "Shona Dictionary",
       "description": "A comprehensive dictionary of Shona words and their meanings",
       "inLanguage": ["sn", "en"],
-      "url": "https://dictionary.chishona.org",
+      "url": "https://shonadictionary.com",
       "publisher": {
         "@type": "Organization",
         "name": "Shona Dictionary",
-        "url": "https://dictionary.chishona.org"
+        "url": "https://shonadictionary.com"
       }
     },
     "potentialAction": {
       "@type": "SearchAction",
       "target": {
         "@type": "EntryPoint",
-        "urlTemplate": "https://dictionary.chishona.org/?q={search_term_string}"
+        "urlTemplate": "https://shonadictionary.com/?q={search_term_string}"
       },
       "query-input": "required name=search_term_string"
     },
     "sameAs": [
-      "https://dictionary.chishona.org"
+      "https://shonadictionary.com"
     ],
     "breadcrumb": {
       "@type": "BreadcrumbList",
@@ -43,7 +43,7 @@ export default function WebsiteStructuredData() {
           "@type": "ListItem",
           "position": 1,
           "name": "Home",
-          "item": "https://dictionary.chishona.org"
+          "item": "https://shonadictionary.com"
         }
       ]
     }

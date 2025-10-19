@@ -8,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
       },
     ],
-    sitemap: 'https://dictionary.chishona.org/sitemap.xml',
+    sitemap: 'https://shonadictionary.com/sitemap.xml',
   };
 }

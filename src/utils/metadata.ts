@@ -9,17 +9,17 @@ const createBaseMetadata = (): Metadata => {
       "Shona dictionary, Shona words, Shona language, Shona definitions, meanings, learn Shona, Shona-English dictionary, Shona translation, Shona pronunciation",
     google: "notranslate",
     alternates: {
-      canonical: "https://dictionary.chishona.org"
+      canonical: "https://shonadictionary.com"
     },
     openGraph: {
       type: "website",
       locale: "en_ZW",
-      url: "https://dictionary.chishona.org",
+      url: "https://shonadictionary.com",
       title: undefined, // Fallback logic applied below
       description: undefined, // Fallback logic applied below
       images: [
         {
-          url: "https://dictionary.chishona.org/og-image.png",
+          url: "https://shonadictionary.com/og-image.png",
           width: 1200,
           height: 630,
           alt: "Shona Dictionary - Discover the Meaning of Shona Words",

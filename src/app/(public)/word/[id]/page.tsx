@@ -57,10 +57,10 @@ export async function generateMetadata({
         description: `The meaning of ${formattedWord} in Shona is ${firstDefinition}...`,
         keywords: `The meaning of ${formattedWord} in Shona, define ${formattedWord} in Shona, ${id} zvinorevei, ku${id}, Shona dictionary, Shona words, Shona language, Shona definitions, meanings, learn Shona, Shona-English dictionary, Shona translation, Shona pronunciation`,
         alternates: {
-          canonical: `https://dictionary.chishona.org/word/${encodeURIComponent(id)}`
+          canonical: `https://shonadictionary.com/word/${encodeURIComponent(id)}`
         },
         openGraph: {
-          url: `https://dictionary.chishona.org/word/${encodeURIComponent(id)}`,
+          url: `https://shonadictionary.com/word/${encodeURIComponent(id)}`,
         }
       }
     );
@@ -69,7 +69,7 @@ export async function generateMetadata({
     title: "Word not found",
     description: `We couldn't find the meaning of ${id} in Shona.`,
     openGraph: {
-      url: `https://dictionary.chishona.org/word/${id}`,
+      url: `https://shonadictionary.com/word/${id}`,
     }
   });
 }
@@ -91,7 +91,7 @@ export default async function DetailsPage({
       {wordDetails && wordDetails.length > 0 && (
         <StructuredData 
           entry={wordDetails[0]} 
-          url={`https://dictionary.chishona.org/word/${encodeURIComponent(id)}`} 
+          url={`https://shonadictionary.com/word/${encodeURIComponent(id)}`} 
         />
       )}
       <div id="search-bar">

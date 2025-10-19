@@ -16,7 +16,7 @@ export default function StructuredData({ entry, url }: StructuredDataProps) {
       "@type": "DefinedTermSet",
       "name": "Shona Dictionary",
       "description": "A comprehensive dictionary of Shona words and their meanings",
-      "url": "https://dictionary.chishona.org"
+      "url": "https://shonadictionary.com"
     },
     "termCode": entry.word,
     "url": url,
@@ -39,7 +39,7 @@ export default function StructuredData({ entry, url }: StructuredDataProps) {
     "isPartOf": {
       "@type": "WebSite",
       "name": "Shona Dictionary",
-      "url": "https://dictionary.chishona.org",
+      "url": "https://shonadictionary.com",
       "description": "Your comprehensive guide to the Shona language",
       "inLanguage": "en",
       "about": {
@@ -52,7 +52,7 @@ export default function StructuredData({ entry, url }: StructuredDataProps) {
       "name": "Shona Dictionary",
       "description": "A comprehensive dictionary of Shona words and their meanings",
       "inLanguage": ["sn", "en"],
-      "url": "https://dictionary.chishona.org"
+      "url": "https://shonadictionary.com"
     }
   };
 
