@@ -70,11 +70,12 @@ const collectionName = "words_new_schema"; // Updated to use new schema collecti
     const db = client.db(dbName);
     const collection = db.collection(collectionName);
 
-    // Upsert data into the collection based on _id
-    console.log("🔄 Upserting data into the collection...");
+    // Efficient upsert: let MongoDB detect actual changes
+    console.log("🔄 Upserting data with change detection...");
     
     let insertedCount = 0;
     let updatedCount = 0;
+    let matchedCount = 0;
     let errorCount = 0;
     
     // Process in batches for better performance
@@ -84,19 +85,20 @@ const collectionName = "words_new_schema"; // Updated to use new schema collecti
       const batch = allMyData.slice(i, i + BATCH_SIZE);
       
       try {
-        // Use bulkWrite for efficient upserts
+        // Use updateOne with upsert - MongoDB will only modify if content actually changed
         const bulkOps = batch.map(doc => ({
-          replaceOne: {
+          updateOne: {
             filter: { _id: doc._id },
-            replacement: doc,
+            update: { $set: doc },
             upsert: true
           }
         }));
         
         const result = await collection.bulkWrite(bulkOps);
         
-        insertedCount += result.upsertedCount;
-        updatedCount += result.modifiedCount;
+        insertedCount += result.upsertedCount || 0;
+        updatedCount += result.modifiedCount || 0;
+        matchedCount += result.matchedCount || 0;
         
         console.log(`📈 Progress: ${Math.min(i + BATCH_SIZE, allMyData.length)}/${allMyData.length} (${Math.round(Math.min(i + BATCH_SIZE, allMyData.length)/allMyData.length*100)}%)`);
         
@@ -106,9 +108,12 @@ const collectionName = "words_new_schema"; // Updated to use new schema collecti
       }
     }
 
+    const unchangedCount = matchedCount - updatedCount;
+    
     console.log("\n🎉 Seeding completed!");
     console.log(`✅ Inserted: ${insertedCount} new documents`);
     console.log(`🔄 Updated: ${updatedCount} existing documents`);
+    console.log(`⚪ Unchanged: ${unchangedCount} documents (no changes detected)`);
     if (errorCount > 0) {
       console.log(`❌ Errors: ${errorCount} documents failed`);
     }
