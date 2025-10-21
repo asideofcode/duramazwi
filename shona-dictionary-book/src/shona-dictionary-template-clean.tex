@@ -1,0 +1,366 @@
+\documentclass[10pt,twoside]{book}
+
+% Packages for dictionary layout
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{multicol}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{fontspec}
+\usepackage{microtype}
+\usepackage{ragged2e}
+\usepackage{hyphenat}
+\usepackage{xstring}
+\usepackage{hyperref}
+
+% Hyperref configuration
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Shona-English Dictionary},
+    pdfauthor={Duramazwi},
+    pdfsubject={Shona Language Dictionary},
+    pdfkeywords={Shona, English, Dictionary, Language},
+    bookmarks=true,
+    bookmarksopen=true,
+    bookmarksnumbered=false
+}
+
+% Page geometry - compact dictionary style
+\geometry{
+    paperwidth=6in,
+    paperheight=9in,
+    margin=0.75in,
+    top=0.6in,
+    bottom=0.6in,
+    headheight=14pt,
+    headsep=12pt,
+    footskip=20pt
+}
+
+% Font settings
+\setmainfont{Times New Roman}
+\setsansfont{Arial}
+
+% Colors
+\definecolor{headwordcolor}{RGB}{0,50,100}
+\definecolor{partofpeechcolor}{RGB}{100,100,100}
+\definecolor{examplecolor}{RGB}{120,120,120}
+\definecolor{englishexamplecolor}{RGB}{80,80,80}
+\definecolor{prefixcolor}{RGB}{34,197,94}
+\definecolor{verbcolor}{RGB}{34,197,94}
+\definecolor{nouncolor}{RGB}{59,130,246}
+\definecolor{adverbcolor}{RGB}{234,179,8}
+
+% Header/Footer setup
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\textbf{\thepage} \hfill \textsc{\leftmark}}
+\fancyhead[RO]{\textsc{\rightmark} \hfill \textbf{\thepage}}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Chapter and section formatting
+\titleformat{\chapter}[display]
+{\normalfont\huge\bfseries\centering}
+{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+
+% Ensure headers appear on chapter pages
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyhead[LE]{\textbf{\thepage} \hfill \textsc{\leftmark}}%
+  \fancyhead[RO]{\textsc{\rightmark} \hfill \textbf{\thepage}}%
+  \renewcommand{\headrulewidth}{0.4pt}%
+}
+
+\titleformat{\section}[block]
+{\normalfont\Large\bfseries\centering}
+{\thesection}{1em}{}
+
+% Custom command for dictionary letter headers (with page breaks)
+\newcommand{\letterheader}[1]{%
+    \clearpage%                              % Force page break
+    \phantomsection%                         % Create anchor for hyperref
+    \vspace{20pt plus 4pt minus 2pt}%       % Space from top
+    \begin{center}%
+        {\normalfont\LARGE\bfseries #1}%     % Large bold letter
+    \end{center}%
+    \vspace{10pt plus 2pt minus 2pt}%       % Space before content
+    \markboth{#1}{#1}%                      % Header marks
+    \label{chap:#1}%                        % Create label
+    \addcontentsline{toc}{chapter}{#1}%     % Add to TOC as chapter
+}
+
+% First letter header (no page break)
+\newcommand{\firstletterheader}[1]{%
+    \phantomsection%                         % Create anchor for hyperref
+    \vspace{20pt plus 4pt minus 2pt}%       % Space from top
+    \begin{center}%
+        {\normalfont\LARGE\bfseries #1}%     % Large bold letter
+    \end{center}%
+    \vspace{10pt plus 2pt minus 2pt}%       % Space before content
+    \markboth{#1}{#1}%                      % Header marks
+    \label{chap:#1}%                        % Create label
+    \addcontentsline{toc}{chapter}{#1}%     % Add to TOC as chapter
+}
+
+% Custom commands for dictionary entries
+\newcommand{\headword}[1]{%
+    \textbf{\color{headwordcolor}\large #1}%
+}
+
+% Command for verb headwords with colored ku- prefix
+\newcommand{\verbheadword}[2]{%
+    \textbf{\large\color{prefixcolor}#1\color{headwordcolor}#2}%
+}
+
+\newcommand{\pronunciation}[1]{%
+    \textit{[#1]}%
+}
+
+% Specific part of speech commands with colors
+\newcommand{\verbpos}{\textit{\color{verbcolor}verb}}
+\newcommand{\nounpos}{\textit{\color{nouncolor}noun}}
+\newcommand{\adverbpos}{\textit{\color{adverbcolor}adverb}}
+\newcommand{\adjectivepos}{\textit{\color{adverbcolor}adjective}}
+
+% Generic part of speech command (fallback)
+\newcommand{\partofpeech}[1]{%
+    \textit{\color{partofpeechcolor}#1}%
+}
+
+\newcommand{\definition}[1]{%
+    #1%
+}
+
+\newcommand{\example}[2]{%
+    \textit{\color{examplecolor}#1} \textit{#2}%
+}
+
+\newcommand{\crossref}[1]{%
+    \textsc{see} \textbf{#1}%
+}
+
+% Dictionary entry environment (deprecated - now handled in generator)
+% \newenvironment{dictentry}[1]{%
+%     \par\noindent\headword{#1}\space%
+% }{%
+%     \par\vspace{4pt}%
+% }
+
+% Compact list for multiple definitions
+\newlist{deflist}{enumerate}{1}
+\setlist[deflist]{label=\textbf{\arabic*.},leftmargin=1em,itemsep=0pt,parsep=0pt,topsep=2pt}
+
+% Page breaking settings to prevent orphans and widows
+\widowpenalty=10000
+\clubpenalty=10000
+\raggedbottom
+\setlength{\columnsep}{1em}
+
+% Ragged right settings for better text flow
+\setlength{\RaggedRightParindent}{0pt}
+\setlength{\RaggedRightRightskip}{0pt plus 2em}
+
+% Column balancing settings
+\setlength{\columnseprule}{0pt}
+% \raggedcolumns  % Commented out - may not be available in all distributions
+
+% Prevent breaking within dictionary entries
+\newenvironment{dictentryblock}{%
+    \begin{samepage}%
+}{%
+    \end{samepage}%
+}
+
+% Title page information
+\title{%
+    {\Huge\textbf{SHONA-ENGLISH}}\\[0.5cm]
+    {\Large\textbf{DICTIONARY}}\\[1cm]
+    {\large Duramazwi reChiShona neChirungu}
+}
+
+\author{%
+    Compiled from Traditional Sources\\
+    and Modern Usage\\[0.5cm]
+    {\small Version 1.0}
+}
+
+\date{\today}
+
+\begin{document}
+
+% Front matter
+\frontmatter
+\maketitle
+
+% Copyright page
+\newpage
+\thispagestyle{empty}
+\vspace*{\fill}
+\begin{center}
+\textbf{Shona-English Dictionary}\\[0.5cm]
+\textcopyright\ \the\year\ shonadictionary.com\\[0.5cm]
+
+This dictionary is compiled from traditional Shona sources\\
+and modern community contributions.\\[1cm]
+
+Published under Creative Commons License\\
+Attribution-ShareAlike 4.0 International\\[0.5cm]
+
+First Edition\\
+\today
+\end{center}
+\vspace*{\fill}
+
+% Table of contents
+\tableofcontents
+\newpage
+
+% Preface
+\chapter*{Preface}
+\addcontentsline{toc}{chapter}{Preface}
+
+This dictionary represents a comprehensive collection of Shona words and their English translations, compiled from both traditional sources and modern usage. The Shona language, spoken by over 10 million people primarily in Zimbabwe, is a rich and vibrant language with a deep cultural heritage.
+
+Our goal is to preserve and promote the Shona language by making it accessible to both native speakers and learners worldwide. This dictionary includes:
+
+\begin{itemize}
+\item Over 1,000 carefully selected Shona words
+\item Clear English definitions and translations
+\item Example sentences in both languages
+\item Pronunciation guides where applicable
+\item Cross-references to related terms
+\end{itemize}
+
+The entries in this dictionary follow standard Shona orthography and include words from various domains of life, from traditional concepts to modern terminology.
+
+\vspace{1cm}
+\textit{Tinoda kuchengetedza mutauro wechiShona nokuitenderedza pasi rose. Duramazwi iri rine mazwi anobva muupenyu hwemazuva ano uye hwekare.}
+
+% Introduction
+\chapter*{Introduction}
+\addcontentsline{toc}{chapter}{Introduction}
+
+\section*{About the Shona Language}
+
+Shona is a Bantu language spoken primarily in Zimbabwe, with smaller communities in Mozambique, Botswana, and Zambia. It is one of the official languages of Zimbabwe, alongside English and Ndebele.
+
+\section*{Pronunciation Guide}
+
+Shona uses a relatively simple phonetic system. Most letters are pronounced as they appear, with the following key points:
+
+\begin{itemize}
+\item \textbf{a} - as in "father"
+\item \textbf{e} - as in "bed"
+\item \textbf{i} - as in "machine"
+\item \textbf{o} - as in "more"
+\item \textbf{u} - as in "moon"
+\end{itemize}
+
+Special combinations:
+\begin{itemize}
+\item \textbf{bh} - aspirated b
+\item \textbf{ch} - as in "church"
+\item \textbf{dh} - aspirated d
+\item \textbf{gh} - aspirated g
+\item \textbf{kh} - aspirated k
+\item \textbf{ph} - aspirated p
+\item \textbf{th} - aspirated t
+\item \textbf{zh} - as in "measure"
+\end{itemize}
+
+\section*{How to Use This Dictionary}
+
+Each entry follows this format:
+\begin{itemize}
+\item \textbf{Headword} - the main Shona word
+\item \textit{Part of speech} - noun, verb, adjective, etc.
+\item Definition - clear English explanation
+\item \textit{Example} - usage in context with translation
+\end{itemize}
+
+% Main dictionary content
+\mainmatter
+
+%SAMPLE_CHAPTERS_PLACEHOLDER%
+
+% Back matter
+\backmatter
+
+% Appendices
+\appendix
+
+\chapter{Common Phrases}
+\begin{multicols}{2}
+\RaggedRight
+
+\textbf{Greetings}
+\begin{itemize}[leftmargin=*]
+\item Mangwanani - Good morning
+\item Masikati - Good afternoon  
+\item Manheru - Good evening
+\item Usiku hwakanaka - Good night
+\end{itemize}
+
+\textbf{Basic Expressions}
+\begin{itemize}[leftmargin=*]
+\item Ndatenda - Thank you
+\item Pamusoroi - Excuse me/Sorry
+\item Ndinokuda - I love you
+\item Ndine nzara - I am hungry
+\item Ndine nyota - I am thirsty
+\end{itemize}
+
+\textbf{Questions}
+\begin{itemize}[leftmargin=*]
+\item Makadii? - How are you?
+\item Zita renyu ndiani? - What is your name?
+\item Munobva kupi? - Where are you from?
+\item Nguva yakadii? - What time is it?
+\end{itemize}
+
+\end{multicols}
+
+\chapter{Numbers}
+\begin{multicols}{2}
+\RaggedRight
+
+\textbf{Cardinal Numbers}
+\begin{itemize}[leftmargin=*]
+\item motsi - one
+\item piri - two
+\item tatu - three
+\item ina - four
+\item shanu - five
+\item tanhatu - six
+\item nomwe - seven
+\item sere - eight
+\item pfumbamwe - nine
+\item gumi - ten
+\end{itemize}
+
+\end{multicols}
+
+% Bibliography/Sources
+\chapter*{Sources and References}
+\addcontentsline{toc}{chapter}{Sources and References}
+
+This dictionary was compiled from the following sources:
+
+\begin{itemize}
+\item Traditional Shona oral literature and proverbs
+\item Hannan, M. \textit{Standard Shona Dictionary}. Harare: Literature Bureau.
+\item Dale, D. \textit{Duramazwi: A Shona-English Dictionary}. Gweru: Mambo Press.
+\item Community contributions from shonadictionary.com
+\item Modern usage examples from contemporary Shona speakers
+\end{itemize}
+
+\vspace{1cm}
+\textit{Special thanks to the Shona-speaking community worldwide for their contributions to preserving and promoting this beautiful language.}
+
+\end{document}
