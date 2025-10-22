@@ -11,6 +11,8 @@ class AudioDataService {
     // Static import - resolved at build time, just like dataService
     this.audioIndex = audioIndexRaw;
     console.log(`🎵 Loaded ${Object.keys(this.audioIndex.records || {}).length} audio records at build time`);
+    console.log(`🎵 Entry index keys:`, Object.keys(this.audioIndex.entryIndex || {}).slice(0, 5));
+    console.log(`🎵 Sample audio record:`, Object.values(this.audioIndex.records || {})[0]);
   }
 
   getRecord(audioId: string): AudioRecord | null {

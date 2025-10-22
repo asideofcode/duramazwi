@@ -98,8 +98,14 @@ export default async function DetailsPage({
   
   // Pre-resolve audio data at build time (like wordDetails)
   const audioRecords = wordDetails && wordDetails.length > 0 
-    ? audioDataService.getRecordsForEntry(wordDetails[0]._id || id)
+    ? audioDataService.getRecordsForEntry(id)
     : [];
+  
+  // Debug logging
+  console.log(`🎵 [${id}] Audio records found:`, audioRecords.length);
+  if (audioRecords.length > 0) {
+    console.log(`🎵 [${id}] First audio record:`, audioRecords[0]);
+  }
 
   return (
     <div>
