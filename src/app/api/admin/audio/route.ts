@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { AudioFilters } from '@/services/audioStorage';
+import { AudioFilters } from '@/services/audioAPIClient';
 import { audioService } from '@/services/audioService';
 
 export async function GET(request: NextRequest) {

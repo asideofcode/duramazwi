@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import SvgIcon from '@/component/icons/svg-icon';
-import { AudioMetadata, AudioRecord, createAudioStorage } from '@/services/audioStorage';
+import { AudioMetadata, AudioRecord, createAudioStorage } from '@/services/audioAPIClient';
 
 interface AudioRecorderProps {
   entryId: string;

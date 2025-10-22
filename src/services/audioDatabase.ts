@@ -1,5 +1,5 @@
 import { MongoClient, Db, Collection } from 'mongodb';
-import { AudioRecord, AudioFilters } from './audioStorage';
+import { AudioRecord, AudioFilters } from './audioAPIClient';
 
 export interface AudioIndexDocument {
   _id: string; // audioId

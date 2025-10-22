@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import StaticAudioPlayer from './StaticAudioPlayer';
-import { AudioRecord } from '@/services/audioStorage';
+import { AudioRecord } from '@/services/audioAPIClient';
 
 // New schema types
 interface Example {

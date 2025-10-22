@@ -1,4 +1,4 @@
-import { AudioRecord, AudioFilters, AudioMetadata } from './audioStorage';
+import { AudioRecord, AudioFilters, AudioMetadata } from './audioAPIClient';
 
 export interface AudioService {
   upload(file: File, metadata: AudioMetadata): Promise<AudioRecord>;
@@ -35,7 +35,7 @@ class LocalAudioService implements AudioService {
   constructor() {
     const path = require('path');
     this.uploadDir = path.join(process.cwd(), 'public', 'uploads', 'audio');
-    this.indexPath = path.join(this.uploadDir, 'uploads.json');
+    this.indexPath = path.join(process.cwd(), 'src', 'data', 'audio-index.json');
   }
   
   async upload(file: File, metadata: AudioMetadata): Promise<AudioRecord> {

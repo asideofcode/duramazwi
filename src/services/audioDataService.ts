@@ -1,44 +1,16 @@
-import { AudioRecord, AudioFilters } from './audioStorage';
-import fs from 'fs';
-import path from 'path';
+import { AudioRecord, AudioFilters } from './audioAPIClient';
+// Static import like dataService - build-time resolution only
+import audioIndexRaw from '@/data/audio-index.json';
 
 // Build-time audio service - loads data once at build time, like dataService
 // No runtime fetching, no client-side loading, pure build-time resolution
 class AudioDataService {
-  private audioIndex: any = null;
+  private audioIndex: any;
 
   constructor() {
-    this.loadAudioIndex();
-  }
-
-  private loadAudioIndex(): void {
-    try {
-      const indexPath = path.join(process.cwd(), 'public', 'uploads', 'audio', 'uploads.json');
-      
-      if (fs.existsSync(indexPath)) {
-        const content = fs.readFileSync(indexPath, 'utf-8');
-        this.audioIndex = JSON.parse(content);
-        console.log(`🎵 Loaded ${Object.keys(this.audioIndex.records || {}).length} audio records at build time`);
-      } else {
-        console.warn('⚠️ No audio index found at build time, using empty index');
-        this.audioIndex = {
-          version: '1.0.0',
-          lastUpdated: new Date().toISOString(),
-          records: {},
-          entryIndex: {},
-          levelIndex: {}
-        };
-      }
-    } catch (error) {
-      console.error('❌ Failed to load audio index at build time:', error);
-      this.audioIndex = {
-        version: '1.0.0',
-        lastUpdated: new Date().toISOString(),
-        records: {},
-        entryIndex: {},
-        levelIndex: {}
-      };
-    }
+    // Static import - resolved at build time, just like dataService
+    this.audioIndex = audioIndexRaw;
+    console.log(`🎵 Loaded ${Object.keys(this.audioIndex.records || {}).length} audio records at build time`);
   }
 
   getRecord(audioId: string): AudioRecord | null {

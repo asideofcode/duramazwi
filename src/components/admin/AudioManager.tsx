@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import SvgIcon from '@/component/icons/svg-icon';
 import AudioRecorder from './AudioRecorder';
 import AudioPlayer from './AudioPlayer';
-import { AudioRecord, AudioFilters, createAudioStorage } from '@/services/audioStorage';
+import { AudioRecord, AudioFilters, createAudioStorage } from '@/services/audioAPIClient';
 
 interface AudioManagerProps {
   entryId: string;

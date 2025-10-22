@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { AudioMetadata } from '@/services/audioStorage';
+import { AudioMetadata } from '@/services/audioAPIClient';
 import { audioService } from '@/services/audioService';
 
 export async function POST(request: NextRequest) {

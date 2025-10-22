@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import SvgIcon from '@/component/icons/svg-icon';
-import { AudioRecord } from '@/services/audioStorage';
+import { AudioRecord } from '@/services/audioAPIClient';
 
 interface AudioPlayerProps {
   audioRecord: AudioRecord;

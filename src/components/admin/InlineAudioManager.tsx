@@ -5,7 +5,7 @@ import SvgIcon from '@/component/icons/svg-icon';
 import CompactAudioRecorder from './CompactAudioRecorder';
 import AudioPlayer from './AudioPlayer';
 import AudioSelector from '../AudioSelector';
-import { AudioRecord, AudioFilters, createAudioStorage } from '@/services/audioStorage';
+import { AudioRecord, AudioFilters, createAudioStorage } from '@/services/audioAPIClient';
 
 // Compact audio player for inline use
 function CompactAudioPlayer({ 

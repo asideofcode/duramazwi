@@ -1,6 +1,6 @@
 'use client';
 
-import { AudioRecord } from '@/services/audioStorage';
+import { AudioRecord } from '@/services/audioAPIClient';
 import AudioSelector from './AudioSelector';
 
 interface StaticAudioPlayerProps {

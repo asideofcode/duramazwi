@@ -7,7 +7,7 @@ const { audioDatabase } = require("./audioDatabase");
 async function exportAudio() {
   console.log("📤 Exporting audio for production build...");
   
-  const exportPath = path.join(process.cwd(), 'public', 'uploads', 'audio', 'uploads.json');
+  const exportPath = path.join(process.cwd(), 'src', 'data', 'audio-index.json');
   
   try {
     // If MongoDB is configured, export from there
@@ -59,7 +59,7 @@ async function exportAudio() {
     console.error("❌ Failed to export audio:", error);
     
     // Create empty index as fallback
-    const exportPath = path.join(process.cwd(), 'public', 'uploads', 'audio', 'uploads.json');
+    const fallbackPath = path.join(process.cwd(), 'src', 'data', 'audio-index.json');
     const emptyIndex = {
       version: '1.0.0',
       lastUpdated: new Date().toISOString(),
@@ -69,12 +69,12 @@ async function exportAudio() {
     };
     
     // Ensure directory exists
-    const dir = path.dirname(exportPath);
+    const dir = path.dirname(fallbackPath);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
     
-    fs.writeFileSync(exportPath, JSON.stringify(emptyIndex, null, 2));
+    fs.writeFileSync(fallbackPath, JSON.stringify(emptyIndex, null, 2));
     console.log("✅ Created empty audio index as fallback");
   } finally {
     if (process.env.AUDIO_MODE === 'production') {
