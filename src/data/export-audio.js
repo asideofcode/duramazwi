@@ -7,33 +7,33 @@ const { audioDatabase } = require("./audioDatabase");
 async function exportAudio() {
   console.log("📤 Exporting audio for production build...");
   
+  const exportPath = path.join(process.cwd(), 'public', 'uploads', 'audio', 'uploads.json');
+  
   try {
-    // Always export to main uploads.json for production
-    const exportPath = path.join(process.cwd(), 'public', 'uploads', 'audio', 'uploads.json');
-    
-    // Check if we're in production mode and have MongoDB
-    if (process.env.AUDIO_MODE === 'production' && process.env.MONGODB_URI) {
-      console.log("🎵 Production mode: Exporting from MongoDB");
+    // If MongoDB is configured, export from there
+    if (process.env.MONGODB_URI) {
+      console.log("🎵 MongoDB configured: Exporting from database");
       
-      // Export from MongoDB
       await audioDatabase.exportToFile(exportPath);
       
-      // Get stats
       const stats = await audioDatabase.getStats();
       console.log(`📊 Exported ${stats.totalRecords} audio records from MongoDB`);
       console.log(`📊 ${stats.entriesWithAudio} entries have audio`);
       console.log(`📊 Records by level:`, stats.recordsByLevel);
       
-    } else {
-      console.log("🎵 Local mode: Using existing file-based index");
+      // Close MongoDB connection
+      await audioDatabase.close();
       
-      // In local mode, just ensure the file exists
+    } else {
+      // No MongoDB - use existing local file or create empty
+      console.log("🎵 No MongoDB configured: Using local files");
+      
       if (fs.existsSync(exportPath)) {
         const content = fs.readFileSync(exportPath, 'utf-8');
         const index = JSON.parse(content);
         console.log(`📊 Using existing local index with ${Object.keys(index.records).length} records`);
       } else {
-        // Create empty index
+        // Create minimal empty index
         const emptyIndex = {
           version: '1.0.0',
           lastUpdated: new Date().toISOString(),
@@ -49,7 +49,7 @@ async function exportAudio() {
         }
         
         fs.writeFileSync(exportPath, JSON.stringify(emptyIndex, null, 2));
-        console.log("📊 Created empty audio index for build");
+        console.log("📊 Created empty audio index (no existing data)");
       }
     }
     
