@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { FormExample } from './EditFormHelpers';
 import SvgIcon from '@/component/icons/svg-icon';
+import InlineAudioManager from './InlineAudioManager';
 
 interface ExampleEditorProps {
   examples: FormExample[];
@@ -10,9 +11,12 @@ interface ExampleEditorProps {
   word?: string;
   definition?: string;
   partOfSpeech?: string;
+  entryId?: string;
+  meaningIndex?: number;
+  definitionIndex?: number;
 }
 
-export default function ExampleEditor({ examples, onChange, word, definition, partOfSpeech }: ExampleEditorProps) {
+export default function ExampleEditor({ examples, onChange, word, definition, partOfSpeech, entryId, meaningIndex, definitionIndex }: ExampleEditorProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   
   const addExample = () => {
@@ -100,9 +104,20 @@ export default function ExampleEditor({ examples, onChange, word, definition, pa
           {examples.map((example, index) => (
             <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-3 p-3 border border-gray-200 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-800">
               <div>
-                <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-                  Shona Example
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400">
+                    Shona Example
+                  </label>
+                  {entryId && (
+                    <InlineAudioManager
+                      entryId={entryId}
+                      level="example"
+                      levelId={`example-${meaningIndex}-${definitionIndex}-${index}`}
+                      label="Audio"
+                      compact={true}
+                    />
+                  )}
+                </div>
                 <textarea
                   rows={2}
                   value={example.shona}

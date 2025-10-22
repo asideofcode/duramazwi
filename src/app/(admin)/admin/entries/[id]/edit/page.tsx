@@ -9,6 +9,7 @@ import { EditFormData, entryToFormData, formDataToEntry, validateFormData } from
 import WordInput from '@/components/admin/WordInput';
 import StatusSelector from '@/components/admin/StatusSelector';
 import MeaningEditor from '@/components/admin/MeaningEditor';
+import AudioManager from '@/components/admin/AudioManager';
 
 interface EditEntryPageProps {
   params: Promise<{ id: string }>;
@@ -21,6 +22,7 @@ export default function EditEntryPage({ params }: EditEntryPageProps) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [entryId, setEntryId] = useState<string | null>(null);
   
   const [formData, setFormData] = useState<EditFormData>({
@@ -74,10 +76,19 @@ export default function EditEntryPage({ params }: EditEntryPageProps) {
     loadEntry();
   }, [entryId]); // Only depend on entryId
 
+  // Helper function to format word display for admin edit header - just show the root word
+  const formatWordDisplay = (entry: any) => {
+    if (!entry) return null;
+    
+    // Always just show the base word for the header
+    return entry.word;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
     setError(null);
+    setSuccess(null);
 
     try {
       // Validate form data
@@ -101,7 +112,10 @@ export default function EditEntryPage({ params }: EditEntryPageProps) {
       const result = await response.json();
       
       if (response.ok && result.success) {
-        router.push('/admin/entries');
+        setSuccess('Entry saved successfully!');
+        // Update the entry state with the saved data
+        setEntry(result.data);
+        setFormData(entryToFormData(result.data));
       } else {
         setError(result.error || result.message || 'Failed to update entry');
       }
@@ -172,10 +186,22 @@ export default function EditEntryPage({ params }: EditEntryPageProps) {
         </Link>
         
         <div>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
-            Edit Entry: {entry?.word}
-          </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400 mt-2">
+          <div className="flex items-center space-x-4 mb-2">
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+              Edit Entry: {formatWordDisplay(entry)}
+            </h1>
+            {entry?.word && (
+              <Link
+                href={`/word/${encodeURIComponent(entry.word)}`}
+                target="_blank"
+                className="inline-flex items-center space-x-2 px-3 py-2 bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800 text-blue-700 dark:text-blue-300 rounded-md transition-colors text-sm"
+              >
+                <SvgIcon className="h-4 w-4" variant="default" icon="Search" />
+                <span>View Public Entry</span>
+              </Link>
+            )}
+          </div>
+          <p className="text-lg text-gray-600 dark:text-gray-400">
             Modify the dictionary entry details
           </p>
         </div>
@@ -196,16 +222,24 @@ export default function EditEntryPage({ params }: EditEntryPageProps) {
             </div>
           )}
 
+          {success && (
+            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+              <p className="text-green-800 dark:text-green-200">{success}</p>
+            </div>
+          )}
+
           <div className="space-y-8">
             <WordInput
               value={formData.word}
               onChange={(value) => setFormData({ ...formData, word: value })}
+              word={entry?.word}
             />
 
             <MeaningEditor
               meanings={formData.meanings}
               onChange={(meanings) => setFormData({ ...formData, meanings })}
               word={formData.word}
+              entryId={entryId || undefined}
             />
 
             <StatusSelector

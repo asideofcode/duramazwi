@@ -3,15 +3,18 @@
 import { FormDefinition } from './EditFormHelpers';
 import SvgIcon from '@/component/icons/svg-icon';
 import ExampleEditor from './ExampleEditor';
+import InlineAudioManager from './InlineAudioManager';
 
 interface DefinitionEditorProps {
   definitions: FormDefinition[];
   onChange: (definitions: FormDefinition[]) => void;
   word?: string;
   partOfSpeech?: string;
+  entryId?: string;
+  meaningIndex?: number;
 }
 
-export default function DefinitionEditor({ definitions, onChange, word, partOfSpeech }: DefinitionEditorProps) {
+export default function DefinitionEditor({ definitions, onChange, word, partOfSpeech, entryId, meaningIndex }: DefinitionEditorProps) {
   const addDefinition = () => {
     onChange([
       ...definitions,
@@ -96,6 +99,9 @@ export default function DefinitionEditor({ definitions, onChange, word, partOfSp
                 word={word}
                 definition={definition.definition}
                 partOfSpeech={partOfSpeech}
+                entryId={entryId}
+                meaningIndex={meaningIndex}
+                definitionIndex={index}
               />
             </div>
           </div>

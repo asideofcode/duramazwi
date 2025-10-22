@@ -1,12 +1,14 @@
 'use client';
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useCallback } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import SvgIcon from "@/component/icons/svg-icon";
 import { useAdminEntries } from "@/hooks/useAdminEntries";
 import { AdminDictionaryEntry } from "@/services/adminDataService";
 import CreateEntryModal from "@/components/admin/CreateEntryModal";
+import AiAddEntryModal from "@/components/admin/AiAddEntryModal";
+import { DictionaryEntry } from "@/components/dictionary-entry-clean";
 
 function ManageEntriesContent() {
   const router = useRouter();
@@ -14,10 +16,22 @@ function ManageEntriesContent() {
   
   // Initialize state from URL params
   const [search, setSearch] = useState(searchParams.get('search') || '');
+  const [searchInput, setSearchInput] = useState(searchParams.get('search') || ''); // For immediate UI updates
   const [page, setPage] = useState(parseInt(searchParams.get('page') || '1'));
   const [categoryFilter, setCategoryFilter] = useState(searchParams.get('category') || '');
-  const [selectedEntries, setSelectedEntries] = useState<string[]>([]);
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [showAiModal, setShowAiModal] = useState(false);
+  
+  // Handler for AI-generated entries
+  const handleAiEntryGenerated = async (entry: DictionaryEntry) => {
+    const result = await createEntry(entry);
+    if (result.success) {
+      setShowAiModal(false);
+      // Optionally navigate to the new entry
+      // router.push(`/admin/entries/${encodeURIComponent(entry.word)}/edit`);
+    }
+    return result;
+  };
   
   // Helper function to update URL params
   const updateUrlParams = (newParams: { search?: string; page?: number; category?: string }) => {
@@ -58,6 +72,120 @@ function ManageEntriesContent() {
     category: categoryFilter,
     autoFetch: true
   });
+
+  // Helper function to format word display for admin list - shows each meaning separately
+  const formatWordDisplay = (entry: any) => {
+    if (!entry.meanings || entry.meanings.length === 0) {
+      return <span className="text-blue-700 dark:text-blue-300 font-medium">{entry.word}</span>;
+    }
+
+    // Group meanings by part of speech to handle multiple meanings of same type
+    const meaningsByPartOfSpeech = entry.meanings.reduce((acc: any, meaning: any) => {
+      const pos = meaning.partOfSpeech?.toLowerCase() || 'unknown';
+      if (!acc[pos]) {
+        acc[pos] = [];
+      }
+      acc[pos].push(meaning);
+      return acc;
+    }, {});
+
+    const partOfSpeechEntries = Object.entries(meaningsByPartOfSpeech);
+
+    return (
+      <div className="space-y-0">
+        {partOfSpeechEntries.map(([partOfSpeech, meanings], index) => {
+          const isVerb = partOfSpeech === 'verb';
+          const isLast = index === partOfSpeechEntries.length - 1;
+          
+          return (
+            <div 
+              key={`${partOfSpeech}-${index}`}
+              className={`${
+                index > 0 ? 'pt-2 border-t border-gray-200 dark:border-gray-600 border-dashed' : ''
+              } ${!isLast ? 'pb-2' : ''}`}
+            >
+              {isVerb ? (
+                <>
+                  <span className="text-green-700 dark:text-green-300 font-bold">ku-</span>
+                  <span className="text-blue-700 dark:text-blue-300 font-medium">{entry.word}</span>
+                </>
+              ) : (
+                <span className="text-blue-700 dark:text-blue-300 font-medium">{entry.word}</span>
+              )}
+              <span className="text-gray-400 text-sm ml-1">
+                ({partOfSpeech}{Array.isArray(meanings) && meanings.length > 1 ? ` × ${meanings.length}` : ''})
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  // Helper function to format definitions for admin list
+  const formatDefinitionsDisplay = (entry: any) => {
+    if (!entry.meanings || entry.meanings.length === 0) {
+      return <span className="text-gray-500">No definitions</span>;
+    }
+
+    // Group meanings by part of speech
+    const meaningsByPartOfSpeech = entry.meanings.reduce((acc: any, meaning: any) => {
+      const pos = meaning.partOfSpeech?.toLowerCase() || 'unknown';
+      if (!acc[pos]) {
+        acc[pos] = [];
+      }
+      acc[pos].push(meaning);
+      return acc;
+    }, {});
+
+    const partOfSpeechEntries = Object.entries(meaningsByPartOfSpeech);
+
+    return (
+      <div className="space-y-0">
+        {partOfSpeechEntries.map(([partOfSpeech, meanings], index) => {
+          const firstMeaning = Array.isArray(meanings) ? meanings[0] : meanings;
+          const firstDefinition = firstMeaning?.definitions?.[0]?.definition || 'No definition';
+          const isLast = index === partOfSpeechEntries.length - 1;
+          
+          return (
+            <div 
+              key={`${partOfSpeech}-def-${index}`} 
+              className={`text-sm text-gray-900 dark:text-gray-100 ${
+                index > 0 ? 'pt-2 border-t border-gray-200 dark:border-gray-600 border-dashed' : ''
+              } ${!isLast ? 'pb-2' : ''}`}
+            >
+              {firstDefinition}
+              {Array.isArray(meanings) && meanings.length > 1 && (
+                <span className="text-xs text-gray-500 ml-2">
+                  (+{meanings.length - 1} more)
+                </span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  // Immediate search effect
+  useEffect(() => {
+    if (searchInput !== search) {
+      setSearch(searchInput);
+      setPage(1);
+      // Use replace instead of push to avoid history entries for each keystroke
+      const params = new URLSearchParams(searchParams.toString());
+      if (searchInput) {
+        params.set('search', searchInput);
+      } else {
+        params.delete('search');
+      }
+      params.delete('page'); // Reset to page 1
+      
+      const newUrl = params.toString() ? `/admin/entries?${params.toString()}` : '/admin/entries';
+      router.replace(newUrl);
+    }
+  }, [searchInput, search, searchParams, router]);
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -70,13 +198,22 @@ function ManageEntriesContent() {
             Add, edit, and organize dictionary content
           </p>
         </div>
-        <button
-          onClick={() => setShowCreateForm(true)}
-          className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
-        >
-          <SvgIcon className="h-4 w-4" variant="light" icon="Plus" />
-          <span>Add New Entry</span>
-        </button>
+        <div className="flex space-x-3">
+          <button
+            onClick={() => setShowCreateForm(true)}
+            className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
+          >
+            <SvgIcon className="h-4 w-4" variant="light" icon="Plus" />
+            <span>Add New Entry</span>
+          </button>
+          <button
+            onClick={() => setShowAiModal(true)}
+            className="inline-flex items-center space-x-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors"
+          >
+            <span>🤖</span>
+            <span>AI Add Entry</span>
+          </button>
+        </div>
       </div>
 
       {/* Search and Filters */}
@@ -92,18 +229,20 @@ function ManageEntriesContent() {
                 variant="default"
                 icon="Search"
               />
+              {loading && (
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                  <div className="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+                </div>
+              )}
               <input
                 type="text"
                 id="search"
                 placeholder="Search dictionary entries..."
-                value={search}
+                value={searchInput}
                 onChange={(e) => {
-                  const newSearch = e.target.value;
-                  setSearch(newSearch);
-                  setPage(1);
-                  updateUrlParams({ search: newSearch, page: 1 });
+                  setSearchInput(e.target.value);
                 }}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className={`w-full pl-10 ${loading ? 'pr-10' : 'pr-4'} py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all`}
               />
             </div>
           </div>
@@ -140,58 +279,15 @@ function ManageEntriesContent() {
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
             Dictionary Entries ({entries.length})
           </h3>
-          {selectedEntries.length > 0 && (
-            <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-600 dark:text-gray-400">
-                {selectedEntries.length} selected
-              </span>
-              <button
-                onClick={() => {
-                  // TODO: Implement bulk delete
-                  setSelectedEntries([]);
-                }}
-                className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-sm rounded"
-              >
-                Delete Selected
-              </button>
-            </div>
-          )}
         </div>
         
         {loading ? (
-          <div className="p-6 text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-2 text-gray-600 dark:text-gray-400">Loading entries...</p>
-          </div>
-        ) : entries.length === 0 ? (
-          <div className="p-6 text-center">
-            <SvgIcon
-              className="h-12 w-12 text-gray-400 mx-auto mb-4"
-              variant="default"
-              icon="Book"
-            />
-            <p className="text-gray-600 dark:text-gray-400">
-              {search ? `No entries found for "${search}"` : 'No entries found'}
-            </p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
               <thead className="bg-gray-50 dark:bg-gray-700">
                 <tr>
                   <th className="px-6 py-3 text-left">
-                    <input
-                      type="checkbox"
-                      checked={selectedEntries.length === entries.length}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedEntries(entries.map(entry => entry._id!));
-                        } else {
-                          setSelectedEntries([]);
-                        }
-                      }}
-                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
+                    <div className="w-4 h-4 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Word
@@ -211,50 +307,106 @@ function ManageEntriesContent() {
                 </tr>
               </thead>
               <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                {[...Array(5)].map((_, index) => (
+                  <tr key={index} className="animate-pulse">
+                    <td className="px-6 py-4">
+                      <div className="w-4 h-4 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-24"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-48"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-6 bg-gray-300 dark:bg-gray-600 rounded w-16"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-20"></div>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex justify-end space-x-2">
+                        <div className="h-8 w-16 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                        <div className="h-8 w-16 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="bg-white dark:bg-gray-800 px-4 py-3 border-t border-gray-200 dark:border-gray-700">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-32 animate-pulse"></div>
+                </div>
+                <div className="flex space-x-1">
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className="h-8 w-8 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : entries.length === 0 ? (
+          <div className="p-6 text-center">
+            <SvgIcon
+              className="h-12 w-12 text-gray-400 mx-auto mb-4"
+              variant="default"
+              icon="Book"
+            />
+            <p className="text-gray-600 dark:text-gray-400">
+              {search ? `No entries found for "${search}"` : 'No entries found'}
+            </p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-700">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Word
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Definition
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Updated
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {entries.map((entry) => (
-                  <tr key={entry._id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                    <td className="px-6 py-4">
-                      <input
-                        type="checkbox"
-                        checked={selectedEntries.includes(entry._id!)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedEntries([...selectedEntries, entry._id!]);
-                          } else {
-                            setSelectedEntries(selectedEntries.filter(id => id !== entry._id));
-                          }
-                        }}
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                      />
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900 dark:text-white">
-                        {entry.word}
+                  <tr key={entry._id} className="hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-100 dark:border-gray-700">
+                    <td className="px-6 py-5 whitespace-nowrap">
+                      <div className="text-sm font-medium">
+                        {formatWordDisplay(entry)}
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="text-sm text-gray-600 dark:text-gray-300 max-w-xs truncate">
-                        {entry.meanings[0]?.definitions[0]?.definition || 'No definition'}
-                      </div>
+                    <td className="px-6 py-5">
+                      {formatDefinitionsDisplay(entry)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-5 whitespace-nowrap align-top">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                         entry.status === 'published' 
-                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                          : entry.status === 'draft'
-                          ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
                           : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
                       }`}>
                         {entry.status || 'published'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+                    <td className="px-6 py-5 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300 align-top">
                       {entry.updatedAt ? new Date(entry.updatedAt).toLocaleDateString() : 'N/A'}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <td className="px-6 py-5 whitespace-nowrap text-right text-sm font-medium align-top">
                       <div className="flex justify-end space-x-2">
                         <Link
-                          href={`/admin/entries/${entry._id}/edit`}
+                          href={`/admin/entries/${encodeURIComponent(entry.word)}/edit`}
                           className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
                         >
                           Edit
@@ -262,7 +414,7 @@ function ManageEntriesContent() {
                         <button
                           onClick={async () => {
                             if (confirm(`Delete "${entry.word}"?`)) {
-                              await deleteEntry(entry._id!);
+                              await deleteEntry(entry.word);
                             }
                           }}
                           className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
@@ -362,6 +514,14 @@ function ManageEntriesContent() {
         />
       )}
 
+      {/* AI Add Entry Modal */}
+      {showAiModal && (
+        <AiAddEntryModal
+          isOpen={showAiModal}
+          onClose={() => setShowAiModal(false)}
+          onEntryGenerated={handleAiEntryGenerated}
+        />
+      )}
 
       {/* Back to Dashboard */}
       <div className="flex justify-start">

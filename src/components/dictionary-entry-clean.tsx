@@ -1,4 +1,6 @@
 import React from 'react';
+import Link from 'next/link';
+import PublicAudioPlayer from './PublicAudioPlayer';
 
 // New schema types
 interface Example {
@@ -42,12 +44,38 @@ const getPartOfSpeechColor = (partOfSpeech: string): string => {
   return colors[partOfSpeech] || 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600';
 };
 
-// Helper function to format word display with verb prefix
+// Helper function to format word display - now just returns the base word for detail view
 const formatWordDisplay = (word: string, meanings: Meaning[]) => {
-  // Check if any meaning is a verb
+  // For detail view, always show just the base word at the top
+  return {
+    prefix: '',
+    word: word,
+    hasPrefix: false
+  };
+};
+
+// Helper function to format word display for lists (with both forms)
+const formatWordDisplayForList = (word: string, meanings: Meaning[]) => {
   const hasVerbMeaning = meanings.some(meaning => meaning.partOfSpeech.toLowerCase() === 'verb');
+  const hasNonVerbMeaning = meanings.some(meaning => meaning.partOfSpeech.toLowerCase() !== 'verb');
   
-  if (hasVerbMeaning) {
+  // If it has both verb and non-verb meanings, show both forms
+  if (hasVerbMeaning && hasNonVerbMeaning) {
+    return `${word}/ku-${word}`;
+  }
+  
+  // If it's only a verb, show ku- form
+  if (hasVerbMeaning && !hasNonVerbMeaning) {
+    return `ku-${word}`;
+  }
+  
+  // Otherwise just the base word
+  return word;
+};
+
+// Helper function to format word for specific meaning
+const formatWordForMeaning = (word: string, partOfSpeech: string) => {
+  if (partOfSpeech.toLowerCase() === 'verb') {
     return {
       prefix: 'ku-',
       word: word,
@@ -81,22 +109,43 @@ export default function DictionaryEntryClean({
           <span className="text-lg text-gray-600 dark:text-gray-400 font-medium">
             Meaning of:
           </span>
-          <h1 className="text-3xl font-bold leading-tight">
-            {wordDisplay.hasPrefix ? (
-              <>
-                <span className="text-green-600 dark:text-green-400 font-medium">
-                  {wordDisplay.prefix}
-                </span>
+          <div className="flex items-center space-x-3">
+            <h1 className="text-3xl font-bold leading-tight">
+              {wordDisplay.hasPrefix ? (
+                <>
+                  <span className="text-green-600 dark:text-green-400 font-medium">
+                    {wordDisplay.prefix}
+                  </span>
+                  <span className="text-blue-600 dark:text-blue-400">
+                    {wordDisplay.word}
+                  </span>
+                </>
+              ) : (
                 <span className="text-blue-600 dark:text-blue-400">
                   {wordDisplay.word}
                 </span>
-              </>
-            ) : (
-              <span className="text-blue-600 dark:text-blue-400">
-                {wordDisplay.word}
-              </span>
+              )}
+            </h1>
+            <PublicAudioPlayer
+              entryId={entry._id}
+              word={entry._id ? undefined : entry.word}
+              level="word"
+              className="mt-1"
+            />
+            {/* Development Edit Button */}
+            {process.env.NODE_ENV === 'development' && (
+              <Link
+                href={`/admin/entries/${encodeURIComponent(entry.word)}/edit`}
+                className="inline-flex items-center space-x-1 px-3 py-1 bg-yellow-100 hover:bg-yellow-200 dark:bg-yellow-900 dark:hover:bg-yellow-800 text-yellow-700 dark:text-yellow-300 rounded-md transition-colors text-sm font-medium"
+                title="Edit this entry (Development only)"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                <span>Edit</span>
+              </Link>
             )}
-          </h1>
+          </div>
         </div>
       </div>
 
@@ -104,14 +153,46 @@ export default function DictionaryEntryClean({
       <div className="space-y-6">
         {entry.meanings.map((meaning, meaningIndex) => (
           <div key={meaningIndex} className="space-y-4">
-            {/* Part of Speech Badge */}
-            <div className="flex items-center">
+            {/* Part of Speech Badge with Word Form */}
+            <div className="flex items-center space-x-3">
               <span className={`
                 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border
                 ${getPartOfSpeechColor(meaning.partOfSpeech)}
               `}>
                 {meaning.partOfSpeech}
               </span>
+              
+              {/* Word form for this specific meaning */}
+              {(() => {
+                const wordForm = formatWordForMeaning(entry.word, meaning.partOfSpeech);
+                return (
+                  <div className="flex items-center space-x-2">
+                    <div className="text-lg font-semibold">
+                      {wordForm.hasPrefix ? (
+                        <>
+                          <span className="text-green-600 dark:text-green-400 font-medium">
+                            {wordForm.prefix}
+                          </span>
+                          <span className="text-blue-600 dark:text-blue-400">
+                            {wordForm.word}
+                          </span>
+                        </>
+                      ) : (
+                        <span className="text-blue-600 dark:text-blue-400">
+                          {wordForm.word}
+                        </span>
+                      )}
+                    </div>
+                    <PublicAudioPlayer
+                      entryId={entry._id}
+                      word={entry._id ? undefined : entry.word}
+                      level="meaning"
+                      levelId={`meaning-${meaningIndex}`}
+                      className="ml-2"
+                    />
+                  </div>
+                );
+              })()}
             </div>
 
             {/* Definitions */}
@@ -128,9 +209,18 @@ export default function DictionaryEntryClean({
                     <div className="space-y-2 ml-4">
                       {definition.examples.map((example, exampleIndex) => (
                         <div key={exampleIndex} className="space-y-1">
-                          {/* Shona Example */}
-                          <div className="text-gray-700 dark:text-gray-300 italic font-medium">
-                            "{example.shona}"
+                          {/* Shona Example with Audio */}
+                          <div className="flex items-center space-x-2">
+                            <div className="text-gray-700 dark:text-gray-300 italic font-medium">
+                              "{example.shona}"
+                            </div>
+                            <PublicAudioPlayer
+                              entryId={entry._id}
+                              word={entry._id ? undefined : entry.word}
+                              level="example"
+                              levelId={`example-${meaningIndex}-${defIndex}-${exampleIndex}`}
+                              className="ml-2"
+                            />
                           </div>
                           {/* English Translation */}
                           <div className="text-gray-600 dark:text-gray-400 italic">
@@ -150,7 +240,7 @@ export default function DictionaryEntryClean({
   );
 }
 
-// Compact version for lists
+// Compact version for lists - now splits by part of speech
 export function DictionaryEntryCompact({ 
   entry, 
   className = '' 
@@ -159,59 +249,87 @@ export function DictionaryEntryCompact({
     return null;
   }
 
-  const firstMeaning = entry.meanings[0];
-  const firstDefinition = firstMeaning.definitions[0];
-  const wordDisplay = formatWordDisplay(entry.word, entry.meanings);
+  // Group meanings by part of speech
+  const meaningsByPartOfSpeech = entry.meanings.reduce((acc, meaning) => {
+    const pos = meaning.partOfSpeech.toLowerCase();
+    if (!acc[pos]) {
+      acc[pos] = [];
+    }
+    acc[pos].push(meaning);
+    return acc;
+  }, {} as Record<string, typeof entry.meanings>);
+
+  const partOfSpeechEntries = Object.entries(meaningsByPartOfSpeech);
 
   return (
-    <div className={`space-y-2 ${className}`}>
-      {/* Word and Part of Speech */}
-      <div className="flex items-center gap-3">
-        <h3 className="text-xl font-bold">
-          {wordDisplay.hasPrefix ? (
-            <>
-              <span className="text-green-600 dark:text-green-400 font-medium">
-                {wordDisplay.prefix}
+    <div className={`space-y-0 ${className}`}>
+      {partOfSpeechEntries.map(([partOfSpeech, meanings], index) => {
+        const firstMeaning = meanings[0];
+        const firstDefinition = firstMeaning.definitions[0];
+        const wordForm = formatWordForMeaning(entry.word, partOfSpeech);
+        const isLast = index === partOfSpeechEntries.length - 1;
+        
+        return (
+          <div 
+            key={partOfSpeech}
+            className={`space-y-2 ${index > 0 ? 'pt-3 border-t border-gray-100 dark:border-gray-700 border-dashed' : ''} ${!isLast ? 'pb-3' : ''}`}
+          >
+            {/* Word and Part of Speech */}
+            <div className="flex items-center gap-3">
+              <h3 className="text-xl font-bold">
+                {wordForm.hasPrefix ? (
+                  <>
+                    <span className="text-green-600 dark:text-green-400 font-medium">
+                      {wordForm.prefix}
+                    </span>
+                    <span className="text-blue-600 dark:text-blue-400">
+                      {wordForm.word}
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-blue-600 dark:text-blue-400">
+                    {wordForm.word}
+                  </span>
+                )}
+              </h3>
+              <span className={`
+                inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border
+                ${getPartOfSpeechColor(firstMeaning.partOfSpeech)}
+              `}>
+                {firstMeaning.partOfSpeech}
               </span>
-              <span className="text-blue-600 dark:text-blue-400">
-                {wordDisplay.word}
-              </span>
-            </>
-          ) : (
-            <span className="text-blue-600 dark:text-blue-400">
-              {wordDisplay.word}
-            </span>
-          )}
-        </h3>
-        <span className={`
-          inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border
-          ${getPartOfSpeechColor(firstMeaning.partOfSpeech)}
-        `}>
-          {firstMeaning.partOfSpeech}
-        </span>
-      </div>
+            </div>
 
-      {/* First Definition */}
-      <div className="text-gray-700 dark:text-gray-300">
-        {firstDefinition.definition}
-      </div>
+            {/* First Definition */}
+            <div className="text-gray-700 dark:text-gray-300">
+              {firstDefinition.definition}
+            </div>
 
-      {/* First Example (if available) */}
-      {firstDefinition.examples && firstDefinition.examples.length > 0 && (
-        <div className="text-sm text-gray-600 dark:text-gray-400 italic">
-          "{firstDefinition.examples[0].shona}"
-        </div>
-      )}
+            {/* First Example (if available) */}
+            {firstDefinition.examples && firstDefinition.examples.length > 0 && (
+              <div className="text-sm text-gray-600 dark:text-gray-400 italic">
+                "{firstDefinition.examples[0].shona}"
+              </div>
+            )}
 
-      {/* Additional meanings indicator */}
-      {entry.meanings.length > 1 && (
-        <div className="text-xs text-gray-500 dark:text-gray-400">
-          +{entry.meanings.length - 1} more meaning{entry.meanings.length > 2 ? 's' : ''}
-        </div>
-      )}
+            {/* Show all definitions for this part of speech */}
+            {meanings.slice(1).map((meaning, additionalIndex) => (
+              <div key={`additional-${additionalIndex}`} className="text-gray-700 dark:text-gray-300 mt-2">
+                {meaning.definitions[0]?.definition}
+                {meaning.definitions[0]?.examples && meaning.definitions[0].examples.length > 0 && (
+                  <div className="text-sm text-gray-600 dark:text-gray-400 italic mt-1">
+                    "{meaning.definitions[0].examples[0].shona}"
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        );
+      })}
     </div>
   );
 }
 
-// Export types for use in other components
+// Export types and functions for use in other components
 export type { DictionaryEntry, Meaning, Definition, Example };
+export { formatWordDisplayForList };

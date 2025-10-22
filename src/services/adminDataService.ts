@@ -1,5 +1,7 @@
-import fs from 'fs/promises';
+import { readFile, writeFile } from 'fs/promises';
+import { existsSync } from 'fs';
 import path from 'path';
+import dataService from './dataService';
 import { DictionaryEntry } from '@/components/dictionary-entry-clean';
 
 // Types for admin operations
@@ -36,7 +38,7 @@ class AdminDataService {
     if (this.isLoaded) return;
 
     try {
-      const fileContent = await fs.readFile(this.dataPath, 'utf-8');
+      const fileContent = await readFile(this.dataPath, 'utf-8');
       const rawData = JSON.parse(fileContent);
       
       // Transform data to include admin fields
@@ -64,7 +66,7 @@ class AdminDataService {
       // Remove admin-specific fields before saving to maintain compatibility
       const cleanData = this.data.map(({ _id, createdAt, updatedAt, status, ...entry }) => entry);
       
-      await fs.writeFile(this.dataPath, JSON.stringify(cleanData, null, 2), 'utf-8');
+      await writeFile(this.dataPath, JSON.stringify(cleanData, null, 2), 'utf-8');
       console.log(`💾 Saved ${this.data.length} entries to data.json`);
     } catch (error) {
       console.error('❌ Error saving data:', error);
@@ -81,16 +83,14 @@ class AdminDataService {
       
       let filteredData = this.data;
       
-      // Apply search filter
+      // Apply search filter using the same fuzzy search as frontend
       if (search) {
-        const searchLower = search.toLowerCase();
+        // Use the public dataService search which has fuzzy matching
+        const searchResults = dataService.search(search);
+        const searchWords = new Set(searchResults.map(result => result.word.toLowerCase()));
+        
         filteredData = filteredData.filter(entry => 
-          entry.word.toLowerCase().includes(searchLower) ||
-          entry.meanings.some(meaning => 
-            meaning.definitions.some(def => 
-              def.definition.toLowerCase().includes(searchLower)
-            )
-          )
+          searchWords.has(entry.word.toLowerCase())
         );
       }
       
@@ -103,6 +103,24 @@ class AdminDataService {
           )
         );
       }
+      
+      // Sort alphabetically by word (removing ku prefix for verbs for sorting purposes)
+      filteredData.sort((a, b) => {
+        const getSortableWord = (entry: AdminDictionaryEntry) => {
+          let word = entry.word.toLowerCase();
+          // Check if any meaning is a verb and word starts with ku
+          const hasVerbMeaning = entry.meanings.some(meaning => 
+            meaning.partOfSpeech?.toLowerCase() === 'verb'
+          );
+          if (hasVerbMeaning && word.startsWith('ku')) {
+            // Remove ku prefix for sorting (but keep original for display)
+            word = word.substring(2);
+          }
+          return word;
+        };
+        
+        return getSortableWord(a).localeCompare(getSortableWord(b));
+      });
       
       // Apply pagination
       const startIndex = (page - 1) * limit;
@@ -127,19 +145,30 @@ class AdminDataService {
   }
 
   /**
-   * Get entry by ID
+   * Get entry by ID or word
    */
   async getEntryById(id: string): Promise<AdminOperationResult> {
     try {
       await this.loadData();
       
-      const entry = this.data.find(item => item._id === id);
+      console.log('🔍 Looking for entry with ID/word:', id);
+      
+      // First try to find by _id (for backward compatibility)
+      let entry = this.data.find(item => item._id === id);
+      
+      // If not found by _id, try to find by word (URL decoded)
+      if (!entry) {
+        const decodedWord = decodeURIComponent(id);
+        entry = this.data.find(item => item.word.toLowerCase() === decodedWord.toLowerCase());
+        console.log('🔍 Searching by word:', decodedWord);
+      }
       
       if (!entry) {
+        console.log('❌ Entry not found. Available words:', this.data.map(item => item.word).slice(0, 10));
         return {
           success: false,
           message: 'Entry not found',
-          error: `No entry found with ID: ${id}`
+          error: `No entry found with ID/word: ${id}`
         };
       }
       
@@ -210,21 +239,30 @@ class AdminDataService {
     try {
       await this.loadData();
       
-      const entryIndex = this.data.findIndex(item => item._id === id);
+      // First try to find by _id (for backward compatibility)
+      let entryIndex = this.data.findIndex(item => item._id === id);
+      let originalEntry = this.data[entryIndex];
+      
+      // If not found by _id, try to find by word
+      if (entryIndex === -1) {
+        const decodedWord = decodeURIComponent(id);
+        entryIndex = this.data.findIndex(item => item.word.toLowerCase() === decodedWord.toLowerCase());
+        originalEntry = this.data[entryIndex];
+      }
       
       if (entryIndex === -1) {
         return {
           success: false,
           message: 'Entry not found',
-          error: `No entry found with ID: ${id}`
+          error: `No entry found with ID/word: ${id}`
         };
       }
       
       // Update entry
       const updatedEntry = {
-        ...this.data[entryIndex],
+        ...originalEntry,
         ...updateData,
-        _id: id, // Ensure ID doesn't change
+        _id: originalEntry._id, // Keep original _id
         updatedAt: new Date().toISOString(),
         lastModified: new Date().toISOString()
       };
@@ -253,13 +291,20 @@ class AdminDataService {
     try {
       await this.loadData();
       
-      const entryIndex = this.data.findIndex(item => item._id === id);
+      // First try to find by _id (for backward compatibility)
+      let entryIndex = this.data.findIndex(item => item._id === id);
+      
+      // If not found by _id, try to find by word
+      if (entryIndex === -1) {
+        const decodedWord = decodeURIComponent(id);
+        entryIndex = this.data.findIndex(item => item.word.toLowerCase() === decodedWord.toLowerCase());
+      }
       
       if (entryIndex === -1) {
         return {
           success: false,
           message: 'Entry not found',
-          error: `No entry found with ID: ${id}`
+          error: `No entry found with ID/word: ${id}`
         };
       }
       

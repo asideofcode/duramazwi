@@ -16,11 +16,21 @@ const formatWordForMetadata = (word: string, meanings: Meaning[]) => {
   const hasVerbMeaning = meanings.some(meaning => 
     meaning.partOfSpeech && meaning.partOfSpeech.toLowerCase() === 'verb'
   );
+  const hasNonVerbMeaning = meanings.some(meaning => 
+    meaning.partOfSpeech && meaning.partOfSpeech.toLowerCase() !== 'verb'
+  );
   
-  if (hasVerbMeaning) {
-    return `${word} / ku${word}`;
+  // If it has both verb and non-verb meanings, show both forms
+  if (hasVerbMeaning && hasNonVerbMeaning) {
+    return `${word} / ku-${word}`;
   }
   
+  // If it's only a verb, show ku- form
+  if (hasVerbMeaning && !hasNonVerbMeaning) {
+    return `ku-${word}`;
+  }
+  
+  // Otherwise just the base word
   return word;
 };
 

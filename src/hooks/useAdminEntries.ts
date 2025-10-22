@@ -57,6 +57,9 @@ export function useAdminEntries(options: UseAdminEntriesOptions = {}): UseAdminE
         ...(category && { category })
       });
 
+      // Add a fake delay to make loading states more visible 😄
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       const response = await fetch(`/api/admin/entries?${params}`);
       const result = await response.json();
 

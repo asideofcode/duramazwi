@@ -1,17 +1,30 @@
 'use client';
 
+import InlineAudioManager from './InlineAudioManager';
+
 interface WordInputProps {
   value: string;
   onChange: (value: string) => void;
   error?: string;
+  word?: string; // Use word instead of entryId
 }
 
-export default function WordInput({ value, onChange, error }: WordInputProps) {
+export default function WordInput({ value, onChange, error, word }: WordInputProps) {
   return (
     <div className="space-y-2">
-      <label htmlFor="word" className="block text-base font-semibold text-gray-900 dark:text-white">
-        Shona Word *
-      </label>
+      <div className="flex items-center justify-between">
+        <label htmlFor="word" className="block text-base font-semibold text-gray-900 dark:text-white">
+          Shona Word *
+        </label>
+        {word && (
+          <InlineAudioManager
+            word={word}
+            level="word"
+            label="Pronunciation"
+            compact={true}
+          />
+        )}
+      </div>
       <input
         type="text"
         id="word"

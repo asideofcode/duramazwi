@@ -3,14 +3,16 @@
 import { FormMeaning } from './EditFormHelpers';
 import SvgIcon from '@/component/icons/svg-icon';
 import DefinitionEditor from './DefinitionEditor';
+import InlineAudioManager from './InlineAudioManager';
 
 interface MeaningEditorProps {
   meanings: FormMeaning[];
   onChange: (meanings: FormMeaning[]) => void;
   word?: string;
+  entryId?: string;
 }
 
-export default function MeaningEditor({ meanings, onChange, word }: MeaningEditorProps) {
+export default function MeaningEditor({ meanings, onChange, word, entryId }: MeaningEditorProps) {
   const addMeaning = () => {
     onChange([
       ...meanings,
@@ -82,9 +84,20 @@ export default function MeaningEditor({ meanings, onChange, word }: MeaningEdito
 
             <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Part of Speech
-                </label>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Part of Speech
+                  </label>
+                  {entryId && (
+                    <InlineAudioManager
+                      entryId={entryId}
+                      level="meaning"
+                      levelId={`meaning-${index}`}
+                      label="Pronunciation"
+                      compact={true}
+                    />
+                  )}
+                </div>
                 <select
                   value={meaning.partOfSpeech}
                   onChange={(e) => updatePartOfSpeech(index, e.target.value)}
@@ -107,6 +120,8 @@ export default function MeaningEditor({ meanings, onChange, word }: MeaningEdito
                 onChange={(definitions) => updateDefinitions(index, definitions)}
                 word={word}
                 partOfSpeech={meaning.partOfSpeech}
+                entryId={entryId}
+                meaningIndex={index}
               />
             </div>
           </div>
