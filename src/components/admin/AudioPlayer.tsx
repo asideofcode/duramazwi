@@ -68,6 +68,17 @@ export default function AudioPlayer({
     };
   }, [audioRecord.url]);
 
+  // Cleanup audio on unmount
+  useEffect(() => {
+    return () => {
+      const audio = audioRef.current;
+      if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    };
+  }, []);
+
   const togglePlayPause = () => {
     const audio = audioRef.current;
     if (!audio) return;

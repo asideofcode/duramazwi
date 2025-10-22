@@ -27,6 +27,16 @@ export default function AudioSelector({
     }
   }, [recordings, selectedRecording]);
 
+  // Cleanup audio on unmount
+  useEffect(() => {
+    return () => {
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+      }
+    };
+  }, [currentAudio]);
+
   const playAudio = async (e?: React.MouseEvent) => {
     if (e) {
       e.preventDefault();
