@@ -1,6 +1,7 @@
 import Label from "@/component/atom/label.component";
 import SearchBar from "@/component/search-bar.component";
 import dataService from "@/services/dataService";
+import { audioDataService } from "@/services/audioDataService";
 import { createMetadata } from "@/utils/metadata";
 // import { Courgette, Prata } from "next/font/google";
 import { Metadata } from "next/types";
@@ -94,6 +95,11 @@ export default async function DetailsPage({
   const { id: rawId } = await params;
   const id = decodeURIComponent(rawId);
   const wordDetails: DictionaryEntry[] | null = dataService.getWordDetails(id) as DictionaryEntry[] | null;
+  
+  // Pre-resolve audio data at build time (like wordDetails)
+  const audioRecords = wordDetails && wordDetails.length > 0 
+    ? audioDataService.getRecordsForEntry(wordDetails[0]._id || id)
+    : [];
 
   return (
     <div>
@@ -110,7 +116,7 @@ export default async function DetailsPage({
         <div className="">
           {wordDetails.map((word: DictionaryEntry, index: number) => (
             <div key={index} className="mb-12">
-              <DictionaryEntryClean entry={word} />
+              <DictionaryEntryClean entry={word} audioRecords={audioRecords} />
             </div>
           ))}
         </div>

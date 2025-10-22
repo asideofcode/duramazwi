@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import PublicAudioPlayer from './PublicAudioPlayer';
+import StaticAudioPlayer from './StaticAudioPlayer';
+import { AudioRecord } from '@/services/audioStorage';
 
 // New schema types
 interface Example {
@@ -26,6 +27,7 @@ interface DictionaryEntry {
 
 interface DictionaryEntryCleanProps {
   entry: DictionaryEntry;
+  audioRecords?: AudioRecord[]; // Pre-resolved audio records
   showExamples?: boolean;
   className?: string;
 }
@@ -92,6 +94,7 @@ const formatWordForMeaning = (word: string, partOfSpeech: string) => {
 
 export default function DictionaryEntryClean({ 
   entry, 
+  audioRecords = [],
   showExamples = true, 
   className = '' 
 }: DictionaryEntryCleanProps) {
@@ -101,6 +104,15 @@ export default function DictionaryEntryClean({
 
   const wordDisplay = formatWordDisplay(entry.word, entry.meanings);
 
+  // Helper function to filter audio records by level and levelId
+  const getAudioForLevel = (level: 'word' | 'meaning' | 'example', levelId?: string) => {
+    return audioRecords.filter(record => {
+      if (record.metadata.level !== level) return false;
+      if (levelId && record.metadata.levelId !== levelId) return false;
+      return true;
+    });
+  };
+
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Word Header */}
@@ -109,7 +121,7 @@ export default function DictionaryEntryClean({
           <span className="text-lg text-gray-600 dark:text-gray-400 font-medium">
             Meaning of:
           </span>
-          <div className="flex items-center space-x-3">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <h1 className="text-3xl font-bold leading-tight">
               {wordDisplay.hasPrefix ? (
                 <>
@@ -126,25 +138,27 @@ export default function DictionaryEntryClean({
                 </span>
               )}
             </h1>
-            <PublicAudioPlayer
-              entryId={entry._id}
-              word={entry._id ? undefined : entry.word}
-              level="word"
-              className="mt-1"
-            />
-            {/* Development Edit Button */}
-            {process.env.NODE_ENV === 'development' && (
-              <Link
-                href={`/admin/entries/${encodeURIComponent(entry.word)}/edit`}
-                className="inline-flex items-center space-x-1 px-3 py-1 bg-yellow-100 hover:bg-yellow-200 dark:bg-yellow-900 dark:hover:bg-yellow-800 text-yellow-700 dark:text-yellow-300 rounded-md transition-colors text-sm font-medium"
-                title="Edit this entry (Development only)"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
-                <span>Edit</span>
-              </Link>
-            )}
+            
+            {/* Audio and Edit Controls - Stack on mobile, inline on desktop */}
+            <div className="flex items-center gap-3">
+              <StaticAudioPlayer
+                recordings={getAudioForLevel('word')}
+                className="flex-shrink-0"
+              />
+              {/* Development Edit Button */}
+              {process.env.NODE_ENV === 'development' && (
+                <Link
+                  href={`/admin/entries/${encodeURIComponent(entry.word)}/edit`}
+                  className="inline-flex items-center space-x-1 px-3 py-1 bg-yellow-100 hover:bg-yellow-200 dark:bg-yellow-900 dark:hover:bg-yellow-800 text-yellow-700 dark:text-yellow-300 rounded-md transition-colors text-sm font-medium"
+                  title="Edit this entry (Development only)"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                  <span>Edit</span>
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -183,11 +197,8 @@ export default function DictionaryEntryClean({
                         </span>
                       )}
                     </div>
-                    <PublicAudioPlayer
-                      entryId={entry._id}
-                      word={entry._id ? undefined : entry.word}
-                      level="meaning"
-                      levelId={`meaning-${meaningIndex}`}
+                    <StaticAudioPlayer
+                      recordings={getAudioForLevel('meaning', `meaning-${meaningIndex}`)}
                       className="ml-2"
                     />
                   </div>
@@ -209,17 +220,13 @@ export default function DictionaryEntryClean({
                     <div className="space-y-2 ml-4">
                       {definition.examples.map((example, exampleIndex) => (
                         <div key={exampleIndex} className="space-y-1">
-                          {/* Shona Example with Audio */}
-                          <div className="flex items-center space-x-2">
+                          {/* Shona Example with Audio - Stack on mobile, inline on desktop */}
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                             <div className="text-gray-700 dark:text-gray-300 italic font-medium">
                               "{example.shona}"
                             </div>
-                            <PublicAudioPlayer
-                              entryId={entry._id}
-                              word={entry._id ? undefined : entry.word}
-                              level="example"
-                              levelId={`example-${meaningIndex}-${defIndex}-${exampleIndex}`}
-                              className="ml-2"
+                            <StaticAudioPlayer
+                              recordings={getAudioForLevel('example', `example-${meaningIndex}-${defIndex}-${exampleIndex}`)}
                             />
                           </div>
                           {/* English Translation */}

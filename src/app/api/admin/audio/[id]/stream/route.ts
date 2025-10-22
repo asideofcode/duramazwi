@@ -2,27 +2,30 @@ import { NextRequest, NextResponse } from 'next/server';
 import { readFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
-import { AudioRecord } from '@/services/audioStorage';
+import { audioService } from '@/services/audioService';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const audioId = params.id;
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'audio');
+    // Await params (Next.js 15 requirement)
+    const { id: audioId } = await params;
     
-    // Read metadata to get filename and mime type
-    const metadataPath = path.join(uploadDir, `${audioId}.json`);
+    // Get audio record from service
+    const audioRecord = await audioService.getRecord(audioId);
     
-    if (!existsSync(metadataPath)) {
+    if (!audioRecord) {
       return NextResponse.json({ error: 'Audio record not found' }, { status: 404 });
     }
 
-    const metadataContent = await readFile(metadataPath, 'utf-8');
-    const audioRecord: AudioRecord = JSON.parse(metadataContent);
-    
-    // Read audio file
+    // If it's a blob URL, redirect to it
+    if (audioRecord.blobUrl) {
+      return NextResponse.redirect(audioRecord.blobUrl);
+    }
+
+    // Otherwise, serve local file
+    const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'audio');
     const audioPath = path.join(uploadDir, audioRecord.filename);
     
     if (!existsSync(audioPath)) {

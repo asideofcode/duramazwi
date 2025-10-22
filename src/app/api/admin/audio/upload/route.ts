@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import { existsSync } from 'fs';
-import path from 'path';
-import { v4 as uuidv4 } from 'uuid';
-import { AudioRecord, AudioMetadata } from '@/services/audioStorage';
+import { AudioMetadata } from '@/services/audioStorage';
+import { audioService } from '@/services/audioService';
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,47 +16,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No metadata provided' }, { status: 400 });
     }
 
-    const metadata: AudioMetadata = JSON.parse(metadataString);
+    let metadata: AudioMetadata;
+    try {
+      metadata = JSON.parse(metadataString);
+    } catch (error) {
+      return NextResponse.json({ error: 'Invalid metadata format' }, { status: 400 });
+    }
 
     // Validate required metadata
     if (!metadata.entryId || !metadata.level) {
-      return NextResponse.json({ error: 'Missing required metadata' }, { status: 400 });
+      return NextResponse.json({ error: 'Missing required metadata fields' }, { status: 400 });
     }
 
-    // Create upload directory if it doesn't exist
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'audio');
-    if (!existsSync(uploadDir)) {
-      await mkdir(uploadDir, { recursive: true });
-    }
-
-    // Generate unique filename
-    const audioId = uuidv4();
-    const fileExtension = audioFile.name.split('.').pop() || 'webm';
-    const filename = `${audioId}.${fileExtension}`;
-    const filePath = path.join(uploadDir, filename);
-
-    // Write file to disk
-    const bytes = await audioFile.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    await writeFile(filePath, buffer);
-
-    // Create audio record
-    const audioRecord: AudioRecord = {
-      id: audioId,
-      filename,
-      originalName: audioFile.name,
-      mimeType: audioFile.type,
-      size: audioFile.size,
-      metadata,
-      url: `/api/admin/audio/${audioId}/stream`,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-
-    // TODO: Save to database instead of just returning
-    // For now, we'll store metadata in a JSON file alongside the audio
-    const metadataPath = path.join(uploadDir, `${audioId}.json`);
-    await writeFile(metadataPath, JSON.stringify(audioRecord, null, 2));
+    // Use the unified audio service
+    const audioRecord = await audioService.upload(audioFile, metadata);
 
     return NextResponse.json(audioRecord);
 

@@ -1,35 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { unlink, readFile } from 'fs/promises';
-import { existsSync } from 'fs';
-import path from 'path';
-import { AudioRecord } from '@/services/audioStorage';
+import { audioService } from '@/services/audioService';
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const audioId = params.id;
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'audio');
+    // Await params (Next.js 15 requirement)
+    const { id: audioId } = await params;
     
-    // Read metadata to get filename
-    const metadataPath = path.join(uploadDir, `${audioId}.json`);
-    
-    if (!existsSync(metadataPath)) {
-      return NextResponse.json({ error: 'Audio record not found' }, { status: 404 });
-    }
-
-    const metadataContent = await readFile(metadataPath, 'utf-8');
-    const audioRecord: AudioRecord = JSON.parse(metadataContent);
-    
-    // Delete audio file
-    const audioPath = path.join(uploadDir, audioRecord.filename);
-    if (existsSync(audioPath)) {
-      await unlink(audioPath);
-    }
-    
-    // Delete metadata file
-    await unlink(metadataPath);
+    // Use the unified audio service
+    await audioService.delete(audioId);
 
     return NextResponse.json({ success: true });
 
@@ -44,21 +25,18 @@ export async function DELETE(
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const audioId = params.id;
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'audio');
+    // Await params (Next.js 15 requirement)
+    const { id: audioId } = await params;
     
-    // Read metadata
-    const metadataPath = path.join(uploadDir, `${audioId}.json`);
+    // Use the unified audio service
+    const audioRecord = await audioService.getRecord(audioId);
     
-    if (!existsSync(metadataPath)) {
+    if (!audioRecord) {
       return NextResponse.json({ error: 'Audio record not found' }, { status: 404 });
     }
-
-    const metadataContent = await readFile(metadataPath, 'utf-8');
-    const audioRecord: AudioRecord = JSON.parse(metadataContent);
 
     return NextResponse.json(audioRecord);
 

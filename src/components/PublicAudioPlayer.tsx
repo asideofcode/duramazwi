@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { AudioRecord, createAudioStorage } from '@/services/audioStorage';
+import { AudioRecord } from '@/services/audioStorage';
+import { publicAudio } from '@/services/publicAudio';
 import AudioSelector from './AudioSelector';
 
 interface PublicAudioPlayerProps {
@@ -31,8 +32,6 @@ export default function PublicAudioPlayer({
     
     setLoading(true);
     try {
-      const audioStorage = createAudioStorage();
-      
       // If we have entryId, use it directly
       if (entryId) {
         const filters = {
@@ -40,28 +39,30 @@ export default function PublicAudioPlayer({
           level,
           ...(levelId && { levelId })
         };
-        const records = await audioStorage.list(filters);
+        const records = await publicAudio.list(filters);
         setRecordings(records);
       } else if (word) {
         // If we only have word, search for any recordings that might match
         // This is a fallback for public entries without _id
-        const allRecords = await audioStorage.list({ level });
+        const allRecords = await publicAudio.list({ level });
         // Filter by word name and levelId if provided
-        const matchingRecords = allRecords.filter(record => {
+        const matchingRecords = allRecords.filter((record: AudioRecord) => {
           // Check if entryId matches the word (exact or contains)
-          const entryMatches = record.metadata.entryId && 
-            (record.metadata.entryId.toLowerCase() === word.toLowerCase() || 
-             record.metadata.entryId.toLowerCase().includes(word.toLowerCase()));
-          
-          // If levelId is specified, it must match exactly
-          const levelMatches = !levelId || record.metadata.levelId === levelId;
-          
-          return entryMatches && levelMatches;
+          return record.metadata.entryId === word || 
+                 record.metadata.entryId.includes(word) ||
+                 word.includes(record.metadata.entryId);
         });
-        setRecordings(matchingRecords);
+        
+        // Further filter by levelId if provided
+        const finalRecords = levelId 
+          ? matchingRecords.filter((record: AudioRecord) => record.metadata.levelId === levelId)
+          : matchingRecords;
+          
+        setRecordings(finalRecords);
       }
-    } catch (err) {
-      console.error('Failed to load recordings:', err);
+    } catch (error) {
+      console.error('Failed to load audio recordings:', error);
+      setRecordings([]);
     } finally {
       setLoading(false);
     }

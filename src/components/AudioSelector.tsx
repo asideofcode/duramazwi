@@ -94,7 +94,8 @@ export default function AudioSelector({
   }
 
   const formatRecordingLabel = (recording: AudioRecord, index: number) => {
-    const date = new Date(recording.createdAt).toLocaleDateString();
+    // Use consistent date format to prevent hydration mismatch
+    const date = new Date(recording.createdAt).toLocaleDateString('en-GB'); // DD/MM/YYYY format
     const speaker = recording.metadata.speaker;
     
     if (speaker) {
