@@ -1,6 +1,6 @@
-# 🎵 Simple Audio System Setup
+# 🎵 Hybrid Audio System Setup
 
-## **🎯 Two Modes, One System**
+## **🎯 Two Modes, Build-Time Resolution**
 
 ### **🏠 Local Mode (Offline Tinkering)**
 ```bash
@@ -57,8 +57,10 @@ npm run dev
 ```bash
 # Build automatically exports MongoDB → static JSON
 npm run build
+# Output: 🎵 Loaded 13 audio records at build time
 
 # Production serves from static file (super fast!)
+# No runtime API calls for public pages!
 ```
 
 ## **🎮 Commands**
@@ -77,12 +79,42 @@ npm run build
 npm run migrate-to-mongodb
 ```
 
+## **🏗️ Architecture**
+
+### **Public Pages (Static)**
+```typescript
+// Build time: Audio data resolved once
+const audioRecords = audioDataService.getRecordsForEntry(entryId);
+
+// Runtime: No API calls, just static data
+<StaticAudioPlayer recordings={audioRecords} />
+
+// No more: 📻 Loaded 13 audio records from static file (every visit)
+// Now: 🎵 Loaded 13 audio records at build time (once)
+```
+
+### **Admin Pages (Dynamic)**
+```typescript
+// Runtime: Full CRUD operations via API
+const audioStorage = createAudioStorage(); // Uses AUDIO_MODE
+await audioStorage.upload(file, metadata);
+```
+
+### **Production Deployment**
+```bash
+# Vercel environment variables:
+AUDIO_MODE=local  # Use static files (no MongoDB needed)
+# That's it! Static files are served directly
+```
+
 ## **✨ Benefits**
 
-- **Simple:** One environment variable switches everything
-- **Offline:** Local mode needs no internet or database
-- **Fast:** Production uses static JSON files
-- **Flexible:** Switch modes instantly
+- **Build-Time Resolution:** Audio data resolved once at build time (like dataService)
+- **No Runtime Fetching:** Public pages use pre-resolved static data
+- **Admin/Public Separation:** Admin uses APIs, public uses static files
+- **Offline Capable:** Local mode needs no internet or database
+- **Production Optimized:** Static JSON files for maximum performance
+- **Flexible:** Switch modes instantly with one environment variable
 - **Safe:** Local tinkering never affects production
 
 ## **🔧 Migration (One-time)**

@@ -25,6 +25,7 @@ export interface AudioRecord {
   duration?: number;
   metadata: AudioMetadata;
   url: string;
+  blobUrl?: string; // Vercel Blob URL when using blob storage
   createdAt: Date;
   updatedAt: Date;
 }
@@ -96,23 +97,67 @@ export class LocalAudioStorage implements AudioStorageProvider {
   }
 }
 
-// Future cloud storage implementations
+// Vercel Blob storage implementation
 export class VercelBlobStorage implements AudioStorageProvider {
-  // TODO: Implement when migrating to Vercel Blob
+  private baseUrl: string;
+
+  constructor() {
+    this.baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+  }
+
   async upload(file: File, metadata: AudioMetadata): Promise<AudioRecord> {
-    throw new Error('Vercel Blob storage not implemented yet');
+    const formData = new FormData();
+    formData.append('audio', file);
+    formData.append('metadata', JSON.stringify(metadata));
+
+    const response = await fetch('/api/admin/audio/upload', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to upload audio to Vercel Blob');
+    }
+
+    return response.json();
   }
 
   async delete(audioId: string): Promise<void> {
-    throw new Error('Vercel Blob storage not implemented yet');
+    const response = await fetch(`/api/admin/audio/${audioId}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete audio from Vercel Blob');
+    }
   }
 
   async getUrl(audioId: string): Promise<string> {
-    throw new Error('Vercel Blob storage not implemented yet');
+    // For Vercel Blob, we'll store the direct blob URL in the record
+    const response = await fetch(`/api/admin/audio/${audioId}`);
+    if (!response.ok) {
+      throw new Error('Failed to get audio record');
+    }
+    
+    const record = await response.json();
+    return record.url;
   }
 
   async list(filters?: AudioFilters): Promise<AudioRecord[]> {
-    throw new Error('Vercel Blob storage not implemented yet');
+    const params = new URLSearchParams();
+    if (filters) {
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value) params.append(key, value);
+      });
+    }
+
+    const response = await fetch(`/api/admin/audio?${params}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch audio records');
+    }
+
+    const result = await response.json();
+    return result.data || [];
   }
 }
 
@@ -137,7 +182,11 @@ export class AWSS3Storage implements AudioStorageProvider {
 
 // Storage factory - easily switch between providers
 export function createAudioStorage(): AudioStorageProvider {
-  const provider = process.env.AUDIO_STORAGE_PROVIDER || 'local';
+  // Priority: Explicit env var > Production default > Development default
+  const provider = process.env.AUDIO_STORAGE_PROVIDER || 
+                  (process.env.NODE_ENV === 'production' ? 'vercel' : 'local');
+  
+  console.log(`🎵 Audio storage: ${provider} (NODE_ENV: ${process.env.NODE_ENV})`);
   
   switch (provider) {
     case 'vercel':
