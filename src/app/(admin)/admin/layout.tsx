@@ -42,6 +42,13 @@ export default function AdminLayout({
                 Manage Entries
               </Link>
               <Link
+                href="/admin/challenges"
+                className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium"
+                title="Manage daily challenges"
+              >
+                Challenges
+              </Link>
+              <Link
                 href="/"
                 className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium"
                 title="View public site"

@@ -3,6 +3,7 @@ import { Inter, Source_Serif_4 } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { createMetadata } from "@/utils/metadata";
+import { SoundSettingsProvider } from "@/contexts/SoundSettingsContext";
 
 const inter = Inter({ subsets: ["latin"] });
 const nunitoSans = Source_Serif_4({
@@ -24,7 +25,9 @@ export default function RootLayout({
         {/* Theme handled by useTheme hook on client-side */}
       </head>
       <body className={`${inter.className} bg-default min-h-screen text-base`}>
-        {children}
+        <SoundSettingsProvider>
+          {children}
+        </SoundSettingsProvider>
 
         <AnalyticsWrapper />
 

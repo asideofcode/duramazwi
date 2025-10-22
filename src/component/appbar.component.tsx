@@ -15,10 +15,11 @@ const inter = Inter({
 const navItems = [
   { href: "/browse", label: "Browse", title: "Browse all dictionary entries", icon: "Book" },
   { href: "/random", label: "Random Word", title: "Get a random Shona word", icon: "Play" },
+  { href: "/challenge/daily", label: "Daily Challenge", title: "Test your Shona skills with daily challenges", icon: "Play" },
   { href: "/suggest", label: "Suggest", title: "Suggest a new word for the dictionary", icon: "Plus" },
 ];
 
-const AppTitle = "Shona Dictionary (Duramazwi)";
+const AppTitle = "Shona Dictionary";
 
 /**
  * Responsive navigation component with hamburger menu
