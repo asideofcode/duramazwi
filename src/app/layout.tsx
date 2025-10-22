@@ -4,6 +4,7 @@ import Script from "next/script";
 import "./globals.css";
 import { createMetadata } from "@/utils/metadata";
 import { SoundSettingsProvider } from "@/contexts/SoundSettingsContext";
+import TimezoneProvider from "@/components/TimezoneProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 const nunitoSans = Source_Serif_4({
@@ -26,6 +27,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} bg-default min-h-screen text-base`}>
         <SoundSettingsProvider>
+          <TimezoneProvider />
           {children}
         </SoundSettingsProvider>
 
