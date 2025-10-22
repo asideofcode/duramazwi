@@ -4,7 +4,8 @@ import Play from "./play-pause.icon";
 import PlusIcon from "./plus.icon";
 import SearchIcon from "./search.icon";
 import ToggleIcon from "./toggle.icon";
-type Icons = "Book" | "Toggle" | "Search" | "LightDark" | "Play" | "Plus";
+import SpaceInvaderIcon from "./space-invader.icon";
+type Icons = "Book" | "Toggle" | "Search" | "LightDark" | "Play" | "Plus" | "SpaceInvader";
 
 export type SvgIconSize =
   | 1
@@ -108,6 +109,8 @@ function getSVGIcon(
           config={new Config<Variant<"play" | "pause">>(variant)}
         />
       );
+    case "SpaceInvader":
+      return <SpaceInvaderIcon size={size} className={className} />;
 
     default:
       return <></>;

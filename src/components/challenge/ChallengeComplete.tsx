@@ -49,7 +49,7 @@ export default function ChallengeComplete({ session, onRestart, playCompletionSo
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-2xl">
+    <div className="py-8">
       <div className="bg-white dark:bg-gray-800 rounded-lg p-8 shadow-lg text-center">
         {/* Header */}
         <div className="mb-8">
@@ -155,21 +155,17 @@ export default function ChallengeComplete({ session, onRestart, playCompletionSo
           </div>
         </div>
 
-        {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button
-            onClick={onRestart}
-            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
-          >
-            Try Again
-          </button>
-          <Link
-            href="/"
-            className="px-6 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white rounded-lg font-medium transition-colors text-center"
-          >
-            Back to Dictionary
-          </Link>
-        </div>
+        {/* Actions - Only show in development */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="flex justify-center">
+            <button
+              onClick={onRestart}
+              className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+            >
+              Try Again (Dev Mode)
+            </button>
+          </div>
+        )}
 
         {/* Motivational Message */}
         <div className="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">

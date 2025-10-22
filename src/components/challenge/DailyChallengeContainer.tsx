@@ -155,7 +155,7 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
 
   if (session.isComplete) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
+      <div className="py-8">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-between mb-4">
@@ -218,7 +218,7 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-2xl">
+    <div className="py-8">
       {/* Header */}
       <div className="text-center mb-8">
         <div className="flex items-center justify-between mb-4">
