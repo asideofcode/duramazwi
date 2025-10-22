@@ -5,6 +5,8 @@ import { DailyChallenge, Challenge } from '@/types/challenge';
 import { shuffleArray } from '@/utils/shuffle';
 import { getDatabase } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
+import { getTodayInTimezone, isToday } from '@/utils/timezone';
+import { headers } from 'next/headers';
 
 // Force dynamic rendering since we use searchParams
 export const dynamic = 'force-dynamic';
@@ -19,10 +21,10 @@ export const metadata: Metadata = {
   }
 };
 
-async function getTodaysChallenge(dateOverride?: string): Promise<DailyChallenge | null> {
+async function getTodaysChallenge(dateOverride?: string, timezone?: string): Promise<DailyChallenge | null> {
   try {
     const db = await getDatabase();
-    const targetDate = dateOverride || new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+    const targetDate = dateOverride || getTodayInTimezone(timezone || 'UTC');
     
     // Get the daily challenge from the daily_challenges collection
     const dailyChallenge = await db.collection('daily_challenges').findOne({ date: targetDate });
@@ -74,12 +76,21 @@ export default async function DailyChallengePage({ searchParams }: DailyChalleng
   // Await searchParams as required by Next.js 15
   const params = await searchParams;
   
+  // Get timezone from headers or cookies (if client sent it)
+  const headersList = await headers();
+  const cookieHeader = headersList.get('cookie');
+  const timezoneCookie = cookieHeader?.split(';')
+    .find(c => c.trim().startsWith('timezone='))
+    ?.split('=')[1];
+  
+  const clientTimezone = headersList.get('x-timezone') || timezoneCookie || 'UTC';
+  
   // Validate date format if provided (YYYY-MM-DD)
   const dateOverride = params.date && /^\d{4}-\d{2}-\d{2}$/.test(params.date) 
     ? params.date 
     : undefined;
     
-  const todaysChallenge = await getTodaysChallenge(dateOverride);
+  const todaysChallenge = await getTodaysChallenge(dateOverride, clientTimezone);
 
   if (!todaysChallenge) {
     return (
@@ -166,7 +177,7 @@ export default async function DailyChallengePage({ searchParams }: DailyChalleng
     );
   }
 
-  const isViewingPastChallenge = dateOverride && dateOverride !== new Date().toISOString().split('T')[0];
+  const isViewingPastChallenge = dateOverride && !isToday(dateOverride, clientTimezone);
 
   return (
     <div className="min-h-screen">

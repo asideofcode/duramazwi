@@ -137,22 +137,24 @@ export default function MultipleChoiceChallenge({ challenge, onComplete }: Multi
             </span>
           </div>
           {challenge.explanation && (
-            <p className={`text-sm ${isCorrect ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+            <p className={`text-sm mb-4 ${isCorrect ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
               {challenge.explanation}
             </p>
           )}
-        </div>
-      )}
-
-      {/* Continue Button */}
-      {showResult && (
-        <div className="mt-6 text-center">
-          <button
-            onClick={handleContinue}
-            className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
-          >
-            Continue
-          </button>
+          
+          {/* Continue Button inside feedback */}
+          <div className="text-center mt-4">
+            <button
+              onClick={handleContinue}
+              className={`px-8 py-3 text-white rounded-lg font-medium transition-colors ${
+                isCorrect 
+                  ? 'bg-green-600 hover:bg-green-700' 
+                  : 'bg-red-600 hover:bg-red-700'
+              }`}
+            >
+              Continue
+            </button>
+          </div>
         </div>
       )}
     </div>

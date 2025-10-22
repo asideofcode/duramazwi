@@ -16,6 +16,8 @@ interface DailyChallengeContainerProps {
 }
 
 export default function DailyChallengeContainer({ challenge }: DailyChallengeContainerProps) {
+  const [hasStarted, setHasStarted] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
   const [session, setSession] = useState<ChallengeSession>({
     date: challenge.date,
     challenges: challenge.challenges,
@@ -47,12 +49,21 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
 
   // Check for existing completion on mount
   useEffect(() => {
-    clearOldCompletions(); // Clean up old completions first
+    const initializeChallenge = async () => {
+      clearOldCompletions(); // Clean up old completions first
+      
+      const existingCompletion = getChallengeCompletion(challenge.date);
+      if (existingCompletion) {
+        setSession(existingCompletion.session);
+      }
+      
+      // Artificial delay to see loading state
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      setIsInitialized(true);
+    };
     
-    const existingCompletion = getChallengeCompletion(challenge.date);
-    if (existingCompletion) {
-      setSession(existingCompletion.session);
-    }
+    initializeChallenge();
   }, [challenge.date]);
 
   // Preload audio for audio challenges
@@ -134,18 +145,19 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
   };
 
   const handleRestart = () => {
-    const newSession = {
+    const newSession: ChallengeSession = {
       date: challenge.date,
       challenges: challenge.challenges,
       results: [],
       currentChallengeIndex: 0,
-      totalScore: 0,
+      startTime: Date.now(),
       isComplete: false,
-      startTime: Date.now()
+      totalScore: 0
     };
     
     setSession(newSession);
     setJustCompleted(false); // Reset completion flag
+    setHasStarted(false); // Reset to show preamble again
     
     // Clear localStorage when restarting
     if (typeof window !== 'undefined') {
@@ -153,30 +165,117 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
     }
   };
 
+  // Consistent header for all states
+  const renderHeader = () => (
+    <div className="text-center mb-8">
+      <div className="relative flex items-center justify-center mb-4">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          Daily Challenge
+        </h1>
+        <div className="absolute right-0">
+          <SoundControls compact={true} showLabel={false} />
+        </div>
+      </div>
+      <p className="text-gray-600 dark:text-gray-400">
+        {new Date(challenge.date).toLocaleDateString('en-US', { 
+          weekday: 'long', 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        })}
+      </p>
+    </div>
+  );
+
+  // Show loading until we've checked localStorage
+  if (!isInitialized) {
+    return (
+      <div className="py-8">
+        {renderHeader()}
+        <div className="bg-gray-200 dark:bg-gray-700 rounded-lg h-screen animate-pulse"></div>
+      </div>
+    );
+  }
+
+  // Show preamble if challenge hasn't started AND there's no existing completion
+  if (!hasStarted && !session.isComplete && session.results.length === 0) {
+    return (
+      <div className="py-8">
+        {renderHeader()}
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-8 shadow-lg text-center">
+
+          {/* Challenge Info */}
+          <div className="mb-8">
+            {/* Challenge Image */}
+            <div className="mb-6">
+              <img 
+                src="/challenge-hero.png" 
+                alt="Daily Challenge" 
+                className="w-40 h-auto mx-auto rounded-lg"
+              />
+            </div>
+            
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+              Ready for Today's Challenge?
+            </h2>
+
+            {/* Challenge Stats */}
+            <div className="grid grid-cols-3 gap-4 mb-8">
+              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-1">
+                  {challenge.challenges.length}
+                </div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  Questions
+                </div>
+              </div>
+              
+              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                <div className="text-2xl font-bold text-green-600 dark:text-green-400 mb-1">
+                  {challenge.totalPoints || challenge.challenges.reduce((sum, c) => sum + c.points, 0)}
+                </div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  Total Points
+                </div>
+              </div>
+              
+              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-1">
+                  {challenge.estimatedTime || Math.ceil(challenge.challenges.length * 1.5)}
+                </div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  Minutes
+                </div>
+              </div>
+            </div>
+
+            {/* Start Button */}
+            <button
+              onClick={() => {
+                setHasStarted(true);
+                setSession(prev => ({ ...prev, startTime: Date.now() }));
+              }}
+              className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-lg transition-colors shadow-lg"
+            >
+              Start Challenge
+            </button>
+          </div>
+
+          {/* Tips */}
+          <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+            <p className="text-blue-700 dark:text-blue-300 text-sm">
+              💡 <strong>Tip:</strong> Take your time and think carefully about each answer. You can only complete this challenge once per day!
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (session.isComplete) {
     return (
       <div className="py-8">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div></div> {/* Spacer for centering */}
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-              Daily Challenge
-            </h1>
-            <div className="flex justify-end">
-              <SoundControls compact={true} showLabel={false} />
-            </div>
-          </div>
-          <p className="text-gray-600 dark:text-gray-400">
-            {new Date(challenge.date).toLocaleDateString('en-US', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            })}
-          </p>
-        </div>
-
+        {renderHeader()}
         <ChallengeComplete 
           session={session}
           onRestart={handleRestart}
@@ -219,27 +318,7 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
 
   return (
     <div className="py-8">
-      {/* Header */}
-      <div className="text-center mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <div></div> {/* Spacer for centering */}
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Daily Challenge
-          </h1>
-          <div className="flex justify-end">
-            <SoundControls compact={true} showLabel={false} />
-          </div>
-        </div>
-        <p className="text-gray-600 dark:text-gray-400">
-          {new Date(challenge.date).toLocaleDateString('en-US', { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-          })}
-        </p>
-        
-      </div>
+      {renderHeader()}
 
       {/* Progress */}
       <ChallengeProgress
