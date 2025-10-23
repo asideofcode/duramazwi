@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import DailyChallengeContainer from '@/components/challenge/DailyChallengeContainer';
 import SoundControls from '@/components/SoundControls';
+import SearchBar from "@/component/search-bar.component";
 import { DailyChallenge, Challenge } from '@/types/challenge';
 import { shuffleArray } from '@/utils/shuffle';
 import { getDatabase } from '@/lib/mongodb';
@@ -181,8 +182,13 @@ export default async function DailyChallengePage({ searchParams }: DailyChalleng
 
   return (
     <div className="min-h-screen">
+      {/* Search Bar */}
+      <div id="search-bar">
+        <SearchBar />
+      </div>
+
       {isViewingPastChallenge && (
-        <div className="bg-amber-50 dark:bg-amber-900/20 border-b border-amber-200 dark:border-amber-800">
+        <div className="bg-amber-50 dark:bg-amber-900/20 border-b border-amber-200 dark:border-amber-800 mb-6">
           <div className="container mx-auto px-4 py-3 max-w-2xl">
             <div className="flex items-center justify-center space-x-2 text-amber-800 dark:text-amber-200">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -200,6 +206,7 @@ export default async function DailyChallengePage({ searchParams }: DailyChalleng
           </div>
         </div>
       )}
+      
       <DailyChallengeContainer challenge={todaysChallenge} />
     </div>
   );
