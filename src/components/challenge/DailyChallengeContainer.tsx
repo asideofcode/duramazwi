@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { DailyChallenge, ChallengeSession, ChallengeResult } from '@/types/challenge';
 import { getChallengeCompletion, saveChallengeCompletion, clearOldCompletions } from '@/utils/challengeStorage';
+import { useNavigationWarning } from '@/hooks/useNavigationWarning';
 import ChallengeProgress from './ChallengeProgress';
 import MultipleChoiceChallenge from './MultipleChoiceChallenge';
 import AudioChallenge from './AudioChallenge';
@@ -115,6 +116,13 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
       audio.load();
     });
   }, [challenge.challenges]);
+
+  // Navigation warning for in-progress challenges
+  const isInProgress = hasStarted && !session.isComplete;
+  useNavigationWarning({
+    when: isInProgress,
+    message: 'You have an in-progress challenge. Your progress will be lost if you navigate away. Are you sure you want to continue?'
+  });
 
   const currentChallenge = session.challenges[session.currentChallengeIndex];
   const isLastChallenge = session.currentChallengeIndex === session.challenges.length - 1;
