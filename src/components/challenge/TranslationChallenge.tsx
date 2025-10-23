@@ -64,12 +64,16 @@ export default function TranslationChallenge({ challenge, onComplete }: Translat
     if (fromSelected && index !== undefined) {
       setDraggedIndex(index);
     }
-    e.dataTransfer.effectAllowed = 'move';
+    if (e.dataTransfer) {
+      e.dataTransfer.effectAllowed = 'move';
+    }
   };
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
+    if (e.dataTransfer) {
+      e.dataTransfer.dropEffect = 'move';
+    }
   };
 
   const handleDropOnSelected = (e: React.DragEvent) => {
@@ -145,40 +149,50 @@ export default function TranslationChallenge({ challenge, onComplete }: Translat
       <div className="mb-8">
         <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Your Answer:</h3>
         <div 
-          className={`min-h-[60px] p-4 border-2 border-dashed rounded-lg bg-gray-50 dark:bg-gray-700 flex flex-wrap gap-2 items-center transition-colors ${
+          className={`flex flex-wrap gap-2 p-4 rounded-lg border-2 border-dashed min-h-[80px] transition-colors ${
             draggedWord && !draggedFromSelected
               ? 'border-blue-400 bg-blue-50 dark:bg-blue-900/20'
-              : 'border-gray-300 dark:border-gray-600'
+              : 'border-gray-200 dark:border-gray-600'
           }`}
           onDragOver={handleDragOver}
           onDrop={handleDropOnSelected}
         >
           {selectedWords.length === 0 ? (
-            <span className="text-gray-500 dark:text-gray-400 italic">
-              Drag words here to build your answer
-            </span>
+            <div className="flex items-center justify-center w-full h-12">
+              <span className="text-gray-500 dark:text-gray-400 italic">
+                Drag words here to build your answer
+              </span>
+            </div>
           ) : (
             selectedWords.map((word, index) => (
               <div
-                key={`${word}-${index}`}
-                draggable={!showResult}
+                key={`selected-${word}-${index}`}
+                draggable
                 onDragStart={(e) => handleDragStart(e, word, true, index)}
                 onDragEnd={handleDragEnd}
-                onDragOver={(e) => handleDragOverWord(e, index)}
-                onDrop={(e) => handleDropOnWord(e, index)}
-                className={`px-3 py-2 rounded-lg font-medium transition-colors cursor-move relative ${
+                onClick={() => handleWordRemove(index)}
+                className={`px-3 py-2 h-10 flex items-center rounded-lg font-medium transition-all duration-300 cursor-move relative ${
                   showResult
                     ? 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 cursor-not-allowed'
-                    : 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-800'
-                } ${draggedWord === word && draggedFromSelected ? 'opacity-50' : ''} ${
-                  dragOverIndex === index ? 'ring-2 ring-blue-400' : ''
+                    : 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-800 hover:shadow-md hover:-translate-y-1'
+                } ${draggedWord === word && draggedFromSelected ? 'opacity-50 scale-95' : ''} ${
+                  dragOverIndex === index ? 'ring-2 ring-blue-400 scale-105' : ''
                 }`}
-              >
+                style={{
+                  transform: draggedWord === word && draggedFromSelected ? 'scale(0.95)' : 'scale(1)',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                }}
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDropOnWord(e, index)}
+              >  
                 <span className="select-none">{word}</span>
                 {!showResult && (
                   <button
-                    onClick={() => handleWordRemove(index)}
-                    className="ml-2 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleWordRemove(index);
+                    }}
+                    className="ml-2 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 transition-colors"
                   >
                     ×
                   </button>
@@ -203,16 +217,20 @@ export default function TranslationChallenge({ challenge, onComplete }: Translat
         >
           {availableWords.map((word, index) => (
             <div
-              key={`${word}-${index}`}
+              key={`available-${word}-${index}`}
               draggable={!showResult}
               onDragStart={(e) => handleDragStart(e, word, false)}
               onDragEnd={handleDragEnd}
               onClick={() => handleWordSelect(word)}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors cursor-move ${
+              className={`px-4 py-2 h-10 flex items-center rounded-lg font-medium transition-all duration-300 cursor-move ${
                 showResult
                   ? 'bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 border-2 border-transparent hover:border-blue-300 dark:hover:border-blue-500'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 border-2 border-transparent hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-md hover:-translate-y-1'
               } ${draggedWord === word && !draggedFromSelected ? 'opacity-50' : ''}`}
+              style={{
+                transform: draggedWord === word && !draggedFromSelected ? 'scale(0.95)' : 'scale(1)',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+              }}
             >
               <span className="select-none">{word}</span>
             </div>
@@ -227,11 +245,11 @@ export default function TranslationChallenge({ challenge, onComplete }: Translat
 
       {/* Submit Button */}
       {!showResult && (
-        <div className="text-center mb-6">
+        <div className="mb-6">
           <button
             onClick={handleSubmit}
             disabled={!canSubmit}
-            className={`px-8 py-3 rounded-lg font-medium transition-colors ${
+            className={`w-full py-3 rounded-lg font-medium transition-colors ${
               canSubmit
                 ? 'bg-blue-600 hover:bg-blue-700 text-white'
                 : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
@@ -275,10 +293,10 @@ export default function TranslationChallenge({ challenge, onComplete }: Translat
           )}
           
           {/* Continue Button inside feedback */}
-          <div className="text-center mt-4">
+          <div className="mt-4">
             <button
               onClick={handleContinue}
-              className={`px-8 py-3 text-white rounded-lg font-medium transition-colors ${
+              className={`w-full py-3 text-white rounded-lg font-medium transition-colors ${
                 isCorrect 
                   ? 'bg-green-600 hover:bg-green-700' 
                   : 'bg-red-600 hover:bg-red-700'

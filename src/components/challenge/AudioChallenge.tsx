@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { Challenge } from '@/types/challenge';
 import { useSoundEffects } from '@/hooks/useSoundEffects';
+import { useAudioPreload } from '@/hooks/useAudioPreload';
+import AudioPlayerWithProgress from '@/components/AudioPlayerWithProgress';
 
 interface AudioChallengeProps {
   challenge: Challenge;
@@ -13,26 +15,10 @@ export default function AudioChallenge({ challenge, onComplete }: AudioChallenge
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
   const { playSound } = useSoundEffects();
-
-  const playAudio = () => {
-    if (!challenge.audioUrl) return;
-    
-    setIsPlaying(true);
-    const audio = new Audio(challenge.audioUrl);
-    
-    audio.onended = () => setIsPlaying(false);
-    audio.onerror = () => {
-      setIsPlaying(false);
-      console.error('Failed to play audio');
-    };
-    
-    audio.play().catch(() => {
-      setIsPlaying(false);
-      console.error('Audio play failed');
-    });
-  };
+  
+  // Preload the challenge audio
+  const audioPreload = useAudioPreload(challenge.audioUrl || '');
 
   const handleAnswerSelect = (answer: string) => {
     if (showResult) return;
@@ -72,19 +58,7 @@ export default function AudioChallenge({ challenge, onComplete }: AudioChallenge
 
       {/* Audio Player */}
       <div className="flex justify-center mb-8">
-        <button
-          onClick={playAudio}
-          disabled={isPlaying}
-          className="w-20 h-20 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-400 text-white rounded-full flex items-center justify-center transition-colors duration-200 shadow-lg"
-        >
-          {isPlaying ? (
-            <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full" />
-          ) : (
-            <svg className="w-8 h-8 ml-1" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-            </svg>
-          )}
-        </button>
+        <AudioPlayerWithProgress src={audioPreload} />
       </div>
 
       {/* Options */}
@@ -113,21 +87,25 @@ export default function AudioChallenge({ challenge, onComplete }: AudioChallenge
               disabled={showResult}
               className={buttonClass}
             >
-              <div className="flex items-center justify-between">
-                <span className="text-lg font-medium flex-1 text-center">{option}</span>
-                <div className="w-6 h-6 flex items-center justify-center ml-4">
-                  {showResult && option === challenge.correctAnswer && (
-                    <svg className="w-6 h-6 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  )}
-                  {showResult && option === selectedAnswer && !isCorrect && (
-                    <svg className="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
-                  )}
+              {showResult ? (
+                <div className="flex items-center justify-between">
+                  <span className="text-lg font-medium flex-1 text-center">{option}</span>
+                  <div className="w-6 h-6 flex items-center justify-center ml-4">
+                    {option === challenge.correctAnswer && (
+                      <svg className="w-6 h-6 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                    {option === selectedAnswer && !isCorrect && (
+                      <svg className="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <span className="text-lg font-medium text-center block">{option}</span>
+              )}
             </button>
           );
         })}
@@ -135,11 +113,11 @@ export default function AudioChallenge({ challenge, onComplete }: AudioChallenge
 
       {/* Check Button */}
       {!showResult && (
-        <div className="text-center mb-6">
+        <div className="mb-6">
           <button
             onClick={handleCheck}
             disabled={!selectedAnswer}
-            className={`px-8 py-3 rounded-lg font-medium transition-colors ${
+            className={`w-full py-3 rounded-lg font-medium transition-colors ${
               selectedAnswer
                 ? 'bg-blue-600 hover:bg-blue-700 text-white'
                 : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
@@ -176,10 +154,10 @@ export default function AudioChallenge({ challenge, onComplete }: AudioChallenge
           )}
           
           {/* Continue Button inside feedback */}
-          <div className="text-center mt-4">
+          <div className="mt-4">
             <button
               onClick={handleContinue}
-              className={`px-8 py-3 text-white rounded-lg font-medium transition-colors ${
+              className={`w-full py-3 text-white rounded-lg font-medium transition-colors ${
                 isCorrect 
                   ? 'bg-green-600 hover:bg-green-700' 
                   : 'bg-red-600 hover:bg-red-700'
