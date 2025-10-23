@@ -16,7 +16,10 @@ export default function ChallengeComplete({ session, onRestart, playCompletionSo
   const correctAnswers = session.results.filter(result => result.isCorrect).length;
   const totalQuestions = session.results.length;
   const accuracy = Math.round((correctAnswers / totalQuestions) * 100);
-  const totalTime = Math.floor((Date.now() - session.startTime) / 1000);
+  
+  // Use endTime if available, otherwise fall back to current time (for backwards compatibility)
+  const endTime = session.endTime || Date.now();
+  const totalTime = Math.floor((endTime - session.startTime) / 1000);
   const minutes = Math.floor(totalTime / 60);
   const seconds = totalTime % 60;
 

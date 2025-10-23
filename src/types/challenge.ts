@@ -34,4 +34,5 @@ export interface ChallengeSession {
   totalScore: number;
   isComplete: boolean;
   startTime: number;
+  endTime?: number; // When the challenge was completed
 }

@@ -10,6 +10,8 @@ import TranslationChallenge from './TranslationChallenge';
 import ChallengeComplete from './ChallengeComplete';
 import SoundControls from '../SoundControls';
 import { useSoundEffects } from '@/hooks/useSoundEffects';
+import ImageWithPlaceholder from '@/components/ImageWithPlaceholder';
+import { useImagePreload } from '@/hooks/useImagePreload';
 
 interface DailyChallengeContainerProps {
   challenge: DailyChallenge;
@@ -35,6 +37,9 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
   const [soundEffectsReady, setSoundEffectsReady] = useState(false);
   const [justCompleted, setJustCompleted] = useState(false);
   
+  // Preload hero image
+  const heroImagePreload = useImagePreload('/challenge-hero.png');
+
   // Initialize sound effects with preloading callbacks
   const { playSound } = useSoundEffects({
     preload: true,
@@ -131,7 +136,8 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
       results: [...session.results, result],
       totalScore: session.totalScore + pointsEarned,
       currentChallengeIndex: isLastChallenge ? session.currentChallengeIndex : session.currentChallengeIndex + 1,
-      isComplete: isLastChallenge
+      isComplete: isLastChallenge,
+      endTime: isLastChallenge ? Date.now() : session.endTime
     };
 
     setSession(updatedSession);
@@ -209,11 +215,15 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
           <div className="mb-8">
             {/* Challenge Image */}
             <div className="mb-6">
-              <img 
-                src="/challenge-hero.png" 
-                alt="Daily Challenge" 
-                className="w-40 h-auto mx-auto rounded-lg"
-              />
+              <div className="w-40 mx-auto">
+                <ImageWithPlaceholder
+                  src={heroImagePreload}
+                  alt="Daily Challenge"
+                  className="w-full h-auto"
+                  placeholderClassName="w-full h-60"
+                  fallbackIcon="🎯"
+                />
+              </div>
             </div>
             
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
