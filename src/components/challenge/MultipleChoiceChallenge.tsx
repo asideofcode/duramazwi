@@ -102,11 +102,11 @@ export default function MultipleChoiceChallenge({ challenge, onComplete }: Multi
 
       {/* Check Button */}
       {!showResult && (
-        <div className="text-center mb-6">
+        <div className="mb-6">
           <button
             onClick={handleCheck}
             disabled={!selectedAnswer}
-            className={`px-8 py-3 rounded-lg font-medium transition-colors ${
+            className={`w-full py-3 rounded-lg font-medium transition-colors ${
               selectedAnswer
                 ? 'bg-blue-600 hover:bg-blue-700 text-white'
                 : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
@@ -143,10 +143,10 @@ export default function MultipleChoiceChallenge({ challenge, onComplete }: Multi
           )}
           
           {/* Continue Button inside feedback */}
-          <div className="text-center mt-4">
+          <div className="mt-4">
             <button
               onClick={handleContinue}
-              className={`px-8 py-3 text-white rounded-lg font-medium transition-colors ${
+              className={`w-full py-3 text-white rounded-lg font-medium transition-colors ${
                 isCorrect 
                   ? 'bg-green-600 hover:bg-green-700' 
                   : 'bg-red-600 hover:bg-red-700'

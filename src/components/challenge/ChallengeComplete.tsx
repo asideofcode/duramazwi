@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect } from 'react';
 import { ChallengeSession } from '@/types/challenge';
 import { useSoundEffects } from '@/hooks/useSoundEffects';
+import StreakDisplay from './StreakDisplay';
 
 interface ChallengeCompleteProps {
   session: ChallengeSession;
@@ -107,6 +108,11 @@ export default function ChallengeComplete({ session, onRestart, playCompletionSo
           </div>
         </div>
       </div>
+
+      {/* Streak Display - Hidden for now */}
+      {/* <div className="mb-8">
+        <StreakDisplay showDetails={true} />
+      </div> */}
 
       {/* Progress Bar */}
       <div className="mb-8">
