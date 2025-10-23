@@ -55,6 +55,7 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
       const existingCompletion = getChallengeCompletion(challenge.date);
       if (existingCompletion) {
         setSession(existingCompletion.session);
+        setHasStarted(true); // Mark as started if there's an existing completion
       }
       
       // Artificial delay to see loading state
@@ -200,9 +201,9 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
   // Show preamble if challenge hasn't started AND there's no existing completion
   if (!hasStarted && !session.isComplete && session.results.length === 0) {
     return (
-      <div className="py-8">
+      <div className="py-8 min-h-screen">
         {renderHeader()}
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-8 shadow-lg text-center">
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-8 shadow-lg text-center max-w-2xl mx-auto">
 
           {/* Challenge Info */}
           <div className="mb-8">
@@ -251,11 +252,12 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
 
             {/* Start Button */}
             <button
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
                 setHasStarted(true);
                 setSession(prev => ({ ...prev, startTime: Date.now() }));
               }}
-              className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-lg transition-colors shadow-lg"
+              className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-lg transition-colors shadow-lg touch-manipulation"
             >
               Start Challenge
             </button>

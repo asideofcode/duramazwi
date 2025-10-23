@@ -1,4 +1,5 @@
 import { ChallengeSession } from '@/types/challenge';
+import { getTodayInTimezone, getUserTimezone } from './timezone';
 
 const STORAGE_KEY = 'shona_dictionary.daily_challenge_completion';
 
@@ -53,11 +54,15 @@ export const clearOldCompletions = (): void => {
     if (!stored) return;
     
     const completion: ChallengeCompletion = JSON.parse(stored);
-    const today = new Date().toISOString().split('T')[0];
+    
+    // Get today's date in the user's timezone (same as what the challenge uses)
+    const userTimezone = getUserTimezone();
+    const today = getTodayInTimezone(userTimezone);
     
     // If stored completion is not for today, clear it
     if (completion.date !== today) {
       localStorage.removeItem(STORAGE_KEY);
+      console.log(`🗑️ Cleared old completion for ${completion.date}, today is ${today}`);
     }
   } catch (error) {
     console.error('Failed to clear old completions:', error);
