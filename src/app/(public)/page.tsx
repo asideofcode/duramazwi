@@ -68,7 +68,10 @@ export default async function HomePage({ searchParams }: { searchParams: { q?: s
   const { q } = await searchParams; // Extract query parameter
   const searchQuery = q || ""; // Extract query parameter
   
-  console.log("HomePage searchQuery:", searchQuery); // Debug log
+  // Development logging only
+  if (process.env.NODE_ENV === 'development' && searchQuery) {
+    console.log("HomePage searchQuery:", searchQuery);
+  }
 
   return (
     <div>

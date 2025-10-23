@@ -10,9 +10,12 @@ class AudioDataService {
   constructor() {
     // Static import - resolved at build time, just like dataService
     this.audioIndex = audioIndexRaw;
-    console.log(`🎵 Loaded ${Object.keys(this.audioIndex.records || {}).length} audio records at build time`);
-    console.log(`🎵 Entry index keys:`, Object.keys(this.audioIndex.entryIndex || {}).slice(0, 5));
-    console.log(`🎵 Sample audio record:`, Object.values(this.audioIndex.records || {})[0]);
+    
+    // Only log in development
+    if (process.env.NODE_ENV === 'development') {
+      const recordCount = Object.keys(this.audioIndex.records || {}).length;
+      console.log(`🎵 Loaded ${recordCount} audio records`);
+    }
   }
 
   getRecord(audioId: string): AudioRecord | null {

@@ -101,10 +101,9 @@ export default async function DetailsPage({
     ? audioDataService.getRecordsForEntry(id)
     : [];
   
-  // Debug logging
-  console.log(`🎵 [${id}] Audio records found:`, audioRecords.length);
-  if (audioRecords.length > 0) {
-    console.log(`🎵 [${id}] First audio record:`, audioRecords[0]);
+  // Development logging only
+  if (process.env.NODE_ENV === 'development' && audioRecords.length === 0) {
+    console.log(`🎵 No audio found for: ${id}`);
   }
 
   return (
