@@ -275,7 +275,7 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
                 setHasStarted(true);
                 setSession(prev => ({ ...prev, startTime: Date.now() }));
               }}
-              className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-lg transition-colors shadow-lg touch-manipulation"
+              className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-lg transition-colors shadow-lg touch-manipulation"
             >
               Start Challenge
             </button>
