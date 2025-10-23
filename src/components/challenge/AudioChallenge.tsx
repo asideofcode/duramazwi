@@ -90,12 +90,12 @@ export default function AudioChallenge({ challenge, onComplete }: AudioChallenge
       {/* Options */}
       <div className="grid grid-cols-1 gap-3 mb-8">
         {challenge.options?.map((option, index) => {
-          let buttonClass = "w-full p-4 text-center rounded-lg border-2 transition-all duration-200 ";
+          let buttonClass = "w-full p-4 text-center rounded-lg border-2 transition-all duration-200 touch-manipulation ";
           
           if (!showResult) {
             buttonClass += selectedAnswer === option
-              ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300"
-              : "border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-blue-50 dark:hover:bg-blue-900/10";
+              ? "border-blue-500 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 shadow-md"
+              : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600";
           } else {
             if (option === challenge.correctAnswer) {
               buttonClass += "border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300";
