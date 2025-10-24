@@ -14,7 +14,7 @@ export default function AdminLayout({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
-              <Link href="/admin" className="flex items-center space-x-2" title="Go to admin dashboard">
+              <Link href="/admin" className="flex items-center space-x-2" title="Go to admin dashboard" aria-label="Go to admin dashboard">
                 <SvgIcon
                   className="h-8 w-8 text-blue-600 dark:text-blue-500"
                   variant="blue"
@@ -31,6 +31,7 @@ export default function AdminLayout({
                 href="/admin"
                 className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium"
                 title="Admin dashboard"
+                aria-label="Admin dashboard"
               >
                 Dashboard
               </Link>
@@ -38,6 +39,7 @@ export default function AdminLayout({
                 href="/admin/entries"
                 className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium"
                 title="Manage dictionary entries"
+                aria-label="Manage dictionary entries"
               >
                 Manage Entries
               </Link>
@@ -45,6 +47,7 @@ export default function AdminLayout({
                 href="/admin/challenges"
                 className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium"
                 title="Manage daily challenges"
+                aria-label="Manage daily challenges"
               >
                 Challenges
               </Link>
@@ -52,6 +55,7 @@ export default function AdminLayout({
                 href="/"
                 className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium"
                 title="View public site"
+                aria-label="View public site"
               >
                 View Public Site
               </Link>

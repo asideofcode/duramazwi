@@ -2,12 +2,14 @@ import { Metadata } from 'next';
 import DailyChallengeContainer from '@/components/challenge/DailyChallengeContainer';
 import SoundControls from '@/components/SoundControls';
 import SearchBar from "@/component/search-bar.component";
-import { DailyChallenge, Challenge } from '@/types/challenge';
-import { shuffleArray } from '@/utils/shuffle';
+import { createBreadcrumbs } from "@/utils/breadcrumbs";
+import BreadcrumbStructuredData from "@/components/BreadcrumbStructuredData";
 import { getDatabase } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { getTodayInTimezone, isToday } from '@/utils/timezone';
 import { headers } from 'next/headers';
+import { DailyChallenge, Challenge } from '@/types/challenge';
+import { shuffleArray } from '@/utils/shuffle';
 
 // Force dynamic rendering since we use searchParams
 export const dynamic = 'force-dynamic';
@@ -182,10 +184,13 @@ export default async function DailyChallengePage({ searchParams }: DailyChalleng
 
   return (
     <div className="min-h-screen">
+      <BreadcrumbStructuredData breadcrumbs={createBreadcrumbs.dailyChallenge()} />
       {/* Search Bar */}
-      <div id="search-bar">
-        <SearchBar />
-      </div>
+      <header>
+        <div id="search-bar">
+          <SearchBar />
+        </div>
+      </header>
 
       {isViewingPastChallenge && (
         <div className="bg-amber-50 dark:bg-amber-900/20 border-b border-amber-200 dark:border-amber-800 mb-6">

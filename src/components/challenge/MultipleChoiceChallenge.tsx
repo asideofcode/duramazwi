@@ -43,7 +43,7 @@ export default function MultipleChoiceChallenge({ challenge, onComplete }: Multi
     <div className="bg-white dark:bg-gray-800 rounded-lg p-8 shadow-lg">
       {/* Question */}
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+        <h2 id="question-heading" className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
           {challenge.question}
         </h2>
         <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
@@ -52,9 +52,11 @@ export default function MultipleChoiceChallenge({ challenge, onComplete }: Multi
       </div>
 
       {/* Options */}
-      <div className="grid grid-cols-1 gap-3 mb-8">
-        {challenge.options?.map((option, index) => {
-          let buttonClass = "w-full p-4 text-left rounded-lg border-2 transition-all duration-200 touch-manipulation ";
+      <fieldset className="mb-8">
+        <legend className="sr-only">Choose the correct answer</legend>
+        <div className="grid grid-cols-1 gap-3" role="radiogroup" aria-labelledby="question-heading">
+          {challenge.options?.map((option, index) => {
+          let buttonClass = "w-full p-4 text-left rounded-lg border-2 transition-all duration-200 touch-manipulation select-none ";
           
           if (!showResult) {
             buttonClass += selectedAnswer === option
@@ -76,6 +78,9 @@ export default function MultipleChoiceChallenge({ challenge, onComplete }: Multi
               onClick={() => handleAnswerSelect(option)}
               disabled={showResult}
               className={buttonClass}
+              role="radio"
+              aria-checked={selectedAnswer === option}
+              aria-label={`Option ${String.fromCharCode(65 + index)}: ${option}`}
             >
               <div className="flex items-center">
                 <div className="w-8 h-8 rounded-full border-2 border-current flex items-center justify-center mr-4 text-sm font-bold">
@@ -84,12 +89,12 @@ export default function MultipleChoiceChallenge({ challenge, onComplete }: Multi
                 <span className="text-lg font-medium flex-1">{option}</span>
                 <div className="ml-auto w-6 h-6 flex items-center justify-center">
                   {showResult && option === challenge.correctAnswer && (
-                    <svg className="w-6 h-6 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-6 h-6 text-green-500" fill="currentColor" viewBox="0 0 20 20" aria-label="Correct answer">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
                   )}
                   {showResult && option === selectedAnswer && !isCorrect && (
-                    <svg className="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20" aria-label="Incorrect answer">
                       <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                     </svg>
                   )}
@@ -98,7 +103,8 @@ export default function MultipleChoiceChallenge({ challenge, onComplete }: Multi
             </button>
           );
         })}
-      </div>
+        </div>
+      </fieldset>
 
       {/* Check Button */}
       {!showResult && (
@@ -106,11 +112,12 @@ export default function MultipleChoiceChallenge({ challenge, onComplete }: Multi
           <button
             onClick={handleCheck}
             disabled={!selectedAnswer}
-            className={`w-full py-3 rounded-lg font-medium transition-colors ${
+            className={`w-full py-3 rounded-lg font-medium transition-colors select-none ${
               selectedAnswer
                 ? 'bg-blue-600 hover:bg-blue-700 text-white'
                 : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
             }`}
+            aria-label={selectedAnswer ? 'Check your answer' : 'Select an answer first'}
           >
             Check Answer
           </button>
@@ -146,11 +153,12 @@ export default function MultipleChoiceChallenge({ challenge, onComplete }: Multi
           <div className="mt-4">
             <button
               onClick={handleContinue}
-              className={`w-full py-3 text-white rounded-lg font-medium transition-colors ${
+              className={`w-full py-3 text-white rounded-lg font-medium transition-colors select-none ${
                 isCorrect 
                   ? 'bg-green-600 hover:bg-green-700' 
                   : 'bg-red-600 hover:bg-red-700'
               }`}
+              aria-label="Continue to next question"
             >
               Continue
             </button>

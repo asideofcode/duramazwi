@@ -35,18 +35,7 @@ export default function WebsiteStructuredData() {
     },
     "sameAs": [
       "https://shonadictionary.com"
-    ],
-    "breadcrumb": {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "https://shonadictionary.com"
-        }
-      ]
-    }
+    ]
   };
 
   return (

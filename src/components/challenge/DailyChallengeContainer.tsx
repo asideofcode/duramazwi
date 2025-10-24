@@ -217,7 +217,7 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
     return (
       <div className="py-8 min-h-screen">
         {renderHeader()}
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-8 shadow-lg text-center max-w-2xl mx-auto">
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-8 shadow-lg text-center">
 
           {/* Challenge Info */}
           <div className="mb-8">
@@ -260,7 +260,7 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
               
               <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
                 <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-1">
-                  {challenge.estimatedTime || Math.ceil(challenge.challenges.length * 1.5)}
+                  {challenge.estimatedTime || Math.ceil(challenge.challenges.length * 0.5)}
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
                   Minutes
@@ -275,7 +275,8 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
                 setHasStarted(true);
                 setSession(prev => ({ ...prev, startTime: Date.now() }));
               }}
-              className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-lg transition-colors shadow-lg touch-manipulation"
+              className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-lg transition-colors shadow-lg touch-manipulation select-none"
+              aria-label="Start today's challenge"
             >
               Start Challenge
             </button>

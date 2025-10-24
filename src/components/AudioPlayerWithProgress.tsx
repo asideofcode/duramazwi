@@ -6,11 +6,14 @@ interface AudioPlayerWithProgressProps {
   className?: string;
   // Either provide src directly or preload result from hook
   src: string | AudioPreloadResult;
+  // Accessibility label for what audio this is
+  ariaLabel?: string;
 }
 
 export default function AudioPlayerWithProgress({
   className = '',
-  src
+  src,
+  ariaLabel = 'Play audio'
 }: AudioPlayerWithProgressProps) {
   // Detect if src is a string or preload result
   const isPreloadResult = typeof src === 'object' && 'loadState' in src;
@@ -30,11 +33,20 @@ export default function AudioPlayerWithProgress({
     play();
   };
 
+  const getAriaLabel = () => {
+    if (loadState === 'loading') return `Loading ${ariaLabel}...`;
+    if (loadState === 'error') return `Error loading ${ariaLabel}`;
+    return ariaLabel;
+  };
+
   return (
     <button
       onClick={handleClick}
       disabled={loadState !== 'loaded'}
-      className={`relative w-20 h-20 rounded-full flex items-center justify-center transition-all duration-200 shadow-lg ${
+      aria-label={getAriaLabel()}
+      title={getAriaLabel()}
+      aria-describedby={loadState !== 'loaded' ? 'audio-status' : undefined}
+      className={`relative w-20 h-20 rounded-full flex items-center justify-center transition-all duration-200 shadow-lg select-none ${
         loadState === 'loaded'
           ? 'bg-blue-500 hover:bg-blue-600 text-white'
           : 'bg-blue-400 text-white cursor-not-allowed'
@@ -77,17 +89,24 @@ export default function AudioPlayerWithProgress({
       {/* Play/Loading icon */}
       <div className="relative z-10">
         {loadState === 'loading' ? (
-          <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full" />
+          <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full" aria-hidden="true" />
         ) : loadState === 'error' ? (
-          <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+          <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
             <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
           </svg>
         ) : (
-          <svg className="w-8 h-8 ml-1" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+          <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+            <path d="M8 5v10l8-5-8-5z" />
           </svg>
         )}
       </div>
+      
+      {/* Screen reader status */}
+      {loadState !== 'loaded' && (
+        <span id="audio-status" className="sr-only">
+          {loadState === 'loading' ? 'Audio loading...' : 'Audio failed to load'}
+        </span>
+      )}
     </button>
   );
 }

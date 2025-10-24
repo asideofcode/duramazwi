@@ -7,6 +7,8 @@ import { createMetadata } from "@/utils/metadata";
 import { Metadata } from "next/types";
 import DictionaryEntryClean, { DictionaryEntry, Meaning } from "@/components/dictionary-entry-clean";
 import StructuredData from "@/component/structured-data.component";
+import { createBreadcrumbs } from "@/utils/breadcrumbs";
+import BreadcrumbStructuredData from "@/components/BreadcrumbStructuredData";
 
 // Helper function to format word display for metadata
 const formatWordForMetadata = (word: string, meanings: Meaning[]) => {
@@ -114,9 +116,12 @@ export default async function DetailsPage({
           url={`https://shonadictionary.com/word/${encodeURIComponent(id)}`} 
         />
       )}
-      <div id="search-bar">
-        <SearchBar />
-      </div>
+      <BreadcrumbStructuredData breadcrumbs={createBreadcrumbs.word(id)} />
+      <header>
+        <div id="search-bar">
+          <SearchBar />
+        </div>
+      </header>
       {wordDetails && wordDetails.length > 0 ? (
         <div className="">
           {wordDetails.map((word: DictionaryEntry, index: number) => (

@@ -184,8 +184,9 @@ function SearchResults({ searchQuery, onError, router }: any) {
                 {currentPage > 1 ? (
                   <button
                     onClick={() => navigateToPage(currentPage - 1, false)}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors select-none"
                     title={`Go to page ${currentPage - 1}`}
+                    aria-label={`Go to previous page ${currentPage - 1}`}
                   >
                     Previous
                   </button>
@@ -209,8 +210,9 @@ function SearchResults({ searchQuery, onError, router }: any) {
                 {currentPage < totalPages ? (
                   <button
                     onClick={() => navigateToPage(currentPage + 1, false)}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors select-none"
                     title={`Go to page ${currentPage + 1}`}
+                    aria-label={`Go to next page ${currentPage + 1}`}
                   >
                     Next
                   </button>
@@ -259,8 +261,9 @@ function SearchResults({ searchQuery, onError, router }: any) {
                     {currentPage > 1 ? (
                       <button
                         onClick={() => navigateToPage(currentPage - 1)}
-                        className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                        className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors select-none"
                         title={`Go to page ${currentPage - 1}`}
+                        aria-label={`Go to previous page ${currentPage - 1}`}
                       >
                         Previous
                       </button>
@@ -284,8 +287,9 @@ function SearchResults({ searchQuery, onError, router }: any) {
                     {currentPage < totalPages ? (
                       <button
                         onClick={() => navigateToPage(currentPage + 1)}
-                        className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                        className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors select-none"
                         title={`Go to page ${currentPage + 1}`}
+                        aria-label={`Go to next page ${currentPage + 1}`}
                       >
                         Next
                       </button>

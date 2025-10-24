@@ -25,6 +25,8 @@ export default function NotFound() {
           <Link
             href="/"
             className="inline-flex items-center space-x-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+            title="Go to homepage"
+            aria-label="Go to homepage"
           >
             <SvgIcon className="h-5 w-5" variant="light" icon="Book" />
             <span>Back to Dictionary</span>
@@ -35,6 +37,8 @@ export default function NotFound() {
             <Link 
               href="/browse" 
               className="text-blue-600 dark:text-blue-400 hover:underline"
+              title="Browse all dictionary entries"
+              aria-label="Browse all dictionary entries"
             >
               Browse all words
             </Link>

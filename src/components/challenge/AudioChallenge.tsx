@@ -64,7 +64,7 @@ export default function AudioChallenge({ challenge, onComplete }: AudioChallenge
       {/* Options */}
       <div className="grid grid-cols-1 gap-3 mb-8">
         {challenge.options?.map((option, index) => {
-          let buttonClass = "w-full p-4 text-center rounded-lg border-2 transition-all duration-200 touch-manipulation ";
+          let buttonClass = "w-full p-4 text-center rounded-lg border-2 transition-all duration-200 touch-manipulation select-none ";
           
           if (!showResult) {
             buttonClass += selectedAnswer === option
@@ -86,6 +86,9 @@ export default function AudioChallenge({ challenge, onComplete }: AudioChallenge
               onClick={() => handleAnswerSelect(option)}
               disabled={showResult}
               className={buttonClass}
+              role="radio"
+              aria-checked={selectedAnswer === option}
+              aria-label={`Option ${String.fromCharCode(65 + index)}: ${option}`}
             >
               {showResult ? (
                 <div className="flex items-center justify-between">
@@ -117,11 +120,12 @@ export default function AudioChallenge({ challenge, onComplete }: AudioChallenge
           <button
             onClick={handleCheck}
             disabled={!selectedAnswer}
-            className={`w-full py-3 rounded-lg font-medium transition-colors ${
+            className={`w-full py-3 rounded-lg font-medium transition-colors select-none ${
               selectedAnswer
                 ? 'bg-blue-600 hover:bg-blue-700 text-white'
                 : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
             }`}
+            aria-label={selectedAnswer ? 'Check your answer' : 'Select an answer first'}
           >
             Check Answer
           </button>
@@ -157,11 +161,12 @@ export default function AudioChallenge({ challenge, onComplete }: AudioChallenge
           <div className="mt-4">
             <button
               onClick={handleContinue}
-              className={`w-full py-3 text-white rounded-lg font-medium transition-colors ${
+              className={`w-full py-3 text-white rounded-lg font-medium transition-colors select-none ${
                 isCorrect 
                   ? 'bg-green-600 hover:bg-green-700' 
                   : 'bg-red-600 hover:bg-red-700'
               }`}
+              aria-label="Continue to next question"
             >
               Continue
             </button>

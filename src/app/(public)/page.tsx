@@ -77,7 +77,7 @@ export default async function HomePage({ searchParams }: { searchParams: { q?: s
     <div>
       <WebsiteStructuredData />
       {/* Animated Header - transitions between full hero and compact search */}
-      <div className={`text-center transition-all duration-500 ease-in-out ${
+      <header className={`text-center transition-all duration-500 ease-in-out ${
         searchQuery 
           ? 'py-0 mb-0' 
           : 'py-12 mb-0'
@@ -128,6 +128,7 @@ export default async function HomePage({ searchParams }: { searchParams: { q?: s
               href="/browse" 
               className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline transition-colors duration-200 px-2 py-1"
               title="Browse all dictionary entries"
+              aria-label="Browse all dictionary entries"
             >
               Browse all entries
             </Link>
@@ -136,6 +137,7 @@ export default async function HomePage({ searchParams }: { searchParams: { q?: s
               href="/random" 
               className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline transition-colors duration-200 px-2 py-1"
               title="Get a random Shona word"
+              aria-label="Get a random Shona word"
             >
               Random word
             </Link>
@@ -144,12 +146,13 @@ export default async function HomePage({ searchParams }: { searchParams: { q?: s
               href="/suggest" 
               className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline transition-colors duration-200 px-2 py-1"
               title="Suggest a new word for the dictionary"
+              aria-label="Suggest a new word for the dictionary"
             >
               Suggest a word
             </Link>
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Separator for search results */}
       {searchQuery && (
@@ -158,7 +161,12 @@ export default async function HomePage({ searchParams }: { searchParams: { q?: s
 
       {/* Search Results or Welcome Content */}
       {searchQuery ? (
-        <Suspense fallback={<div className="flex items-center justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div></div>}>
+        <Suspense fallback={
+          <div className="flex items-center justify-center py-12" role="status" aria-label="Loading search results">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <span className="sr-only">Loading search results...</span>
+          </div>
+        }>
           <ResultsPage searchQuery={searchQuery} />
         </Suspense>
       ) : (
@@ -185,7 +193,7 @@ function WelcomeContent() {
           making it a valuable resource for speakers and learners alike.
         </p>
         <p>
-          <Link href="/suggest" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline font-medium" title="Contribute to the dictionary">
+          <Link href="/suggest" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline font-medium" title="Contribute to the dictionary" aria-label="Contribute to the dictionary">
             Your suggestions
           </Link>{" "}
           play a vital role in shaping this project. Contribute today and be part of the journey!
@@ -208,6 +216,7 @@ function WelcomeContent() {
               href={`/word/${encodeURIComponent(word)}`}
               className="text-lg text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium transition-colors"
               title={`View definition of "${word}"`}
+              aria-label={`View definition of "${word}"`}
             >
               {word}
             </Link>
@@ -218,6 +227,7 @@ function WelcomeContent() {
             href="/browse"
             className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
             title="Browse all dictionary entries"
+            aria-label="Browse all dictionary entries"
           >
             Browse All Words
           </Link>

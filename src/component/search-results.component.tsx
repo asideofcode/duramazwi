@@ -98,6 +98,7 @@ export default function SearchResults({ query }: SearchResultsProps) {
             href="/browse"
             className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline"
             title="Browse all dictionary entries"
+            aria-label="Browse all dictionary entries"
           >
             Browse all entries
           </Link>
@@ -129,6 +130,7 @@ export default function SearchResults({ query }: SearchResultsProps) {
                 href={`/word/${encodeURIComponent(entry.word.toLowerCase())}`}
                 className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm font-medium"
                 title={`View full definition of "${entry.word}"`}
+                aria-label={`View full definition of "${entry.word}"`}
               >
                 View full entry →
               </Link>

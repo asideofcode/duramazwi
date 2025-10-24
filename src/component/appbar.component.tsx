@@ -124,7 +124,7 @@ export default function Appbar() {
         ref={headerRef}
         className={`${inter.className} mb-2 ${isStuck ? 'fixed top-0 left-0 right-0 z-50' : ''} ${(isStuck || isMobileMenuOpen) ? 'border-b border-gray-200 dark:border-gray-700' : ''} bg-default transition-all duration-300`}
       >
-      <nav className={`${isStuck ? 'py-2' : 'py-4'} transition-all duration-300`}>
+      <nav className={`${isStuck ? 'py-2' : 'py-4'} transition-all duration-300`} aria-label="Main navigation">
         <div className="max-w-4xl mx-auto px-4">
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center justify-between">
@@ -133,6 +133,7 @@ export default function Appbar() {
             href="/" 
             className="flex items-center space-x-2" 
             title="Go to homepage"
+            aria-label="Go to homepage"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             <SvgIcon
@@ -156,6 +157,7 @@ export default function Appbar() {
                   key={item.href}
                   href={item.href}
                   title={item.title}
+                  aria-label={item.title}
                   className={`px-4 py-2 text-sm font-medium transition-colors ${
                     isActive
                       ? "text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400"
@@ -181,7 +183,7 @@ export default function Appbar() {
                     }, 500);
                   }
                 }}
-                className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors"
+                className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors select-none"
                 aria-label="Scroll to search"
                 title="Go to search bar"
               >
@@ -252,7 +254,7 @@ export default function Appbar() {
                       searchElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
                   }}
-                  className="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  className="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors select-none"
                   aria-label="Scroll to search"
                   title="Go to search bar"
                 >
@@ -266,9 +268,11 @@ export default function Appbar() {
 
               <button
                 onClick={toggleMobileMenu}
-                className="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                aria-label="Toggle mobile menu"
-                title="Open navigation menu"
+                className="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors select-none"
+                aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+                aria-expanded={isMobileMenuOpen}
+                aria-controls="mobile-menu"
+                title={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
               >
               <div className="w-6 h-6 flex flex-col justify-center space-y-1">
                 <div className={`h-0.5 bg-current transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></div>
@@ -281,7 +285,7 @@ export default function Appbar() {
 
           {/* Mobile Menu */}
           {isMobileMenuOpen && (
-            <div className="mt-4 pb-4 space-y-2">
+            <div id="mobile-menu" className="mt-4 pb-4 space-y-2">
               {navItems.map((item) => {
                 const isActive = pathname === item.href || 
                   (item.href === "/random" && pathname.startsWith("/word/"));
@@ -292,6 +296,7 @@ export default function Appbar() {
                     href={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
                     title={item.title}
+                    aria-label={item.title}
                     className={`flex items-center space-x-3 px-4 py-3 text-sm font-medium transition-colors ${
                       isActive
                         ? "text-blue-600 dark:text-blue-400 border-l-4 border-blue-600 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20"

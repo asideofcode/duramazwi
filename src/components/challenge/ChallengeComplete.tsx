@@ -168,7 +168,8 @@ export default function ChallengeComplete({ session, onRestart, playCompletionSo
         <div className="flex justify-center">
           <button
             onClick={onRestart}
-            className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+            className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors select-none"
+            aria-label="Restart challenge (development only)"
           >
             Try Again (Dev Mode)
           </button>

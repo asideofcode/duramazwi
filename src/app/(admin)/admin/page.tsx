@@ -146,6 +146,8 @@ export default function AdminDashboard() {
           <Link
             href="/admin/entries"
             className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
+            title="Manage dictionary entries"
+            aria-label="Manage dictionary entries"
           >
             <SvgIcon className="h-4 w-4" variant="light" icon="Book" />
             <span>Manage Entries</span>

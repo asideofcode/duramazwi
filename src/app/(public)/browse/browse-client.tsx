@@ -65,8 +65,9 @@ function BrowseContent() {
       </div>
 
       {/* Alphabet Filter */}
-      <div className="mb-8">
-        <div className="flex flex-wrap gap-2">
+      <nav className="mb-8" aria-label="Filter by letter">
+        <h2 className="sr-only">Filter entries by letter</h2>
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Alphabet filter">
           <Link
             href="/browse"
             className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -93,7 +94,7 @@ function BrowseContent() {
             </Link>
           ))}
         </div>
-      </div>
+      </nav>
 
       {/* Top Pagination - Only show if there are entries */}
       {totalEntries > 0 && (
@@ -106,6 +107,7 @@ function BrowseContent() {
                 href={`/browse?page=${currentPage - 1}${letter ? `&letter=${letter}` : ''}`}
                 className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 title={`Go to page ${currentPage - 1}`}
+                aria-label={`Go to previous page ${currentPage - 1}${letter ? ` of entries starting with ${letter.toUpperCase()}` : ''}`}
                 scroll={false}
               >
                 Previous
@@ -132,6 +134,7 @@ function BrowseContent() {
                 href={`/browse?page=${currentPage + 1}${letter ? `&letter=${letter}` : ''}`}
                 className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 title={`Go to page ${currentPage + 1}`}
+                aria-label={`Go to next page ${currentPage + 1}${letter ? ` of entries starting with ${letter.toUpperCase()}` : ''}`}
                 scroll={false}
               >
                 Next
@@ -179,6 +182,7 @@ function BrowseContent() {
                 href={`/browse?page=${currentPage - 1}${letter ? `&letter=${letter}` : ''}`}
                 className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 title={`Go to page ${currentPage - 1}`}
+                aria-label={`Go to previous page ${currentPage - 1}${letter ? ` of entries starting with ${letter.toUpperCase()}` : ''}`}
               >
                 Previous
               </Link>
@@ -204,6 +208,7 @@ function BrowseContent() {
                 href={`/browse?page=${currentPage + 1}${letter ? `&letter=${letter}` : ''}`}
                 className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 title={`Go to page ${currentPage + 1}`}
+                aria-label={`Go to next page ${currentPage + 1}${letter ? ` of entries starting with ${letter.toUpperCase()}` : ''}`}
               >
                 Next
               </Link>

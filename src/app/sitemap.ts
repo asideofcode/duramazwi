@@ -43,6 +43,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.4,
     },
+    {
+      url: 'https://shonadictionary.com/challenge/daily',
+      lastModified: new Date().toISOString(),
+      changeFrequency: 'daily',
+      priority: 0.8,
+    },
+    {
+      url: 'https://shonadictionary.com/translate',
+      lastModified: new Date().toISOString(),
+      changeFrequency: 'weekly',
+      priority: 0.6,
+    },
     ...browsePages,
     ...words
   ];

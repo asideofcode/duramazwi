@@ -408,6 +408,8 @@ function ManageEntriesContent() {
                         <Link
                           href={`/admin/entries/${encodeURIComponent(entry.word)}/edit`}
                           className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                          title={`Edit entry for "${entry.word}"`}
+                          aria-label={`Edit dictionary entry for "${entry.word}"`}
                         >
                           Edit
                         </Link>
@@ -528,6 +530,8 @@ function ManageEntriesContent() {
         <Link
           href="/admin"
           className="inline-flex items-center space-x-2 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+          title="Back to admin dashboard"
+          aria-label="Back to admin dashboard"
         >
           <SvgIcon className="h-4 w-4" variant="default" icon="Book" />
           <span>Back to Dashboard</span>

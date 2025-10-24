@@ -67,9 +67,13 @@ export default function SearchBar({}:
 
   return (
     <>
-    <form onSubmit={search} className="mb-6">
+    <form onSubmit={search} className="mb-6" role="search">
+      <label htmlFor="search-input" className="sr-only">
+        Search Shona dictionary
+      </label>
       <div className="theme-input flex ">
         <input
+          id="search-input"
           ref={inputRef}
           type="search"
           className="peer w-full bg-surface outline-none placeholder:text-sm theme-text-sub1"
@@ -81,14 +85,24 @@ export default function SearchBar({}:
           onKeyDown={handleKeyDown}
           enterKeyHint="search"
           value={keyword}
+          aria-label="Search Shona dictionary"
         />
         {
           status === "loading" 
             ?
-          <Loading className="h-6 w-6"/>
+          <div role="status" aria-label="Searching...">
+            <Loading className="h-6 w-6"/>
+            <span className="sr-only">Searching...</span>
+          </div>
             : 
           (
-            <button className="h-6 w-6 theme-text-sub1" title="Search word" onClick={handleButtonClick}>
+            <button 
+              type="submit"
+              className="h-6 w-6 theme-text-sub1 select-none" 
+              title="Search dictionary" 
+              aria-label="Search dictionary"
+              onClick={handleButtonClick}
+            >
               <SvgIcon icon={"Search"}/>
             </button>
           )

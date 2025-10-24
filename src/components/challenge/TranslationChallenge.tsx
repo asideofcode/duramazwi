@@ -192,7 +192,8 @@ export default function TranslationChallenge({ challenge, onComplete }: Translat
                       e.stopPropagation();
                       handleWordRemove(index);
                     }}
-                    className="ml-2 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 transition-colors"
+                    className="ml-2 text-red-500 hover:text-red-700 transition-colors select-none"
+                    aria-label={`Remove ${word}`}
                   >
                     ×
                   </button>
@@ -249,11 +250,12 @@ export default function TranslationChallenge({ challenge, onComplete }: Translat
           <button
             onClick={handleSubmit}
             disabled={!canSubmit}
-            className={`w-full py-3 rounded-lg font-medium transition-colors ${
+            className={`w-full py-3 rounded-lg font-medium transition-colors select-none ${
               canSubmit
                 ? 'bg-blue-600 hover:bg-blue-700 text-white'
                 : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
             }`}
+            aria-label={canSubmit ? 'Submit your translation' : 'Complete the translation first'}
           >
             Check Answer
           </button>
@@ -296,11 +298,12 @@ export default function TranslationChallenge({ challenge, onComplete }: Translat
           <div className="mt-4">
             <button
               onClick={handleContinue}
-              className={`w-full py-3 text-white rounded-lg font-medium transition-colors ${
+              className={`w-full py-3 text-white rounded-lg font-medium transition-colors select-none ${
                 isCorrect 
                   ? 'bg-green-600 hover:bg-green-700' 
                   : 'bg-red-600 hover:bg-red-700'
               }`}
+              aria-label="Continue to next question"
             >
               Continue
             </button>

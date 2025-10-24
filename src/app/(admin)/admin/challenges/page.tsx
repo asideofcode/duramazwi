@@ -106,12 +106,16 @@ export default function ChallengesAdminPage() {
             <Link
               href="/admin/challenges/daily"
               className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+              title="Assign daily challenges"
+              aria-label="Assign daily challenges"
             >
               Assign Daily Challenges
             </Link>
             <Link
               href="/admin/challenges/new"
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+              title="Create new challenge"
+              aria-label="Create new challenge"
             >
               Create Challenge
             </Link>

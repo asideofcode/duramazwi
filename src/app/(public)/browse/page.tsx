@@ -1,6 +1,8 @@
 import { Metadata } from "next/types";
 import SearchBar from "@/component/search-bar.component";
 import BrowseClient from "./browse-client";
+import { createBreadcrumbs } from "@/utils/breadcrumbs";
+import BreadcrumbStructuredData from "@/components/BreadcrumbStructuredData";
 
 export const dynamic = 'force-dynamic';
 
@@ -12,12 +14,13 @@ export const metadata: Metadata = {
 export default function BrowsePage() {
   return (
     <div>
-      <div id="search-bar">
-        <SearchBar />
-      </div>
-      <div className="">
-        <BrowseClient />
-      </div>
+      <BreadcrumbStructuredData breadcrumbs={createBreadcrumbs.browse()} />
+      <header>
+        <div id="search-bar">
+          <SearchBar />
+        </div>
+      </header>
+      <BrowseClient />
     </div>
   );
 }
