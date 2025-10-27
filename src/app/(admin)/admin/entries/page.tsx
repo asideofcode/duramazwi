@@ -6,9 +6,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import SvgIcon from "@/component/icons/svg-icon";
 import { useAdminEntries } from "@/hooks/useAdminEntries";
 import { AdminDictionaryEntry } from "@/services/adminDataService";
-import CreateEntryModal from "@/components/admin/CreateEntryModal";
-import AiAddEntryModal from "@/components/admin/AiAddEntryModal";
-import { DictionaryEntry } from "@/components/dictionary-entry-clean";
+import EntryEditModal from "@/components/admin/EntryEditModal";
+import EnhancedAiAddEntryModal from "@/components/admin/EnhancedAiAddEntryModal";
 
 function ManageEntriesContent() {
   const router = useRouter();
@@ -22,13 +21,18 @@ function ManageEntriesContent() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showAiModal, setShowAiModal] = useState(false);
   
-  // Handler for AI-generated entries
-  const handleAiEntryGenerated = async (entry: DictionaryEntry) => {
-    const result = await createEntry(entry);
+  // Handler for AI-generated entries (now handled directly in the modal)
+  const handleAiEntrySubmit = async (entryData: Partial<AdminDictionaryEntry>) => {
+    // Ensure required fields are present
+    if (!entryData.word || !entryData.meanings) {
+      return { success: false, error: 'Missing required fields', message: 'Missing required fields' };
+    }
+    
+    const result = await createEntry(entryData as Omit<AdminDictionaryEntry, "_id" | "createdAt" | "updatedAt">);
     if (result.success) {
       setShowAiModal(false);
       // Optionally navigate to the new entry
-      // router.push(`/admin/entries/${encodeURIComponent(entry.word)}/edit`);
+      // router.push(`/admin/entries/${encodeURIComponent(entryData.word)}/edit`);
     }
     return result;
   };
@@ -504,24 +508,27 @@ function ManageEntriesContent() {
 
       {/* Create Entry Modal */}
       {showCreateForm && (
-        <CreateEntryModal
+        <EntryEditModal
+          isOpen={showCreateForm}
           onClose={() => setShowCreateForm(false)}
-          onSubmit={async (entryData) => {
-            const result = await createEntry(entryData);
-            if (result.success) {
-              setShowCreateForm(false);
+          onSubmit={async (entryData: Partial<AdminDictionaryEntry>) => {
+            // Ensure required fields are present
+            if (!entryData.word || !entryData.meanings) {
+              return { success: false, error: 'Missing required fields', message: 'Missing required fields' };
             }
+            
+            const result = await createEntry(entryData as Omit<AdminDictionaryEntry, "_id" | "createdAt" | "updatedAt">);
             return result;
           }}
         />
       )}
 
-      {/* AI Add Entry Modal */}
+      {/* Enhanced AI Add Entry Modal */}
       {showAiModal && (
-        <AiAddEntryModal
+        <EnhancedAiAddEntryModal
           isOpen={showAiModal}
           onClose={() => setShowAiModal(false)}
-          onEntryGenerated={handleAiEntryGenerated}
+          onSubmit={handleAiEntrySubmit}
         />
       )}
 
