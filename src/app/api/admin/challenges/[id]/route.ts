@@ -4,10 +4,11 @@ import { ChallengeService } from '@/services/challengeService';
 // GET /api/admin/challenges/[id] - Get single challenge
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const challenge = await ChallengeService.getChallengeById(params.id);
+    const { id } = await params;
+    const challenge = await ChallengeService.getChallengeById(id);
     
     if (!challenge) {
       return NextResponse.json(
@@ -32,11 +33,12 @@ export async function GET(
 // PUT /api/admin/challenges/[id] - Update challenge
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
-    const updatedChallenge = await ChallengeService.updateChallenge(params.id, body);
+    const updatedChallenge = await ChallengeService.updateChallenge(id, body);
     
     if (!updatedChallenge) {
       return NextResponse.json(
@@ -62,10 +64,11 @@ export async function PUT(
 // DELETE /api/admin/challenges/[id] - Delete challenge
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const deleted = await ChallengeService.deleteChallenge(params.id);
+    const { id } = await params;
+    const deleted = await ChallengeService.deleteChallenge(id);
     
     if (!deleted) {
       return NextResponse.json(

@@ -9,6 +9,7 @@ export interface Challenge {
   explanation?: string;
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   points: number;
+  labels?: string[]; // Tags/labels for grouping challenges
 }
 
 export interface DailyChallenge {
