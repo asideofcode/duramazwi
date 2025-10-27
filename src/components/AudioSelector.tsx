@@ -45,6 +45,7 @@ export default function AudioSelector({
     
     if (!selectedRecording) return;
 
+
     try {
       // Stop current audio if playing
       if (currentAudio) {
@@ -55,8 +56,8 @@ export default function AudioSelector({
       // Create new audio
       const audio = new Audio(selectedRecording.url);
       setCurrentAudio(audio);
-      setIsPlaying(true);
 
+      // Set up event listeners
       audio.onended = () => {
         setIsPlaying(false);
         setCurrentAudio(null);
@@ -68,7 +69,37 @@ export default function AudioSelector({
         console.error('Failed to play audio');
       };
 
-      await audio.play();
+      // Wait for metadata to load before playing
+      const playWhenReady = () => {
+        return new Promise<void>((resolve, reject) => {
+          const onLoadedMetadata = () => {
+            audio.removeEventListener('loadedmetadata', onLoadedMetadata);
+            audio.removeEventListener('error', onError);
+            setIsPlaying(true);
+            audio.play().then(resolve).catch(reject);
+          };
+
+          const onError = () => {
+            audio.removeEventListener('loadedmetadata', onLoadedMetadata);
+            audio.removeEventListener('error', onError);
+            reject(new Error('Failed to load audio metadata'));
+          };
+
+          // Check if metadata is already loaded
+          if (audio.readyState >= 1) { // HAVE_METADATA
+            setIsPlaying(true);
+            audio.play().then(resolve).catch(reject);
+          } else {
+            audio.addEventListener('loadedmetadata', onLoadedMetadata);
+            audio.addEventListener('error', onError);
+            // Trigger loading by setting preload
+            audio.preload = 'metadata';
+            audio.load();
+          }
+        });
+      };
+
+      await playWhenReady();
     } catch (err) {
       setIsPlaying(false);
       setCurrentAudio(null);

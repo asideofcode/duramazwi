@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Challenge } from '@/types/challenge';
 import { useSoundEffects } from '@/hooks/useSoundEffects';
 
@@ -14,6 +14,20 @@ export default function MultipleChoiceChallenge({ challenge, onComplete }: Multi
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const { playSound } = useSoundEffects();
+  const continueButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Scroll continue button into view when result is shown
+  useEffect(() => {
+    if (showResult && continueButtonRef.current) {
+      // Small delay to ensure the result section is fully rendered
+      setTimeout(() => {
+        continueButtonRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center' 
+        });
+      }, 100);
+    }
+  }, [showResult]);
 
   const handleAnswerSelect = (answer: string) => {
     if (showResult) return;
@@ -152,6 +166,7 @@ export default function MultipleChoiceChallenge({ challenge, onComplete }: Multi
           {/* Continue Button inside feedback */}
           <div className="mt-4">
             <button
+              ref={continueButtonRef}
               onClick={handleContinue}
               className={`w-full py-3 text-white rounded-lg font-medium transition-colors select-none ${
                 isCorrect 

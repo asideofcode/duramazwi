@@ -56,7 +56,14 @@ export default function EditEntryModal({ entry, onClose, onSubmit }: EditEntryMo
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div 
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
+    >
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -64,9 +71,9 @@ export default function EditEntryModal({ entry, onClose, onSubmit }: EditEntryMo
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl"
           >
-            <SvgIcon className="h-6 w-6" variant="default" icon="Plus" />
+            ×
           </button>
         </div>
 

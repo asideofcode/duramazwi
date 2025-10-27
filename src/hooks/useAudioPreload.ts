@@ -33,11 +33,14 @@ export function useAudioPreload(src: string): AudioPreloadResult {
     
     const handleLoadedMetadata = () => {
       setLoadState('loaded');
-      setDuration(audio.duration);
+      // Only set duration if it's valid
+      if (audio.duration && !isNaN(audio.duration) && isFinite(audio.duration)) {
+        setDuration(audio.duration);
+      }
     };
 
     const handleCanPlay = () => {
-      if (audio.duration && !isNaN(audio.duration)) {
+      if (audio.duration && !isNaN(audio.duration) && isFinite(audio.duration)) {
         setDuration(audio.duration);
       }
     };

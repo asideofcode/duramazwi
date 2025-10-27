@@ -35,7 +35,7 @@ export async function GET(
     const audioBuffer = await readFile(audioPath);
 
     // Return audio with proper headers
-    return new NextResponse(audioBuffer, {
+    return new NextResponse(new Uint8Array(audioBuffer), {
       headers: {
         'Content-Type': audioRecord.mimeType || 'audio/webm',
         'Content-Length': audioBuffer.length.toString(),

@@ -68,7 +68,7 @@ class LocalAudioService implements AudioService {
       mimeType: file.type,
       size: file.size,
       metadata,
-      url: `/api/admin/audio/${audioId}/stream`,
+      url: `/uploads/audio/${filename}`,
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -291,6 +291,9 @@ class ProductionAudioService implements AudioService {
     const db = await this.getDatabase();
     await db.addRecord(audioRecord);
     
+    // Also update static index for immediate visibility
+    await this.updateStaticIndex();
+    
     console.log(`📤 Uploaded to production: ${blobPath}`);
     return audioRecord;
   }
@@ -310,6 +313,9 @@ class ProductionAudioService implements AudioService {
     
     // Remove from MongoDB
     await db.removeRecord(audioId);
+    
+    // Also update static index
+    await this.updateStaticIndex();
   }
   
   async getRecord(audioId: string): Promise<AudioRecord | null> {
@@ -325,6 +331,70 @@ class ProductionAudioService implements AudioService {
   async getStats() {
     const db = await this.getDatabase();
     return await db.getStats();
+  }
+  
+  // Update static index file with current database records
+  private async updateStaticIndex(): Promise<void> {
+    try {
+      const { writeFile, mkdir } = await import('fs/promises');
+      const { existsSync } = await import('fs');
+      const path = await import('path');
+      
+      console.log('🔄 Updating static audio index...');
+      
+      // Get all records from database
+      const db = await this.getDatabase();
+      const allRecords = await db.listRecords();
+      
+      // Build index structure
+      const index = {
+        version: '1.0.0',
+        lastUpdated: new Date().toISOString(),
+        records: {} as Record<string, any>,
+        entryIndex: {} as Record<string, string[]>,
+        levelIndex: {} as Record<string, string[]>
+      };
+      
+      // Process each record
+      allRecords.forEach((record: AudioRecord) => {
+        // Add to records
+        index.records[record.id] = record;
+        
+        // Update entry index
+        const entryId = record.metadata.entryId;
+        if (!index.entryIndex[entryId]) {
+          index.entryIndex[entryId] = [];
+        }
+        if (!index.entryIndex[entryId].includes(record.id)) {
+          index.entryIndex[entryId].push(record.id);
+        }
+        
+        // Update level index
+        const level = record.metadata.level;
+        if (!index.levelIndex[level]) {
+          index.levelIndex[level] = [];
+        }
+        if (!index.levelIndex[level].includes(record.id)) {
+          index.levelIndex[level].push(record.id);
+        }
+      });
+      
+      // Ensure data directory exists
+      const dataDir = path.join(process.cwd(), 'src', 'data');
+      if (!existsSync(dataDir)) {
+        await mkdir(dataDir, { recursive: true });
+      }
+      
+      // Write index file
+      const indexPath = path.join(dataDir, 'audio-index.json');
+      await writeFile(indexPath, JSON.stringify(index, null, 2));
+      
+      console.log(`✅ Updated static index with ${allRecords.length} records`);
+      
+    } catch (error) {
+      console.error('❌ Failed to update static index:', error);
+      // Don't throw - we don't want to break the upload if index update fails
+    }
   }
 }
 

@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import SvgIcon from '@/component/icons/svg-icon';
 import { AudioMetadata, AudioRecord, createAudioStorage } from '@/services/audioAPIClient';
+import { fixWebmBlob, isWebmBlob, getAudioExtension } from '@/utils/webmFix';
 
 interface CompactAudioRecorderProps {
   entryId: string;
@@ -24,6 +24,7 @@ export default function CompactAudioRecorder({
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [recordedMimeType, setRecordedMimeType] = useState<string>('audio/webm');
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -55,9 +56,15 @@ export default function CompactAudioRecorder({
       
       streamRef.current = stream;
       
-      const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: 'audio/webm;codecs=opus'
-      });
+      // Try MP4 first (better duration support), fallback to WebM
+      let mimeType = 'audio/mp4';
+      if (!MediaRecorder.isTypeSupported(mimeType)) {
+        mimeType = 'audio/webm;codecs=opus';
+        console.warn('MP4 not supported, falling back to WebM');
+      }
+      
+      const mediaRecorder = new MediaRecorder(stream, { mimeType });
+      setRecordedMimeType(mimeType);
       
       mediaRecorderRef.current = mediaRecorder;
       chunksRef.current = [];
@@ -68,8 +75,14 @@ export default function CompactAudioRecorder({
         }
       };
 
-      mediaRecorder.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
+      mediaRecorder.onstop = async () => {
+        let blob = new Blob(chunksRef.current, { type: mimeType });
+        
+        // Fix WebM duration if needed
+        if (isWebmBlob(blob) && recordingTime > 0) {
+          blob = await fixWebmBlob(blob, recordingTime);
+        }
+        
         setAudioBlob(blob);
       };
 
@@ -112,8 +125,9 @@ export default function CompactAudioRecorder({
       const audioStorage = createAudioStorage();
       
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-      const filename = `${entryId}-${level}-${timestamp}.webm`;
-      const file = new File([audioBlob], filename, { type: 'audio/webm' });
+      const extension = getAudioExtension(recordedMimeType);
+      const filename = `${entryId}-${level}-${timestamp}.${extension}`;
+      const file = new File([audioBlob], filename, { type: recordedMimeType });
 
       const metadata: AudioMetadata = {
         entryId,
@@ -196,7 +210,7 @@ export default function CompactAudioRecorder({
       {audioBlob && (
         <div className="space-y-2">
           <audio controls className="w-full h-8">
-            <source src={URL.createObjectURL(audioBlob)} type="audio/webm" />
+            <source src={URL.createObjectURL(audioBlob)} type={recordedMimeType} />
           </audio>
           <div className="flex items-center space-x-2">
             <button
