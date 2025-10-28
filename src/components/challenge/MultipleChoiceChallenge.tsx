@@ -7,9 +7,10 @@ import { useSoundEffects } from '@/hooks/useSoundEffects';
 interface MultipleChoiceChallengeProps {
   challenge: Challenge;
   onComplete: (userAnswer: string, isCorrect: boolean) => void;
+  onAnswerChecked?: () => void; // Called when answer is checked (before continue)
 }
 
-export default function MultipleChoiceChallenge({ challenge, onComplete }: MultipleChoiceChallengeProps) {
+export default function MultipleChoiceChallenge({ challenge, onComplete, onAnswerChecked }: MultipleChoiceChallengeProps) {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
@@ -40,6 +41,9 @@ export default function MultipleChoiceChallenge({ challenge, onComplete }: Multi
     const correct = selectedAnswer === challenge.correctAnswer;
     setIsCorrect(correct);
     setShowResult(true);
+    
+    // Notify parent that answer has been checked
+    onAnswerChecked?.();
     
     // Play sound effect with slight delay for better UX
     setTimeout(() => {

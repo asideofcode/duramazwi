@@ -7,9 +7,10 @@ import { useSoundEffects } from '@/hooks/useSoundEffects';
 interface TranslationChallengeProps {
   challenge: Challenge;
   onComplete: (userAnswer: string[], isCorrect: boolean) => void;
+  onAnswerChecked?: () => void;
 }
 
-export default function TranslationChallenge({ challenge, onComplete }: TranslationChallengeProps) {
+export default function TranslationChallenge({ challenge, onComplete, onAnswerChecked }: TranslationChallengeProps) {
   const [selectedWords, setSelectedWords] = useState<string[]>([]);
   const [availableWords, setAvailableWords] = useState<string[]>(challenge.options || []);
   const [showResult, setShowResult] = useState(false);
@@ -58,6 +59,9 @@ export default function TranslationChallenge({ challenge, onComplete }: Translat
     const correct = JSON.stringify(selectedWords) === JSON.stringify(correctAnswer);
     setIsCorrect(correct);
     setShowResult(true);
+    
+    // Notify parent that answer has been checked
+    onAnswerChecked?.();
     
     // Play sound effect with slight delay for better UX
     setTimeout(() => {

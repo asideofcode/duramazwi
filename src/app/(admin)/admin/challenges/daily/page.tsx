@@ -1,298 +1,287 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Challenge, DailyChallenge } from '@/types/challenge';
+import Link from 'next/link';
+import { DailyChallenge } from '@/types/challenge';
 
-export default function DailyChallengeAssignmentPage() {
-  const [challenges, setChallenges] = useState<Challenge[]>([]);
+export default function DailyChallengesOverviewPage() {
   const [dailyChallenges, setDailyChallenges] = useState<DailyChallenge[]>([]);
-  const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().split('T')[0]
-  );
-  const [selectedChallenges, setSelectedChallenges] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<'upcoming' | 'past' | 'all'>('upcoming');
 
   useEffect(() => {
-    fetchData();
+    fetchDailyChallenges();
   }, []);
 
-  const fetchData = async () => {
+  const fetchDailyChallenges = async () => {
     try {
       setLoading(true);
+      const response = await fetch('/api/admin/daily-challenges');
+      const result = await response.json();
       
-      // Fetch challenges
-      const challengesResponse = await fetch('/api/admin/challenges');
-      const challengesResult = await challengesResponse.json();
-      
-      if (challengesResult.success) {
-        setChallenges(challengesResult.data);
-      }
-
-      // Fetch daily challenges
-      const dailyResponse = await fetch('/api/admin/daily-challenges');
-      const dailyResult = await dailyResponse.json();
-      
-      if (dailyResult.success) {
-        setDailyChallenges(dailyResult.data);
+      if (result.success) {
+        setDailyChallenges(result.data);
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error fetching daily challenges:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    // Load existing challenges for selected date
-    const existingDaily = dailyChallenges.find(dc => dc.date === selectedDate);
-    if (existingDaily) {
-      setSelectedChallenges(existingDaily.challenges.map(c => c.id));
-    } else {
-      setSelectedChallenges([]);
+  const getFilteredChallenges = () => {
+    const today = new Date().toISOString().split('T')[0];
+    
+    switch (viewMode) {
+      case 'upcoming':
+        return dailyChallenges.filter(dc => dc.date >= today).sort((a, b) => a.date.localeCompare(b.date));
+      case 'past':
+        return dailyChallenges.filter(dc => dc.date < today).sort((a, b) => b.date.localeCompare(a.date));
+      case 'all':
+        return dailyChallenges.sort((a, b) => b.date.localeCompare(a.date));
+      default:
+        return dailyChallenges;
     }
-  }, [selectedDate, dailyChallenges]);
-
-  const handleChallengeToggle = (challengeId: string) => {
-    setSelectedChallenges(prev => 
-      prev.includes(challengeId)
-        ? prev.filter(id => id !== challengeId)
-        : [...prev, challengeId]
-    );
   };
 
-  const handleSave = async () => {
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString + 'T00:00:00');
+    return date.toLocaleDateString('en-US', { 
+      weekday: 'short', 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    });
+  };
+
+  const getDateStatus = (dateString: string) => {
+    const today = new Date().toISOString().split('T')[0];
+    if (dateString === today) return 'today';
+    if (dateString > today) return 'upcoming';
+    return 'past';
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'today':
+        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+      case 'upcoming':
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
+      case 'past':
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
+    }
+  };
+
+  const handleDelete = async (date: string) => {
+    if (!confirm(`Are you sure you want to delete the daily challenge for ${formatDate(date)}?`)) {
+      return;
+    }
+
     try {
-      const response = await fetch('/api/admin/daily-challenges', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          date: selectedDate,
-          challengeIds: selectedChallenges,
-        }),
+      const response = await fetch(`/api/admin/daily-challenges?date=${date}`, {
+        method: 'DELETE',
       });
 
       const result = await response.json();
 
       if (result.success) {
-        // Update the daily challenges array
-        setDailyChallenges(prev => {
-          const filtered = prev.filter(dc => dc.date !== selectedDate);
-          return [...filtered, result.data].sort((a, b) => a.date.localeCompare(b.date));
-        });
-
-        alert(`Daily challenge for ${selectedDate} saved successfully!`);
+        setDailyChallenges(prev => prev.filter(dc => dc.date !== date));
       } else {
-        alert('Failed to save daily challenge: ' + result.error);
+        alert('Failed to delete daily challenge: ' + result.error);
       }
     } catch (error) {
-      console.error('Error saving daily challenge:', error);
-      alert('Failed to save daily challenge');
+      console.error('Error deleting daily challenge:', error);
+      alert('Failed to delete daily challenge');
     }
   };
 
-  const getChallengeTypeColor = (type: string) => {
-    switch (type) {
-      case 'multiple_choice': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
-      case 'audio_recognition': return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200';
-      case 'translation_builder': return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200';
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
-    }
-  };
-
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'beginner': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-      case 'intermediate': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
-      case 'advanced': return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
-    }
-  };
+  const filteredChallenges = getFilteredChallenges();
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="text-center py-12">
+          <div className="animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto"></div>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading daily challenges...</p>
+        </div>
       </div>
     );
   }
 
-  const selectedChallengeObjects = challenges.filter(c => selectedChallenges.includes(c.id));
-  const totalPoints = selectedChallengeObjects.reduce((sum, c) => sum + c.points, 0);
-  const estimatedTime = selectedChallengeObjects.length * 2;
-
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto p-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Daily Challenge Assignment
-        </h1>
-        <p className="mt-2 text-gray-600 dark:text-gray-400">
-          Assign challenges to specific dates for the daily challenge system
-        </p>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              Scheduled Daily Challenges
+            </h1>
+            <p className="mt-2 text-gray-600 dark:text-gray-400">
+              View and manage scheduled daily challenges
+            </p>
+          </div>
+          <Link
+            href="/admin/challenges/daily/edit"
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors flex items-center space-x-2"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            <span>Schedule New Day</span>
+          </Link>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Date Selection & Summary */}
-        <div className="lg:col-span-1">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow mb-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-              Select Date
-            </h2>
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-            />
-          </div>
+      {/* View Mode Tabs */}
+      <div className="mb-6 border-b border-gray-200 dark:border-gray-700">
+        <nav className="-mb-px flex space-x-8">
+          <button
+            onClick={() => setViewMode('upcoming')}
+            className={`py-4 px-1 border-b-2 font-medium text-sm ${
+              viewMode === 'upcoming'
+                ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+            }`}
+          >
+            Upcoming ({dailyChallenges.filter(dc => dc.date >= new Date().toISOString().split('T')[0]).length})
+          </button>
+          <button
+            onClick={() => setViewMode('past')}
+            className={`py-4 px-1 border-b-2 font-medium text-sm ${
+              viewMode === 'past'
+                ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+            }`}
+          >
+            Past ({dailyChallenges.filter(dc => dc.date < new Date().toISOString().split('T')[0]).length})
+          </button>
+          <button
+            onClick={() => setViewMode('all')}
+            className={`py-4 px-1 border-b-2 font-medium text-sm ${
+              viewMode === 'all'
+                ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+            }`}
+          >
+            All ({dailyChallenges.length})
+          </button>
+        </nav>
+      </div>
 
-          {/* Challenge Summary */}
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-              Challenge Summary
-            </h2>
-            
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">Selected Challenges:</span>
-                <span className="font-medium text-gray-900 dark:text-white">
-                  {selectedChallenges.length}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">Total Points:</span>
-                <span className="font-medium text-gray-900 dark:text-white">
-                  {totalPoints}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">Est. Time:</span>
-                <span className="font-medium text-gray-900 dark:text-white">
-                  {estimatedTime} min
-                </span>
-              </div>
-            </div>
-
-            <button
-              onClick={handleSave}
-              disabled={selectedChallenges.length === 0}
-              className={`w-full mt-6 px-4 py-2 rounded-lg font-medium transition-colors ${
-                selectedChallenges.length > 0
-                  ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                  : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-              }`}
+      {/* Challenges List */}
+      {filteredChallenges.length === 0 ? (
+        <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow">
+          <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">No challenges scheduled</h3>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            Get started by scheduling a daily challenge.
+          </p>
+          <div className="mt-6">
+            <Link
+              href="/admin/challenges/daily/edit"
+              className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
             >
-              Save Daily Challenge
-            </button>
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              Schedule Daily Challenge
+            </Link>
           </div>
         </div>
-
-        {/* Challenge Selection */}
-        <div className="lg:col-span-2">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                Available Challenges
-              </h2>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">
-                Select challenges to include in the daily challenge for {selectedDate}
-              </p>
-            </div>
-
-            <div className="p-6">
-              <div className="space-y-4">
-                {challenges.map((challenge) => (
-                  <div
-                    key={challenge.id}
-                    className={`border-2 rounded-lg p-4 cursor-pointer transition-colors ${
-                      selectedChallenges.includes(challenge.id)
-                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                        : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
-                    }`}
-                    onClick={() => handleChallengeToggle(challenge.id)}
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-2">
-                          <input
-                            type="checkbox"
-                            checked={selectedChallenges.includes(challenge.id)}
-                            onChange={() => handleChallengeToggle(challenge.id)}
-                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                          />
-                          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                            {challenge.question}
-                          </h3>
+      ) : (
+        <div className="space-y-4">
+          {filteredChallenges.map((dailyChallenge) => {
+            const status = getDateStatus(dailyChallenge.date);
+            return (
+              <div
+                key={dailyChallenge.date}
+                className="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition-shadow"
+              >
+                <div className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-3 mb-2">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                          {formatDate(dailyChallenge.date)}
+                        </h3>
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(status)}`}>
+                          {status === 'today' ? '📅 Today' : status === 'upcoming' ? '🔜 Upcoming' : '✅ Past'}
+                        </span>
+                      </div>
+                      
+                      <div className="flex items-center space-x-6 text-sm text-gray-600 dark:text-gray-400">
+                        <div className="flex items-center space-x-1">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                          </svg>
+                          <span>{dailyChallenge.challenges.length} challenges</span>
                         </div>
-                        
-                        <div className="flex items-center space-x-3 mb-2">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getChallengeTypeColor(challenge.type)}`}>
-                            {challenge.type.replace('_', ' ')}
-                          </span>
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getDifficultyColor(challenge.difficulty)}`}>
+                        <div className="flex items-center space-x-1">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                          </svg>
+                          <span>{dailyChallenge.totalPoints} points</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                          </svg>
+                          <span>~{dailyChallenge.estimatedTime} min</span>
+                        </div>
+                      </div>
+
+                      {/* Challenge Types Summary */}
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {dailyChallenge.challenges.map((challenge, idx) => (
+                          <span
+                            key={idx}
+                            className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                          >
+                            {challenge.type === 'multiple_choice' && '🎯'}
+                            {challenge.type === 'audio_recognition' && '🎧'}
+                            {challenge.type === 'translation_builder' && '🔤'}
+                            {' '}
                             {challenge.difficulty}
                           </span>
-                          <span className="text-sm text-gray-600 dark:text-gray-400">
-                            {challenge.points} points
-                          </span>
-                        </div>
-
-                        {challenge.explanation && (
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
-                            {challenge.explanation}
-                          </p>
-                        )}
+                        ))}
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Existing Daily Challenges */}
-      <div className="mt-8">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-              Scheduled Daily Challenges
-            </h2>
-          </div>
-          
-          <div className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {dailyChallenges.slice(0, 6).map((dailyChallenge) => (
-                <div
-                  key={dailyChallenge.date}
-                  className="border border-gray-200 dark:border-gray-600 rounded-lg p-4"
-                >
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-medium text-gray-900 dark:text-white">
-                      {new Date(dailyChallenge.date).toLocaleDateString()}
-                    </h3>
-                    <button
-                      onClick={() => setSelectedDate(dailyChallenge.date)}
-                      className="text-blue-600 hover:text-blue-800 dark:text-blue-400 text-sm"
-                    >
-                      Edit
-                    </button>
-                  </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                    <div>{dailyChallenge.challenges.length} challenges</div>
-                    <div>{dailyChallenge.totalPoints} points</div>
-                    <div>{dailyChallenge.estimatedTime} min</div>
+                    {/* Actions */}
+                    <div className="flex items-center space-x-2 ml-4">
+                      <Link
+                        href={`/admin/challenges/daily/edit?date=${dailyChallenge.date}`}
+                        className="px-3 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                      >
+                        Edit
+                      </Link>
+                      <a
+                        href={`/challenge/daily?date=${dailyChallenge.date}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-3 py-2 text-sm bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
+                      >
+                        View Live
+                      </a>
+                      <button
+                        onClick={() => handleDelete(dailyChallenge.date)}
+                        className="px-3 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
+            );
+          })}
         </div>
-      </div>
+      )}
     </div>
   );
 }

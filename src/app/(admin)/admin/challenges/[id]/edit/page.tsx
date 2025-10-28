@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Challenge } from '@/types/challenge';
 import CompactAudioRecorder from '@/components/admin/CompactAudioRecorder';
 import { AudioRecord } from '@/services/audioAPIClient';
+import AIFieldAssistant from '@/components/admin/AIFieldAssistant';
 
 export default function EditChallengePage() {
   const router = useRouter();
@@ -26,6 +27,8 @@ export default function EditChallengePage() {
   const [saving, setSaving] = useState(false);
   const [showAudioRecorder, setShowAudioRecorder] = useState(false);
   const [recordedAudio, setRecordedAudio] = useState<AudioRecord | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   useEffect(() => {
     fetchChallenge();
@@ -40,13 +43,13 @@ export default function EditChallengePage() {
       if (result.success) {
         setFormData(result.data);
       } else {
-        alert('Failed to load challenge: ' + result.error);
-        router.push('/admin/challenges');
+        setError('Failed to load challenge: ' + result.error);
+        setTimeout(() => router.push('/admin/challenges'), 2000);
       }
     } catch (error) {
       console.error('Error fetching challenge:', error);
-      alert('Failed to load challenge');
-      router.push('/admin/challenges');
+      setError('Failed to load challenge');
+      setTimeout(() => router.push('/admin/challenges'), 2000);
     } finally {
       setLoading(false);
     }
@@ -54,10 +57,12 @@ export default function EditChallengePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    setSuccess(null);
     
     // Validate form
     if (!formData.question || !formData.correctAnswer) {
-      alert('Please fill in all required fields');
+      setError('Please fill in all required fields');
       return;
     }
 
@@ -74,14 +79,14 @@ export default function EditChallengePage() {
       const result = await response.json();
 
       if (result.success) {
-        alert('Challenge updated successfully!');
-        router.push('/admin/challenges');
+        setSuccess('Challenge updated successfully!');
+        // Don't redirect - let user continue editing or navigate manually
       } else {
-        alert('Failed to update challenge: ' + result.error);
+        setError('Failed to update challenge: ' + (result.error || result.message));
       }
     } catch (error) {
       console.error('Error updating challenge:', error);
-      alert('Failed to update challenge');
+      setError('Failed to update challenge');
     } finally {
       setSaving(false);
     }
@@ -112,6 +117,39 @@ export default function EditChallengePage() {
   const handleRemoveAudio = () => {
     setRecordedAudio(null);
     setFormData({ ...formData, audioUrl: '' });
+  };
+
+  const handleAIExplanation = (value: string | string[]) => {
+    const explanation = Array.isArray(value) ? value.join(' ') : value;
+    setFormData({ ...formData, explanation });
+  };
+
+  const handleAIQuestion = (value: string | string[]) => {
+    const question = Array.isArray(value) ? value.join(' ') : value;
+    setFormData({ ...formData, question });
+  };
+
+  const handleAIOptions = (value: string | string[]) => {
+    const newOptions = Array.isArray(value) ? value : [value];
+    const currentOptions = formData.options || [];
+    const allOptions = [...currentOptions.filter(opt => opt.trim()), ...newOptions];
+    setFormData({ ...formData, options: allOptions });
+  };
+
+  const addLabel = (label: string) => {
+    if (label.trim() && !(formData.labels || []).includes(label.trim())) {
+      setFormData({ 
+        ...formData, 
+        labels: [...(formData.labels || []), label.trim()] 
+      });
+    }
+  };
+
+  const removeLabel = (label: string) => {
+    setFormData({
+      ...formData,
+      labels: (formData.labels || []).filter(l => l !== label)
+    });
   };
 
   if (loading) {
@@ -150,6 +188,22 @@ export default function EditChallengePage() {
           Modify the challenge details and settings
         </p>
       </div>
+
+      {/* Status Messages */}
+      {error && (
+        <div className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+          <p className="text-red-800 dark:text-red-200">{error}</p>
+        </div>
+      )}
+
+      {success && (
+        <div className="mb-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 flex items-center">
+          <svg className="w-5 h-5 text-green-600 dark:text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+          </svg>
+          <p className="text-green-800 dark:text-green-200">{success}</p>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Basic Information */}
@@ -215,9 +269,22 @@ export default function EditChallengePage() {
           </h2>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Question Text *
-            </label>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Question Text *
+              </label>
+              <AIFieldAssistant
+                type="question"
+                currentValue={formData.question}
+                context={{
+                  type: formData.type,
+                  correctAnswer: formData.correctAnswer
+                }}
+                onSuggestion={() => {}}
+                onApprove={handleAIQuestion}
+                onReject={() => {}}
+              />
+            </div>
             <textarea
               value={formData.question}
               onChange={(e) => setFormData({ ...formData, question: e.target.value })}
@@ -411,9 +478,23 @@ export default function EditChallengePage() {
           </h2>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Explanation (shown after answer)
-            </label>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Explanation (shown after answer)
+              </label>
+              <AIFieldAssistant
+                type="explanation"
+                currentValue={formData.explanation}
+                context={{
+                  question: formData.question,
+                  correctAnswer: formData.correctAnswer,
+                  type: formData.type
+                }}
+                onSuggestion={() => {}}
+                onApprove={handleAIExplanation}
+                onReject={() => {}}
+              />
+            </div>
             <textarea
               value={formData.explanation}
               onChange={(e) => setFormData({ ...formData, explanation: e.target.value })}

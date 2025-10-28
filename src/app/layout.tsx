@@ -33,18 +33,33 @@ export default function RootLayout({
 
         <AnalyticsWrapper />
 
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-Y8JQGYJC4X"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-Y8JQGYJC4X');
-          `}
-        </Script>
+        {/* Google Analytics - production only, dev uses mock */}
+        {process.env.NODE_ENV === 'production' ? (
+          <>
+            <Script
+              src="https://www.googletagmanager.com/gtag/js?id=G-Y8JQGYJC4X"
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-Y8JQGYJC4X');
+              `}
+            </Script>
+          </>
+        ) : (
+          <Script id="google-analytics-mock" strategy="afterInteractive">
+            {`
+              // Mock gtag for development - logs to console instead of tracking
+              window.gtag = function() {
+                const args = Array.from(arguments);
+                console.log('[Analytics Mock]', ...args);
+              };
+            `}
+          </Script>
+        )}
       </body>
     </html>
   );

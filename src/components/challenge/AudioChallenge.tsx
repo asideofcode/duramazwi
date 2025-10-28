@@ -9,9 +9,10 @@ import AudioPlayerWithProgress from '@/components/AudioPlayerWithProgress';
 interface AudioChallengeProps {
   challenge: Challenge;
   onComplete: (userAnswer: string, isCorrect: boolean) => void;
+  onAnswerChecked?: () => void;
 }
 
-export default function AudioChallenge({ challenge, onComplete }: AudioChallengeProps) {
+export default function AudioChallenge({ challenge, onComplete, onAnswerChecked }: AudioChallengeProps) {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
@@ -44,6 +45,9 @@ export default function AudioChallenge({ challenge, onComplete }: AudioChallenge
     const correct = selectedAnswer === challenge.correctAnswer;
     setIsCorrect(correct);
     setShowResult(true);
+    
+    // Notify parent that answer has been checked
+    onAnswerChecked?.();
     
     // Play sound effect with slight delay for better UX
     setTimeout(() => {

@@ -240,12 +240,14 @@ export default function ChallengesAdminPage() {
                       >
                         Preview
                       </Link>
-                      <Link
+                      <a
                         href={`/admin/challenges/${challenge.id}/edit`}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300"
                       >
                         Edit
-                      </Link>
+                      </a>
                       <button
                         onClick={() => handleDelete(challenge.id)}
                         className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"

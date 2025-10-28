@@ -37,6 +37,7 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
   
   const [soundEffectsReady, setSoundEffectsReady] = useState(false);
   const [justCompleted, setJustCompleted] = useState(false);
+  const [hasAnswered, setHasAnswered] = useState(false); // Track if current challenge has been answered
   
   // Preload hero image
   const heroImagePreload = useImagePreload('/challenge-hero.png');
@@ -149,10 +150,36 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
     };
 
     setSession(updatedSession);
+    setHasAnswered(false); // Reset for next challenge
+    
+    // Track individual challenge completion
+    globalThis.gtag?.('event', 'challenge_completed', {
+      challenge_type: currentChallenge.type,
+      challenge_difficulty: currentChallenge.difficulty,
+      is_correct: isCorrect,
+      points_earned: pointsEarned,
+      time_spent: timeSpent,
+      challenge_number: session.currentChallengeIndex + 1,
+      total_challenges: session.challenges.length
+    });
     
     // Mark as just completed if this is the last challenge
     if (isLastChallenge) {
       setJustCompleted(true);
+      
+      // Track daily challenge completion
+      const totalTimeSpent = Math.floor((Date.now() - session.startTime) / 1000);
+      const correctAnswers = updatedSession.results.filter(r => r.isCorrect).length;
+      const accuracy = Math.round((correctAnswers / updatedSession.results.length) * 100);
+      
+      globalThis.gtag?.('event', 'daily_challenge_completed', {
+        date: challenge.date,
+        total_challenges: updatedSession.results.length,
+        correct_answers: correctAnswers,
+        accuracy: accuracy,
+        total_score: updatedSession.totalScore,
+        total_time_spent: totalTimeSpent
+      });
     }
     
     // Save to localStorage
@@ -314,6 +341,7 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
             key={currentChallenge.id}
             challenge={currentChallenge}
             onComplete={handleChallengeComplete}
+            onAnswerChecked={() => setHasAnswered(true)}
           />
         );
       case 'audio_recognition':
@@ -322,6 +350,7 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
             key={currentChallenge.id}
             challenge={currentChallenge}
             onComplete={handleChallengeComplete}
+            onAnswerChecked={() => setHasAnswered(true)}
           />
         );
       case 'translation_builder':
@@ -330,6 +359,7 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
             key={currentChallenge.id}
             challenge={currentChallenge}
             onComplete={handleChallengeComplete}
+            onAnswerChecked={() => setHasAnswered(true)}
           />
         );
       default:
@@ -344,6 +374,7 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
       {/* Progress */}
       <ChallengeProgress
         current={session.currentChallengeIndex + 1}
+        completed={hasAnswered ? session.currentChallengeIndex + 1 : session.currentChallengeIndex}
         total={session.challenges.length}
         score={session.totalScore}
       />

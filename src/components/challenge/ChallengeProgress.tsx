@@ -1,13 +1,14 @@
 'use client';
 
 interface ChallengeProgressProps {
-  current: number;
+  current: number; // Current question number (doesn't change until continue)
+  completed: number; // Number of completed challenges (changes when answered)
   total: number;
   score: number;
 }
 
-export default function ChallengeProgress({ current, total, score }: ChallengeProgressProps) {
-  const progressPercentage = ((current - 1) / total) * 100;
+export default function ChallengeProgress({ current, completed, total, score }: ChallengeProgressProps) {
+  const progressPercentage = (completed / total) * 100;
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
@@ -34,10 +35,10 @@ export default function ChallengeProgress({ current, total, score }: ChallengePr
           <div
             key={index}
             className={`w-3 h-3 rounded-full transition-colors duration-300 ${
-              index < current - 1
+              index < completed
                 ? 'bg-green-500' // Completed
-                : index === current - 1
-                ? 'bg-blue-500' // Current
+                : index === completed
+                ? 'bg-blue-500' // Current/In progress
                 : 'bg-gray-300 dark:bg-gray-600' // Upcoming
             }`}
           />
