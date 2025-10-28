@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { DailyChallenge, ChallengeSession, ChallengeResult } from '@/types/challenge';
-import { isDateCompleted, saveChallengeCompletion, getCompletionStats } from '@/utils/challengeStorage';
+import { isDateCompleted, saveChallengeCompletion, getCompletionStats, clearAllHistory } from '@/utils/challengeStorage';
 import { useNavigationWarning } from '@/hooks/useNavigationWarning';
 import ChallengeProgress from './ChallengeProgress';
 import MultipleChoiceChallenge from './MultipleChoiceChallenge';
@@ -53,6 +53,24 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
       setSoundEffectsReady(true); // Still allow the challenge to proceed
     }
   });
+
+  // Easter egg: Listen for "clear" in search bar
+  useEffect(() => {
+    const handleSearchInput = (e: Event) => {
+      const target = e.target as HTMLInputElement;
+      if (target.value.toLowerCase() === 'clear') {
+        // Clear history silently in the background, search continues as normal
+        clearAllHistory();
+      }
+    };
+
+    // Find the search input and add listener
+    const searchInput = document.querySelector('input[type="search"]') as HTMLInputElement;
+    if (searchInput) {
+      searchInput.addEventListener('input', handleSearchInput);
+      return () => searchInput.removeEventListener('input', handleSearchInput);
+    }
+  }, []);
 
   // Check if challenge is already completed on mount
   useEffect(() => {

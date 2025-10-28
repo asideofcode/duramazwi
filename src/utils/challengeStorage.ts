@@ -79,9 +79,26 @@ const getChallengeHistory = (): ChallengeHistory => {
       };
     }
     
-    return JSON.parse(stored) as ChallengeHistory;
+    const history = JSON.parse(stored) as ChallengeHistory;
+    
+    // Validate the history structure
+    if (!history || typeof history !== 'object' || !history.completions) {
+      console.warn('Invalid history structure, resetting...');
+      localStorage.removeItem(HISTORY_KEY);
+      return {
+        completions: {},
+        currentStreak: 0,
+        longestStreak: 0,
+        totalCompletions: 0,
+        lastUpdated: Date.now()
+      };
+    }
+    
+    return history;
   } catch (error) {
-    console.error('Failed to get challenge history:', error);
+    console.error('Failed to get challenge history, resetting:', error);
+    // Clear corrupted data
+    localStorage.removeItem(HISTORY_KEY);
     return {
       completions: {},
       currentStreak: 0,
@@ -194,6 +211,20 @@ export const getStreakInfo = (): StreakInfo => {
 
 export const getChallengeHistoryData = (): ChallengeHistory => {
   return getChallengeHistory();
+};
+
+// Easter egg: Clear all challenge history
+export const clearAllHistory = (): void => {
+  if (typeof window === 'undefined') return;
+  
+  try {
+    localStorage.removeItem(HISTORY_KEY);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🗑️ Cleared all challenge history');
+    }
+  } catch (error) {
+    console.error('Failed to clear history:', error);
+  }
 };
 
 // Migration function to convert old format to new format
@@ -314,6 +345,12 @@ const migrateOldStorage = (): void => {
 
 // Run migration automatically when module loads (client-side only)
 if (typeof window !== 'undefined') {
-  console.log('Running migration...');
-  migrateOldStorage();
+  try {
+    migrateOldStorage();
+  } catch (error) {
+    console.error('Migration failed, clearing storage:', error);
+    // Clear all storage if migration fails
+    localStorage.removeItem(HISTORY_KEY);
+    localStorage.removeItem(OLD_STORAGE_KEY);
+  }
 }
