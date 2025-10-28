@@ -4,7 +4,8 @@ export interface Challenge {
   type: 'multiple_choice' | 'audio_recognition' | 'translation_builder';
   question: string;
   correctAnswer: string | string[];
-  options?: string[];
+  options?: string[]; // For multiple_choice and audio_recognition
+  distractors?: string[]; // For translation_builder (wrong words)
   audioUrl?: string;
   explanation?: string;
   difficulty: 'beginner' | 'intermediate' | 'advanced';

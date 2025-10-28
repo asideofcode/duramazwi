@@ -7,6 +7,7 @@ import { Challenge } from '@/types/challenge';
 import CompactAudioRecorder from '@/components/admin/CompactAudioRecorder';
 import { AudioRecord } from '@/services/audioAPIClient';
 import AIFieldAssistant from '@/components/admin/AIFieldAssistant';
+import EditableList from '@/components/admin/EditableList';
 
 export default function EditChallengePage() {
   const router = useRouter();
@@ -434,37 +435,42 @@ export default function EditChallengePage() {
               Translation Setup
             </h2>
             
-            <div className="space-y-4">
+            <div className="space-y-6">
+              {/* Correct Answer */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Correct Answer (comma-separated words in order) *
+                  Correct Answer (in order) *
                 </label>
-                <input
-                  type="text"
-                  value={Array.isArray(formData.correctAnswer) ? formData.correctAnswer.join(', ') : formData.correctAnswer}
-                  onChange={(e) => setFormData({ 
-                    ...formData, 
-                    correctAnswer: e.target.value.split(', ').map(s => s.trim())
-                  })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                  placeholder="Ndi, ri, ku, enda, kumba"
-                  required
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                  Drag to reorder words. This is the exact sequence users must build.
+                </p>
+                
+                <EditableList
+                  items={(Array.isArray(formData.correctAnswer) ? formData.correctAnswer : [formData.correctAnswer]).filter((w): w is string => Boolean(w))}
+                  onChange={(items) => setFormData({ ...formData, correctAnswer: items })}
+                  placeholder="Word"
+                  addButtonText="+ Add Word"
+                  draggable={true}
+                  showNumbers={true}
                 />
               </div>
 
+              {/* Distractor Words */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Available Words (comma-separated, including distractors)
+                  Distractor Words (optional)
                 </label>
-                <input
-                  type="text"
-                  value={(formData.options || []).join(', ')}
-                  onChange={(e) => setFormData({ 
-                    ...formData, 
-                    options: e.target.value.split(', ').map(s => s.trim())
-                  })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                  placeholder="kumba, Ndi, enda, ri, ku, zvakanaka"
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                  Wrong words to make the challenge harder. These will be shuffled with the correct words.
+                </p>
+                
+                <EditableList
+                  items={formData.distractors || []}
+                  onChange={(items) => setFormData({ ...formData, distractors: items })}
+                  placeholder="Distractor word"
+                  addButtonText="+ Add Distractor"
+                  draggable={false}
+                  showNumbers={false}
                 />
               </div>
             </div>

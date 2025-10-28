@@ -11,8 +11,23 @@ interface TranslationChallengeProps {
 }
 
 export default function TranslationChallenge({ challenge, onComplete, onAnswerChecked }: TranslationChallengeProps) {
+  // Combine correct answer + distractors and shuffle them
+  const correctAnswer = Array.isArray(challenge.correctAnswer) ? challenge.correctAnswer : [challenge.correctAnswer];
+  const distractors = challenge.distractors || challenge.options || []; // Support both old and new field names
+  const allWords = [...correctAnswer, ...distractors];
+  
+  // Shuffle the words (Fisher-Yates algorithm)
+  const shuffleArray = (array: string[]) => {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  };
+  
   const [selectedWords, setSelectedWords] = useState<string[]>([]);
-  const [availableWords, setAvailableWords] = useState<string[]>(challenge.options || []);
+  const [availableWords, setAvailableWords] = useState<string[]>(() => shuffleArray(allWords));
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [draggedWord, setDraggedWord] = useState<string | null>(null);
@@ -38,7 +53,14 @@ export default function TranslationChallenge({ challenge, onComplete, onAnswerCh
     if (showResult) return;
     
     setSelectedWords(prev => [...prev, word]);
-    setAvailableWords(prev => prev.filter(w => w !== word));
+    // Remove only the first occurrence of the word
+    setAvailableWords(prev => {
+      const index = prev.indexOf(word);
+      if (index > -1) {
+        return [...prev.slice(0, index), ...prev.slice(index + 1)];
+      }
+      return prev;
+    });
   };
 
   const handleWordRemove = (index: number) => {
@@ -100,7 +122,14 @@ export default function TranslationChallenge({ challenge, onComplete, onAnswerCh
     if (!draggedFromSelected) {
       // Moving from available to selected
       setSelectedWords(prev => [...prev, draggedWord]);
-      setAvailableWords(prev => prev.filter(w => w !== draggedWord));
+      // Remove only the first occurrence of the word
+      setAvailableWords(prev => {
+        const index = prev.indexOf(draggedWord);
+        if (index > -1) {
+          return [...prev.slice(0, index), ...prev.slice(index + 1)];
+        }
+        return prev;
+      });
     }
     
     setDraggedWord(null);
@@ -114,7 +143,14 @@ export default function TranslationChallenge({ challenge, onComplete, onAnswerCh
     if (draggedFromSelected) {
       // Moving from selected to available
       setAvailableWords(prev => [...prev, draggedWord]);
-      setSelectedWords(prev => prev.filter(w => w !== draggedWord));
+      // Remove only the first occurrence of the word
+      setSelectedWords(prev => {
+        const index = prev.indexOf(draggedWord);
+        if (index > -1) {
+          return [...prev.slice(0, index), ...prev.slice(index + 1)];
+        }
+        return prev;
+      });
     }
     
     setDraggedWord(null);
