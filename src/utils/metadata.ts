@@ -78,9 +78,9 @@ function mergeMetadata(base: Metadata, overrides: Partial<Metadata>): Metadata {
   };
 }
 
-export const createMetadata = async (
+export const createMetadata = (
   overrides: Partial<Metadata>
-): Promise<Metadata> => {
+): Metadata => {
   const base = createBaseMetadata();
   return mergeMetadata(base, overrides);
 };

@@ -10,22 +10,24 @@ import { getTodayInTimezone, isToday } from '@/utils/timezone';
 import { headers } from 'next/headers';
 import { DailyChallenge, Challenge } from '@/types/challenge';
 import { shuffleArray } from '@/utils/shuffle';
+import { createMetadata } from '@/utils/metadata';
 
 // Force dynamic rendering since we use searchParams
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createMetadata({
   title: 'Daily Challenge - Shona Dictionary',
   description: 'Test your Shona language skills with our daily challenge. Learn new words and improve your pronunciation.',
+  alternates: {
+    canonical: 'https://shonadictionary.com/challenge/daily'
+  },
   openGraph: {
-    type: 'website',
-    locale: 'en_ZW',
     title: 'Daily Shona Challenge',
     description: 'Challenge yourself with daily Shona language exercises',
     url: 'https://shonadictionary.com/challenge/daily',
     images: [
       {
-        url: 'https://shonadictionary.com/challenge-hero.png',
+        url: 'https://shonadictionary.com/challenge-hero-og.jpg',
         width: 1200,
         height: 630,
         alt: 'Daily Shona Challenge',
@@ -33,12 +35,11 @@ export const metadata: Metadata = {
     ],
   },
   twitter: {
-    card: 'summary_large_image',
     title: 'Daily Shona Challenge',
     description: 'Challenge yourself with daily Shona language exercises',
-    images: ['https://shonadictionary.com/challenge-hero.png'],
+    images: ['https://shonadictionary.com/challenge-hero-og.jpg'],
   }
-};
+});
 
 async function getTodaysChallenge(dateOverride?: string, timezone?: string): Promise<DailyChallenge | null> {
   try {
