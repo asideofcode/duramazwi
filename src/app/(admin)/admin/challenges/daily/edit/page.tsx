@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Challenge, DailyChallenge } from '@/types/challenge';
@@ -9,7 +9,7 @@ import DailyChallengeSummary from '@/components/admin/DailyChallengeSummary';
 import ChallengeListItem from '@/components/admin/ChallengeListItem';
 import ChallengePreviewModal from '@/components/admin/ChallengePreviewModal';
 
-export default function DailyChallengeEditorPage() {
+function DailyChallengeEditor() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialDate = searchParams.get('date') || new Date().toISOString().split('T')[0];
@@ -427,5 +427,20 @@ export default function DailyChallengeEditorPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function DailyChallengeEditorPage() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="text-center py-12">
+          <div className="animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto"></div>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading editor...</p>
+        </div>
+      </div>
+    }>
+      <DailyChallengeEditor />
+    </Suspense>
   );
 }
