@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { DailyChallenge, ChallengeSession, ChallengeResult } from '@/types/challenge';
-import { getChallengeCompletion, saveChallengeCompletion, clearOldCompletions } from '@/utils/challengeStorage';
+import { isDateCompleted, saveChallengeCompletion, getCompletionStats } from '@/utils/challengeStorage';
 import { useNavigationWarning } from '@/hooks/useNavigationWarning';
 import ChallengeProgress from './ChallengeProgress';
 import MultipleChoiceChallenge from './MultipleChoiceChallenge';
@@ -54,15 +54,34 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
     }
   });
 
-  // Check for existing completion on mount
+  // Check if challenge is already completed on mount
   useEffect(() => {
     const initializeChallenge = async () => {
-      clearOldCompletions(); // Clean up old completions first
-      
-      const existingCompletion = getChallengeCompletion(challenge.date);
-      if (existingCompletion) {
-        setSession(existingCompletion.session);
-        setHasStarted(true); // Mark as started if there's an existing completion
+      const stats = getCompletionStats(challenge.date);
+      if (stats) {
+        // Reconstruct session from stats using actual challenge IDs
+        const mockResults: ChallengeResult[] = challenge.challenges.map((c) => {
+          const wasCorrect = stats.correctChallengeIds.includes(c.id);
+          return {
+            challengeId: c.id,
+            userAnswer: '', // We don't store individual answers anymore
+            isCorrect: wasCorrect,
+            pointsEarned: wasCorrect ? c.points : 0,
+            timeSpent: Math.floor(stats.timeSpent / stats.totalChallenges)
+          };
+        });
+        
+        // Calculate startTime from completedAt and timeSpent
+        const startTime = stats.completedAt - (stats.timeSpent * 1000);
+        
+        setSession(prev => ({
+          ...prev,
+          isComplete: true,
+          results: mockResults,
+          totalScore: stats.totalScore,
+          startTime,
+          endTime: stats.completedAt
+        }));
       }
       
       // Artificial delay to see loading state
@@ -72,7 +91,7 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
     };
     
     initializeChallenge();
-  }, [challenge.date]);
+  }, [challenge.date, challenge.challenges]);
 
   // Preload audio for audio challenges
   useEffect(() => {
@@ -167,11 +186,12 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
     if (isLastChallenge) {
       setJustCompleted(true);
       
-      // Track daily challenge completion
+      // Calculate stats
       const totalTimeSpent = Math.floor((Date.now() - session.startTime) / 1000);
       const correctAnswers = updatedSession.results.filter(r => r.isCorrect).length;
       const accuracy = Math.round((correctAnswers / updatedSession.results.length) * 100);
       
+      // Track daily challenge completion in analytics
       globalThis.gtag?.('event', 'daily_challenge_completed', {
         date: challenge.date,
         total_challenges: updatedSession.results.length,
@@ -180,10 +200,25 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
         total_score: updatedSession.totalScore,
         total_time_spent: totalTimeSpent
       });
+      
+      // Save completion stats to localStorage (only when fully complete)
+      const challengeIds = updatedSession.challenges.map(c => c.id);
+      const correctChallengeIds = updatedSession.results
+        .filter(r => r.isCorrect)
+        .map(r => r.challengeId);
+      
+      saveChallengeCompletion({
+        date: challenge.date,
+        completedAt: Date.now(),
+        totalScore: updatedSession.totalScore,
+        correctAnswers,
+        totalChallenges: updatedSession.results.length,
+        accuracy,
+        timeSpent: totalTimeSpent,
+        challengeIds,
+        correctChallengeIds
+      });
     }
-    
-    // Save to localStorage
-    saveChallengeCompletion(updatedSession);
   };
 
   const handleRestart = () => {
@@ -200,11 +235,7 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
     setSession(newSession);
     setJustCompleted(false); // Reset completion flag
     setHasStarted(false); // Reset to show preamble again
-    
-    // Clear localStorage when restarting
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('shona_dictionary.daily_challenge_completion');
-    }
+    // Note: We don't clear history - completion stats remain for streak tracking
   };
 
   // Consistent header for all states

@@ -1,17 +1,22 @@
-import { ChallengeSession } from '@/types/challenge';
 import { getTodayInTimezone, getUserTimezone } from './timezone';
 
-const STORAGE_KEY = 'shona_dictionary.daily_challenge_completion';
 const HISTORY_KEY = 'shona_dictionary.challenge_history';
+const OLD_STORAGE_KEY = 'shona_dictionary.daily_challenge_completion';
 
-export interface ChallengeCompletion {
+export interface ChallengeCompletionStats {
   date: string;
-  session: ChallengeSession;
   completedAt: number;
+  totalScore: number;
+  correctAnswers: number;
+  totalChallenges: number;
+  accuracy: number; // percentage
+  timeSpent: number; // seconds
+  challengeIds: string[]; // IDs in the order they appeared
+  correctChallengeIds: string[]; // IDs of challenges answered correctly
 }
 
 export interface ChallengeHistory {
-  completions: Record<string, ChallengeCompletion>; // date -> completion
+  completions: Record<string, ChallengeCompletionStats>; // date -> stats
   currentStreak: number;
   longestStreak: number;
   totalCompletions: number;
@@ -40,21 +45,12 @@ const getPreviousDate = (dateStr: string): string => {
   return date.toISOString().split('T')[0];
 };
 
-export const saveChallengeCompletion = (session: ChallengeSession): void => {
+export const saveChallengeCompletion = (stats: ChallengeCompletionStats): void => {
   if (typeof window === 'undefined') return;
   
-  const completion: ChallengeCompletion = {
-    date: session.date,
-    session,
-    completedAt: Date.now()
-  };
-  
   try {
-    // Save current completion
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(completion));
-    
     // Update history and calculate streaks
-    updateChallengeHistory(completion);
+    updateChallengeHistory(stats);
   } catch (error) {
     console.error('Failed to save challenge completion:', error);
   }
@@ -96,13 +92,13 @@ const getChallengeHistory = (): ChallengeHistory => {
   }
 };
 
-const updateChallengeHistory = (completion: ChallengeCompletion): void => {
+const updateChallengeHistory = (stats: ChallengeCompletionStats): void => {
   try {
     // Get existing history
     const history = getChallengeHistory();
     
     // Add this completion to history
-    history.completions[completion.date] = completion;
+    history.completions[stats.date] = stats;
     history.totalCompletions = Object.keys(history.completions).length;
     history.lastUpdated = Date.now();
     
@@ -149,25 +145,18 @@ const updateChallengeHistory = (completion: ChallengeCompletion): void => {
   }
 };
 
-export const getChallengeCompletion = (date: string): ChallengeCompletion | null => {
+export const isDateCompleted = (date: string): boolean => {
+  if (typeof window === 'undefined') return false;
+  
+  const history = getChallengeHistory();
+  return !!history.completions[date];
+};
+
+export const getCompletionStats = (date: string): ChallengeCompletionStats | null => {
   if (typeof window === 'undefined') return null;
   
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return null;
-    
-    const completion: ChallengeCompletion = JSON.parse(stored);
-    
-    // Check if it's for the same date
-    if (completion.date === date) {
-      return completion;
-    }
-    
-    return null;
-  } catch (error) {
-    console.error('Failed to get challenge completion:', error);
-    return null;
-  }
+  const history = getChallengeHistory();
+  return history.completions[date] || null;
 };
 
 export const getStreakInfo = (): StreakInfo => {
@@ -207,28 +196,124 @@ export const getChallengeHistoryData = (): ChallengeHistory => {
   return getChallengeHistory();
 };
 
-export const clearOldCompletions = (): void => {
+// Migration function to convert old format to new format
+const migrateOldStorage = (): void => {
   if (typeof window === 'undefined') return;
   
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return;
+    // 1. Migrate old completion key
+    const oldData = localStorage.getItem(OLD_STORAGE_KEY);
+    if (oldData) {
+      const oldCompletion = JSON.parse(oldData);
+      
+      // Check if it's the old format (has 'session' property)
+      if (oldCompletion.session && oldCompletion.session.isComplete) {
+        const session = oldCompletion.session;
+        const correctAnswers = session.results.filter((r: any) => r.isCorrect).length;
+        const totalChallenges = session.results.length;
+        const accuracy = totalChallenges > 0 ? Math.round((correctAnswers / totalChallenges) * 100) : 0;
+        const timeSpent = session.endTime ? Math.floor((session.endTime - session.startTime) / 1000) : 0;
+        
+        // Convert to new format
+        const challengeIds = session.challenges?.map((c: any) => c.id) || [];
+        const correctChallengeIds = session.results
+          ?.filter((r: any) => r.isCorrect)
+          .map((r: any) => r.challengeId) || [];
+        
+        const newStats: ChallengeCompletionStats = {
+          date: session.date,
+          completedAt: oldCompletion.completedAt || Date.now(),
+          totalScore: session.totalScore,
+          correctAnswers,
+          totalChallenges,
+          accuracy,
+          timeSpent,
+          challengeIds,
+          correctChallengeIds
+        };
+        
+        // Save in new format
+        saveChallengeCompletion(newStats);
+        
+        if (process.env.NODE_ENV === 'development') {
+          console.log('✅ Migrated old challenge completion');
+        }
+      }
+      
+      // Remove old format regardless
+      localStorage.removeItem(OLD_STORAGE_KEY);
+    }
     
-    const completion: ChallengeCompletion = JSON.parse(stored);
-    
-    // Get today's date in the user's timezone (same as what the challenge uses)
-    const userTimezone = getUserTimezone();
-    const today = getTodayInTimezone(userTimezone);
-    
-    // If stored completion is not for today, clear it
-    // Note: We keep the history, only clear the current completion
-    if (completion.date !== today) {
-      localStorage.removeItem(STORAGE_KEY);
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`🗑️ Cleared old completion for ${completion.date}, today is ${today}`);
+    // 2. Migrate old history format
+    const historyData = localStorage.getItem(HISTORY_KEY);
+    if (historyData) {
+      const history = JSON.parse(historyData);
+      
+      // Check if history has old format completions (with 'session' property)
+      if (history.completions) {
+        let needsMigration = false;
+        const newCompletions: Record<string, ChallengeCompletionStats> = {};
+        
+        for (const [date, completion] of Object.entries(history.completions)) {
+          const oldComp = completion as any;
+          
+          // Check if this is old format (has 'session' property)
+          if (oldComp.session) {
+            needsMigration = true;
+            const session = oldComp.session;
+            const correctAnswers = session.results?.filter((r: any) => r.isCorrect).length || 0;
+            const totalChallenges = session.results?.length || 0;
+            const accuracy = totalChallenges > 0 ? Math.round((correctAnswers / totalChallenges) * 100) : 0;
+            const timeSpent = session.endTime ? Math.floor((session.endTime - session.startTime) / 1000) : 0;
+            
+            const challengeIds = session.challenges?.map((c: any) => c.id) || [];
+            const correctChallengeIds = session.results
+              ?.filter((r: any) => r.isCorrect)
+              .map((r: any) => r.challengeId) || [];
+            
+            newCompletions[date] = {
+              date: session.date,
+              completedAt: oldComp.completedAt || Date.now(),
+              totalScore: session.totalScore || 0,
+              correctAnswers,
+              totalChallenges,
+              accuracy,
+              timeSpent,
+              challengeIds,
+              correctChallengeIds
+            };
+          } else if (!oldComp.challengeIds || !oldComp.correctChallengeIds) {
+            // New format but missing challenge IDs - add empty arrays
+            needsMigration = true;
+            newCompletions[date] = {
+              ...oldComp,
+              challengeIds: oldComp.challengeIds || [],
+              correctChallengeIds: oldComp.correctChallengeIds || []
+            };
+          } else {
+            // Already has all fields, keep it
+            newCompletions[date] = oldComp;
+          }
+        }
+        
+        if (needsMigration) {
+          // Update history with new format
+          history.completions = newCompletions;
+          localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+          
+          if (process.env.NODE_ENV === 'development') {
+            console.log('✅ Migrated challenge history to new format');
+          }
+        }
       }
     }
   } catch (error) {
-    console.error('Failed to clear old completions:', error);
+    console.error('Failed to migrate old storage:', error);
   }
 };
+
+// Run migration automatically when module loads (client-side only)
+if (typeof window !== 'undefined') {
+  console.log('Running migration...');
+  migrateOldStorage();
+}
