@@ -46,13 +46,14 @@ async function getTodaysChallenge(dateOverride?: string, timezone?: string): Pro
       return null;
     }
     
-    // Map and shuffle options for each challenge
+    // Map and shuffle options/distractors for each challenge
     const shuffledChallenges: Challenge[] = challenges.map(dbChallenge => ({
       id: dbChallenge._id.toString(),
       type: dbChallenge.type,
       question: dbChallenge.question,
       correctAnswer: dbChallenge.correctAnswer,
       options: dbChallenge.options ? shuffleArray([...dbChallenge.options]) : undefined,
+      distractors: dbChallenge.distractors ? shuffleArray([...dbChallenge.distractors]) : undefined,
       audioUrl: dbChallenge.audioUrl,
       explanation: dbChallenge.explanation,
       difficulty: dbChallenge.difficulty,
