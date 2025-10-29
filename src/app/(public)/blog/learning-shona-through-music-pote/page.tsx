@@ -1,6 +1,6 @@
 'use client';
 
-import { Metadata } from 'next';
+import { Suspense } from 'react';
 import Link from 'next/link';
 import SimpleSearchBar from '@/component/simple-search-bar.component';
 import dataService from '@/services/dataService';
@@ -168,7 +168,9 @@ export default function PoteBlogPost() {
       {/* Search Bar */}
       <header>
         <div id="search-bar">
-          <SimpleSearchBar />
+          <Suspense fallback={<div className="h-16" />}>
+            <SimpleSearchBar />
+          </Suspense>
         </div>
       </header>
 

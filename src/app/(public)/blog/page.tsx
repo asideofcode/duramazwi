@@ -1,11 +1,8 @@
-import { Metadata } from 'next';
+'use client';
+
+import { Suspense } from 'react';
 import Link from 'next/link';
 import SimpleSearchBar from '@/component/simple-search-bar.component';
-
-export const metadata: Metadata = {
-  title: 'Shona Dictionary Blog - Learn Shona Language & Culture',
-  description: 'Explore articles about learning Shona through music, culture, and daily practice.',
-};
 
 const blogPosts = [
   {
@@ -24,7 +21,9 @@ export default function BlogPage() {
       {/* Search Bar */}
       <header>
         <div id="search-bar">
-          <SimpleSearchBar />
+          <Suspense fallback={<div className="h-16" />}>
+            <SimpleSearchBar />
+          </Suspense>
         </div>
       </header>
 
