@@ -1,8 +1,7 @@
-'use client';
-
-import { Suspense } from 'react';
 import Link from 'next/link';
-import SimpleSearchBar from '@/component/simple-search-bar.component';
+import SearchBar from '@/component/search-bar.component';
+
+export const dynamic = 'force-dynamic';
 
 const blogPosts = [
   {
@@ -21,9 +20,7 @@ export default function BlogPage() {
       {/* Search Bar */}
       <header>
         <div id="search-bar">
-          <Suspense fallback={<div className="h-16" />}>
-            <SimpleSearchBar />
-          </Suspense>
+          <SearchBar />
         </div>
       </header>
 
