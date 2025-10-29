@@ -1,8 +1,35 @@
 import Link from 'next/link';
 import SearchBar from '@/component/search-bar.component';
 import LyricsDisplay from './LyricsDisplay';
+import { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Learning Shona Through Music: "Pote" | Shona Dictionary',
+  description: 'Explore the beautiful Shona language through the lyrics of "Pote" by Learn Shona ft. Shona Prince & Tamy Moyo. Interactive lyrics with translations and word meanings.',
+  openGraph: {
+    title: 'Learning Shona Through Music: "Pote"',
+    description: 'Explore the beautiful Shona language through the lyrics of "Pote" by Learn Shona ft. Shona Prince & Tamy Moyo. Interactive lyrics with translations and word meanings.',
+    type: 'article',
+    url: 'https://duramazwi.co.zw/blog/learning-shona-through-music-pote',
+    images: [
+      {
+        url: 'https://jtanezlt3x8qkts2.public.blob.vercel-storage.com/public/pote_music_video_thumbnail.webp',
+        width: 1280,
+        height: 720,
+        alt: 'Pote Music Video Thumbnail - Learn Shona ft. Shona Prince & Tamy Moyo',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Learning Shona Through Music: "Pote"',
+    description: 'Explore the beautiful Shona language through the lyrics of "Pote" by Learn Shona ft. Shona Prince & Tamy Moyo.',
+    images: ['https://jtanezlt3x8qkts2.public.blob.vercel-storage.com/public/pote_music_video_thumbnail.webp'],
+  },
+  keywords: ['Shona language', 'Shona music', 'Pote', 'Learn Shona', 'Shona Prince', 'Tamy Moyo', 'Zimbabwean music', 'language learning', 'Shona lyrics'],
+};
 
 interface LyricLine {
   text: string;
