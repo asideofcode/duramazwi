@@ -104,6 +104,22 @@ export default function LyricsDisplay({ lyrics }: LyricsDisplayProps) {
                                     
                                     const target = e.currentTarget.nextElementSibling as HTMLElement;
                                     if (target) {
+                                      // Position tooltip within viewport
+                                      const rect = target.getBoundingClientRect();
+                                      const tooltipWidth = target.offsetWidth;
+                                      const viewportWidth = window.innerWidth;
+                                      
+                                      // Check if tooltip would overflow on the right
+                                      if (rect.left + tooltipWidth / 2 > viewportWidth - 20) {
+                                        target.classList.remove('left-1/2', '-translate-x-1/2');
+                                        target.classList.add('right-0');
+                                      }
+                                      // Check if tooltip would overflow on the left
+                                      else if (rect.left - tooltipWidth / 2 < 20) {
+                                        target.classList.remove('left-1/2', '-translate-x-1/2');
+                                        target.classList.add('left-0');
+                                      }
+                                      
                                       target.classList.remove('invisible', 'opacity-0');
                                       target.classList.add('visible', 'opacity-100');
                                       activeTooltip.current = target;
@@ -113,6 +129,9 @@ export default function LyricsDisplay({ lyrics }: LyricsDisplayProps) {
                                         if (activeTooltip.current === target) {
                                           target.classList.add('invisible', 'opacity-0');
                                           target.classList.remove('visible', 'opacity-100');
+                                          // Reset positioning classes
+                                          target.classList.remove('right-0', 'left-0');
+                                          target.classList.add('left-1/2', '-translate-x-1/2');
                                           activeTooltip.current = null;
                                         }
                                       }, 3000);
@@ -124,7 +143,7 @@ export default function LyricsDisplay({ lyrics }: LyricsDisplayProps) {
                               {word}
                             </Link>
                             {tooltip && (
-                              <span className="invisible group-hover:visible absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 text-sm text-white bg-gray-900 dark:bg-gray-700 rounded-lg whitespace-nowrap z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                              <span className="invisible group-hover:visible absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 text-sm text-white bg-gray-900 dark:bg-gray-700 rounded-lg z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none max-w-xs break-words">
                                 {tooltip}
                                 <span className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-900 dark:border-t-gray-700"></span>
                               </span>
