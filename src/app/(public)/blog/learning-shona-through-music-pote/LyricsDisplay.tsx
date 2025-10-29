@@ -1,6 +1,8 @@
 'use client';
 
+import { useRef } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import dataService from '@/services/dataService';
 
 interface LyricLine {
@@ -38,6 +40,18 @@ interface LyricsDisplayProps {
 }
 
 export default function LyricsDisplay({ lyrics }: LyricsDisplayProps) {
+  const router = useRouter();
+  const lastTapTime = useRef<{ [key: string]: number }>({});
+  const activeTooltip = useRef<HTMLElement | null>(null);
+  
+  const hideActiveTooltip = () => {
+    if (activeTooltip.current) {
+      activeTooltip.current.classList.add('invisible', 'opacity-0');
+      activeTooltip.current.classList.remove('visible', 'opacity-100');
+      activeTooltip.current = null;
+    }
+  };
+  
   return (
     <div className="space-y-4">
       {lyrics.map((line, index) => {
@@ -64,19 +78,45 @@ export default function LyricsDisplay({ lyrics }: LyricsDisplayProps) {
                             <Link
                               href={link.url}
                               className="text-blue-600 dark:text-blue-400 hover:underline touch-manipulation"
-                              onTouchStart={(e) => {
-                                // Show tooltip on touch, prevent default to avoid navigation
-                                if (tooltip) {
-                                  e.preventDefault();
-                                  const target = e.currentTarget.nextElementSibling as HTMLElement;
-                                  if (target) {
-                                    target.classList.remove('invisible', 'opacity-0');
-                                    target.classList.add('visible', 'opacity-100');
-                                    // Hide after 3 seconds
-                                    setTimeout(() => {
-                                      target.classList.add('invisible', 'opacity-0');
-                                      target.classList.remove('visible', 'opacity-100');
-                                    }, 3000);
+                              onClick={(e) => {
+                                // On desktop, normal click behavior
+                                if (!('ontouchstart' in window)) return;
+                                
+                                // On mobile, prevent default and handle double-tap
+                                e.preventDefault();
+                                const now = Date.now();
+                                const tapKey = `${index}-${wordIndex}`;
+                                const lastTap = lastTapTime.current[tapKey] || 0;
+                                const timeSinceLastTap = now - lastTap;
+                                
+                                // Double-tap detected (within 300ms)
+                                if (timeSinceLastTap < 300 && timeSinceLastTap > 0) {
+                                  // Navigate on double-tap
+                                  router.push(link.url);
+                                  lastTapTime.current[tapKey] = 0; // Reset
+                                } else {
+                                  // Single tap - show tooltip
+                                  lastTapTime.current[tapKey] = now;
+                                  
+                                  if (tooltip) {
+                                    // Hide any currently active tooltip
+                                    hideActiveTooltip();
+                                    
+                                    const target = e.currentTarget.nextElementSibling as HTMLElement;
+                                    if (target) {
+                                      target.classList.remove('invisible', 'opacity-0');
+                                      target.classList.add('visible', 'opacity-100');
+                                      activeTooltip.current = target;
+                                      
+                                      // Hide after 3 seconds
+                                      setTimeout(() => {
+                                        if (activeTooltip.current === target) {
+                                          target.classList.add('invisible', 'opacity-0');
+                                          target.classList.remove('visible', 'opacity-100');
+                                          activeTooltip.current = null;
+                                        }
+                                      }, 3000);
+                                    }
                                   }
                                 }
                               }}
