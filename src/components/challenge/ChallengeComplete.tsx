@@ -174,7 +174,7 @@ export default function ChallengeComplete({ session, onRestart, playCompletionSo
             </div>
             <span>Share to Socials</span>
           </button>
-          <a
+          <Link
             href={shareImageUrl}
             className="flex items-center gap-2 px-6 py-3 bg-gray-600 hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-white rounded-lg font-medium transition-colors shadow-md hover:shadow-lg"
           >
@@ -182,7 +182,7 @@ export default function ChallengeComplete({ session, onRestart, playCompletionSo
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
             View Image
-          </a>
+          </Link>
         </div>
       </div>
 

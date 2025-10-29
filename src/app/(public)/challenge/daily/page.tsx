@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Metadata } from 'next';
 import DailyChallengeContainer from '@/components/challenge/DailyChallengeContainer';
 import SoundControls from '@/components/SoundControls';
@@ -168,18 +169,18 @@ export default async function DailyChallengePage({ searchParams }: DailyChalleng
 
           {/* Action buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
+            <Link
               href="/"
               className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
               🔍 Explore Dictionary
-            </a>
-            <a
+            </Link>
+            <Link
               href="/random"
               className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
               🎲 Random Word
-            </a>
+            </Link>
           </div>
 
           {/* Fun fact or teaser */}

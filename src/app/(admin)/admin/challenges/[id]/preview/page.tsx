@@ -148,14 +148,14 @@ export default function PreviewChallengePage() {
             >
               Reset Preview
             </button>
-            <a
+            <Link
               href={`/admin/challenges/${challengeId}/edit`}
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
             >
               Edit Challenge
-            </a>
+            </Link>
           </div>
         </div>
         
