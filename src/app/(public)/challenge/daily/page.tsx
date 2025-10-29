@@ -27,7 +27,7 @@ export const metadata: Metadata = createMetadata({
     url: 'https://shonadictionary.com/challenge/daily',
     images: [
       {
-        url: 'https://shonadictionary.com/challenge-hero-og.jpg',
+        url: 'https://shonadictionary.com/daily-challenge-og.png',
         width: 1200,
         height: 630,
         alt: 'Daily Shona Challenge',
@@ -35,9 +35,10 @@ export const metadata: Metadata = createMetadata({
     ],
   },
   twitter: {
+    card: 'summary_large_image',
     title: 'Daily Shona Challenge',
     description: 'Challenge yourself with daily Shona language exercises',
-    images: ['https://shonadictionary.com/challenge-hero-og.jpg'],
+    images: ['https://shonadictionary.com/daily-challenge-og.png'],
   }
 });
 

@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     title: 'Learning Shona Through Music: "Pote"',
     description: 'Explore the beautiful Shona language through the lyrics of "Pote" by Learn Shona ft. Shona Prince & Tamy Moyo. Interactive lyrics with translations and word meanings.',
     type: 'article',
-    url: 'https://duramazwi.co.zw/blog/learning-shona-through-music-pote',
+    url: 'https://shonadictionary.com/blog/learning-shona-through-music-pote',
     images: [
       {
         url: 'https://jtanezlt3x8qkts2.public.blob.vercel-storage.com/public/pote_music_video_thumbnail.webp',
