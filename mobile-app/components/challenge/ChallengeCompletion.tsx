@@ -1,20 +1,34 @@
 import { View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useEffect, useRef } from 'react';
 import { ChallengeSession } from '@/types/challenge';
 import { clearChallengeStorage } from '@/utils/challengeStorage';
+import { useSoundEffects } from '@/hooks/useSoundEffects';
 
 interface ChallengeCompletionProps {
   session: ChallengeSession;
   onRestart?: () => void;
+  isFirstView?: boolean; // Flag to indicate if this is the first time viewing completion
 }
 
-export default function ChallengeCompletion({ session, onRestart }: ChallengeCompletionProps) {
+export default function ChallengeCompletion({ session, onRestart, isFirstView = false }: ChallengeCompletionProps) {
+  const { playCompletion } = useSoundEffects();
+  const hasPlayedSound = useRef(false);
+  
   const correctCount = session.results.filter(r => r.isCorrect).length;
   const totalCount = session.results.length;
   const accuracy = Math.round((correctCount / totalCount) * 100);
   const timeSpent = session.endTime 
     ? Math.round((session.endTime - session.startTime) / 1000) 
     : 0;
+
+  // Play completion sound only on first view and only once
+  useEffect(() => {
+    if (isFirstView && !hasPlayedSound.current) {
+      playCompletion();
+      hasPlayedSound.current = true;
+    }
+  }, [isFirstView, playCompletion]);
 
   const handleClearStorage = () => {
     Alert.alert(

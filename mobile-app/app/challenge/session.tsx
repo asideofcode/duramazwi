@@ -24,7 +24,7 @@ export default function ChallengeSessionScreen() {
   const [isCurrentCorrect, setIsCurrentCorrect] = useState<boolean | null>(null);
   
   // Sound effects
-  const { playCorrect, playIncorrect, playCompletion, isReady: soundsReady, isMuted, setIsMuted } = useSoundEffects();
+  const { playCorrect, playIncorrect, isReady: soundsReady, isMuted, setIsMuted } = useSoundEffects();
 
   const { data: dailyChallenge, isLoading, error } = useQuery({
     queryKey: ['dailyChallenge', getTodayDate()],
@@ -250,11 +250,6 @@ export default function ChallengeSessionScreen() {
     };
 
     const isLastChallenge = session.currentChallengeIndex === session.challenges.length - 1;
-
-    // Play completion sound immediately if this is the last challenge (before navigation)
-    if (isLastChallenge) {
-      playCompletion();
-    }
 
     // Reset hasCheckedCurrent for next challenge
     setHasCheckedCurrent(false);

@@ -7,6 +7,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { setAudioModeAsync } from 'expo-audio';
 
 import { useColorScheme } from '@/components/useColorScheme';
 
@@ -31,6 +32,16 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
   });
+
+  // Configure audio mode for playback
+  useEffect(() => {
+    setAudioModeAsync({
+      playsInSilentMode: true, // Allow audio to play even when phone is on silent
+      shouldPlayInBackground: false,
+    }).catch((err) => {
+      console.error('Failed to set audio mode:', err);
+    });
+  }, []);
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {

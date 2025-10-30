@@ -13,6 +13,8 @@ export default function ChallengeHub() {
   const router = useRouter();
   const [isCompleted, setIsCompleted] = useState(false);
   const [completionStats, setCompletionStats] = useState<any>(null);
+  const [isFirstCompletionView, setIsFirstCompletionView] = useState(false);
+  const [isCheckingCompletion, setIsCheckingCompletion] = useState(true);
 
   const { data: dailyChallenge, isLoading, error } = useQuery({
     queryKey: ['dailyChallenge', getTodayDate()],
@@ -28,15 +30,25 @@ export default function ChallengeHub() {
   const checkCompletion = useCallback(async () => {
     if (!dailyChallenge) return;
     
+    setIsCheckingCompletion(true);
     const stats = await getCompletionStats(dailyChallenge.date);
+    const wasCompleted = isCompleted;
+    
     if (stats) {
       setIsCompleted(true);
       setCompletionStats(stats);
+      // If we just completed (wasn't completed before), mark as first view
+      if (!wasCompleted) {
+        setIsFirstCompletionView(true);
+      }
     } else {
       setIsCompleted(false);
       setCompletionStats(null);
+      setIsFirstCompletionView(false);
     }
-  }, [dailyChallenge]);
+    
+    setIsCheckingCompletion(false);
+  }, [dailyChallenge, isCompleted]);
 
   useEffect(() => {
     checkCompletion();
@@ -57,8 +69,8 @@ export default function ChallengeHub() {
     router.back();
   };
 
-  // Loading state
-  if (isLoading) {
+  // Loading state (either fetching challenge or checking completion)
+  if (isLoading || isCheckingCompletion) {
     return (
       <>
         <Stack.Screen 
@@ -68,8 +80,7 @@ export default function ChallengeHub() {
           }} 
         />
         <View className="flex-1 bg-white dark:bg-gray-900 items-center justify-center">
-          <ActivityIndicator size="large" color="#2563eb" />
-          <Text className="text-gray-600 dark:text-gray-400 mt-4">Loading challenge...</Text>
+          <ActivityIndicator size="large" color="#9333ea" />
         </View>
       </>
     );
@@ -140,7 +151,7 @@ export default function ChallengeHub() {
           }} 
         />
         <View className="flex-1 bg-white dark:bg-gray-900">
-          <ChallengeCompletion session={mockSession} />
+          <ChallengeCompletion session={mockSession} isFirstView={isFirstCompletionView} />
         </View>
       </>
     );
