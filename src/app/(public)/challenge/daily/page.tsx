@@ -16,32 +16,50 @@ import { createMetadata } from '@/utils/metadata';
 // Force dynamic rendering since we use searchParams
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = createMetadata({
-  title: 'Daily Challenge - Shona Dictionary',
-  description: 'Test your Shona language skills with our daily challenge. Learn new words and improve your pronunciation.',
-  alternates: {
-    canonical: 'https://shonadictionary.com/challenge/daily'
-  },
-  openGraph: {
-    title: 'Daily Shona Challenge',
-    description: 'Challenge yourself with daily Shona language exercises',
-    url: 'https://shonadictionary.com/challenge/daily',
-    images: [
-      {
-        url: 'https://shonadictionary.com/daily-challenge-og.png',
-        width: 1200,
-        height: 630,
-        alt: 'Daily Shona Challenge',
-      }
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Daily Shona Challenge',
-    description: 'Challenge yourself with daily Shona language exercises',
-    images: ['https://shonadictionary.com/daily-challenge-og.png'],
-  }
-});
+export async function generateMetadata(): Promise<Metadata> {
+  // Check if there's a challenge available for better SEO
+  const todaysChallenge = await getTodaysChallenge();
+  
+  const hasChallenge = !!todaysChallenge;
+  const challengeCount = todaysChallenge?.challenges?.length || 0;
+  
+  return createMetadata({
+    title: hasChallenge 
+      ? `Daily Shona Challenge - ${challengeCount} Questions | Shona Dictionary`
+      : 'Daily Shona Challenge - Coming Soon | Shona Dictionary',
+    description: hasChallenge
+      ? `Test your Shona language skills with today's ${challengeCount}-question challenge. Improve your vocabulary, pronunciation, and comprehension with interactive exercises.`
+      : 'Daily Shona language challenge coming soon! Test your knowledge with interactive exercises including multiple choice, audio recognition, and translation challenges.',
+    keywords: 'Shona challenge, daily Shona quiz, learn Shona, Shona exercises, Shona practice, Shona language learning, interactive Shona lessons',
+    alternates: {
+      canonical: 'https://shonadictionary.com/challenge/daily'
+    },
+    openGraph: {
+      title: hasChallenge ? 'Daily Shona Challenge - Test Your Skills' : 'Daily Shona Challenge - Coming Soon',
+      description: hasChallenge 
+        ? `Take on today's ${challengeCount}-question Shona language challenge`
+        : 'Daily Shona language challenges coming soon',
+      url: 'https://shonadictionary.com/challenge/daily',
+      type: 'website',
+      images: [
+        {
+          url: 'https://shonadictionary.com/daily-challenge-og.png',
+          width: 1200,
+          height: 630,
+          alt: 'Daily Shona Challenge',
+        }
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: hasChallenge ? 'Daily Shona Challenge' : 'Daily Shona Challenge - Coming Soon',
+      description: hasChallenge 
+        ? `Take on today's ${challengeCount}-question challenge`
+        : 'Daily Shona challenges coming soon',
+      images: ['https://shonadictionary.com/daily-challenge-og.png'],
+    }
+  });
+}
 
 async function getTodaysChallenge(dateOverride?: string, timezone?: string): Promise<DailyChallenge | null> {
   try {
