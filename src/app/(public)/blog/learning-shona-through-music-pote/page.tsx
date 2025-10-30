@@ -6,11 +6,11 @@ import { Metadata } from 'next';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Learning Shona Through Music: "Pote" | Shona Dictionary',
-  description: 'Explore the beautiful Shona language through the lyrics of "Pote" by Learn Shona ft. Shona Prince & Tamy Moyo. Interactive lyrics with translations and word meanings.',
+  title: 'Pote Lyrics - Learn Shona & Takura ft Tamy Moyo | Shona Dictionary',
+  description: 'Full lyrics and translations for "Pote" by Learn Shona & Takura ft Tamy Moyo. Interactive Shona lyrics with word-by-word meanings, translations, and language learning tools.',
   openGraph: {
-    title: 'Learning Shona Through Music: "Pote"',
-    description: 'Explore the beautiful Shona language through the lyrics of "Pote" by Learn Shona ft. Shona Prince & Tamy Moyo. Interactive lyrics with translations and word meanings.',
+    title: 'Pote Lyrics - Learn Shona & Takura ft Tamy Moyo',
+    description: 'Full lyrics and translations for "Pote" by Learn Shona & Takura ft Tamy Moyo. Interactive Shona lyrics with word-by-word meanings and translations.',
     type: 'article',
     url: 'https://shonadictionary.com/blog/learning-shona-through-music-pote',
     images: [
@@ -18,17 +18,32 @@ export const metadata: Metadata = {
         url: 'https://jtanezlt3x8qkts2.public.blob.vercel-storage.com/public/pote_music_video_thumbnail.webp',
         width: 1280,
         height: 720,
-        alt: 'Pote Music Video Thumbnail - Learn Shona ft. Shona Prince & Tamy Moyo',
+        alt: 'Pote Music Video - Learn Shona & Takura ft Tamy Moyo',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Learning Shona Through Music: "Pote"',
-    description: 'Explore the beautiful Shona language through the lyrics of "Pote" by Learn Shona ft. Shona Prince & Tamy Moyo.',
+    title: 'Pote Lyrics - Learn Shona & Takura ft Tamy Moyo',
+    description: 'Full lyrics and translations for "Pote" by Learn Shona & Takura ft Tamy Moyo. Interactive Shona lyrics with meanings.',
     images: ['https://jtanezlt3x8qkts2.public.blob.vercel-storage.com/public/pote_music_video_thumbnail.webp'],
   },
-  keywords: ['Shona language', 'Shona music', 'Pote', 'Learn Shona', 'Shona Prince', 'Tamy Moyo', 'Zimbabwean music', 'language learning', 'Shona lyrics'],
+  keywords: [
+    'Pote lyrics',
+    'Learn Shona Pote lyrics',
+    'Takura Pote lyrics',
+    'Tamy Moyo Pote lyrics',
+    'Pote song lyrics',
+    'Pote Shona lyrics',
+    'Learn Shona & Takura ft Tamy Moyo',
+    'Shona language',
+    'Shona music',
+    'Zimbabwean music',
+    'Shona lyrics translation',
+    'learn Shona through music',
+    'Pote meaning',
+    'Shona song lyrics'
+  ],
 };
 
 interface LyricLine {
@@ -202,7 +217,7 @@ export default function PoteBlogPost() {
             Explore the beautiful Shona language through the lyrics of "Pote" by Learn Shona ft. Shona Prince & Tamy Moyo
           </p>
           <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-            <time dateTime="2025-01-28">January 28, 2025</time>
+            <time dateTime="2025-10-28">October 28, 2025</time>
             <span>•</span>
             <span>5 min read</span>
           </div>
