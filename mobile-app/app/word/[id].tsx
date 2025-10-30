@@ -3,6 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { dictionaryService } from '@/services/dictionary';
+import AudioPlayerButton from '@/components/AudioPlayerButton';
 
 export default function WordDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -14,6 +15,16 @@ export default function WordDetailScreen() {
       console.log('Fetching word:', id);
       const result = await dictionaryService.getWordById(id as string);
       console.log('Word result:', result);
+      // Debug: Check if definitions have audioUrl
+      word?.meanings?.forEach((meaning: any, idx: number) => {
+        console.log(`Meaning ${idx} (${meaning.partOfSpeech}):`, meaning.definitions?.map((d: any) => ({
+          definition: d.definition?.substring(0, 30),
+          hasExample: !!d.example,
+          hasExamples: !!d.examples,
+          hasAudioUrl: !!d.audioUrl,
+          audioUrl: d.audioUrl
+        })));
+      });
       return result;
     },
     enabled: !!id,
@@ -97,9 +108,12 @@ export default function WordDetailScreen() {
           <Text className="text-base text-gray-600 dark:text-gray-400 mb-2">
             Meaning of:
           </Text>
-          <Text className="text-4xl font-bold text-blue-600 dark:text-blue-400">
-            {word.word}
-          </Text>
+          <View className="flex-row items-center gap-3">
+            <Text className="text-4xl font-bold text-blue-600 dark:text-blue-400 flex-1">
+              {word.word}
+            </Text>
+            <AudioPlayerButton audioUrl={word.audioUrl} size={28} />
+          </View>
         </View>
 
       {/* Content */}
@@ -110,24 +124,29 @@ export default function WordDetailScreen() {
           return (
             <View key={meaningIndex} className="mb-10">
               {/* Part of Speech Badge with Word Form */}
-              <View className="flex-row items-center mb-5">
-                <View className={`px-4 py-2 rounded-full ${getPartOfSpeechColor(meaning.partOfSpeech)}`}>
-                  <Text className="text-base font-semibold text-gray-700 dark:text-gray-300 uppercase">
-                    {meaning.partOfSpeech}
-                  </Text>
+              <View className="flex-row items-center justify-between mb-5">
+                <View className="flex-row items-center flex-1">
+                  <View className={`px-4 py-2 rounded-full ${getPartOfSpeechColor(meaning.partOfSpeech)}`}>
+                    <Text className="text-base font-semibold text-gray-700 dark:text-gray-300 uppercase">
+                      {meaning.partOfSpeech}
+                    </Text>
+                  </View>
+                  
+                  {/* Word form for this specific meaning */}
+                  <View className="flex-row items-center ml-4">
+                    {wordForm.hasPrefix && (
+                      <Text className="text-xl font-semibold text-green-600 dark:text-green-400">
+                        {wordForm.prefix}
+                      </Text>
+                    )}
+                    <Text className="text-xl font-semibold text-blue-600 dark:text-blue-400">
+                      {wordForm.word}
+                    </Text>
+                  </View>
                 </View>
                 
-                {/* Word form for this specific meaning */}
-                <View className="flex-row items-center ml-4">
-                  {wordForm.hasPrefix && (
-                    <Text className="text-xl font-semibold text-green-600 dark:text-green-400">
-                      {wordForm.prefix}
-                    </Text>
-                  )}
-                  <Text className="text-xl font-semibold text-blue-600 dark:text-blue-400">
-                    {wordForm.word}
-                  </Text>
-                </View>
+                {/* Meaning-level audio */}
+                {meaning.audioUrl && <AudioPlayerButton audioUrl={meaning.audioUrl} size={24} />}
               </View>
 
             {/* Definitions */}
@@ -138,15 +157,42 @@ export default function WordDetailScreen() {
                   {def.definition}
                 </Text>
                 
-                {/* Examples */}
+                {/* Example with audio */}
+                {def.example && (
+                  <View className="ml-4 mb-4">
+                    <View className="bg-blue-50 dark:bg-blue-900/20 p-5 rounded-lg border-l-4 border-blue-500">
+                      <View className="flex-row items-center justify-between mb-3">
+                        <Text className="text-base font-semibold text-blue-700 dark:text-blue-300 uppercase">
+                          Example
+                        </Text>
+                        {def.audioUrl && <AudioPlayerButton audioUrl={def.audioUrl} size={24} />}
+                      </View>
+                      {/* Shona Example */}
+                      <Text className="text-lg text-gray-800 dark:text-gray-200 font-medium italic mb-2 leading-6">
+                        "{def.example}"
+                      </Text>
+                      {/* English Translation */}
+                      {def.translation && (
+                        <Text className="text-base text-gray-600 dark:text-gray-400 italic leading-6">
+                          "{def.translation}"
+                        </Text>
+                      )}
+                    </View>
+                  </View>
+                )}
+                
+                {/* Old examples structure (if present) */}
                 {(def as any).examples && (def as any).examples.length > 0 && (
                   <View className="ml-4 space-y-3">
                     {(def as any).examples.map((example: any, exampleIndex: number) => (
                       <View key={exampleIndex} className="mb-4">
                         <View className="bg-blue-50 dark:bg-blue-900/20 p-5 rounded-lg border-l-4 border-blue-500">
-                          <Text className="text-base font-semibold text-blue-700 dark:text-blue-300 mb-3 uppercase">
-                            Example {exampleIndex + 1}
-                          </Text>
+                          <View className="flex-row items-center justify-between mb-3">
+                            <Text className="text-base font-semibold text-blue-700 dark:text-blue-300 uppercase">
+                              Example {exampleIndex + 1}
+                            </Text>
+                            {example.audioUrl && <AudioPlayerButton audioUrl={example.audioUrl} size={24} />}
+                          </View>
                           {/* Shona Example */}
                           <Text className="text-lg text-gray-800 dark:text-gray-200 font-medium italic mb-3 leading-6">
                             "{example.shona}"

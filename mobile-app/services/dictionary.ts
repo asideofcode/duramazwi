@@ -10,10 +10,12 @@ export interface WordDetail {
   word: string;
   meanings: Array<{
     partOfSpeech: string;
+    audioUrl?: string;
     definitions: Array<{
       definition: string;
       example?: string;
       translation?: string;
+      audioUrl?: string;
     }>;
   }>;
   audioUrl?: string;
