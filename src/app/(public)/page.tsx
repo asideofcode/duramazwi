@@ -150,6 +150,15 @@ export default async function HomePage({ searchParams }: { searchParams: { q?: s
             >
               Suggest a word
             </Link>
+            <span className="text-gray-400 text-sm">•</span>
+            <Link 
+              href="/challenge" 
+              className="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 underline transition-colors duration-200 px-2 py-1 font-semibold"
+              title="Take the daily challenge"
+              aria-label="Take the daily challenge"
+            >
+              🏆 Daily Challenge
+            </Link>
           </div>
         </div>
       </header>
@@ -179,6 +188,48 @@ export default async function HomePage({ searchParams }: { searchParams: { q?: s
 function WelcomeContent() {
   return (
     <div className="max-w-4xl mx-auto">
+      {/* Daily Challenge Card - Prominent and Inviting */}
+      <Link href="/challenge/daily" className="block mb-8 group">
+        <div className="relative overflow-hidden bg-gradient-to-br from-purple-600 via-purple-500 to-pink-500 dark:from-purple-700 dark:via-purple-600 dark:to-pink-600 rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02]">
+          {/* Animated background pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.3),transparent)]"></div>
+          </div>
+          
+          <div className="relative flex items-center justify-between">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-5xl">🏆</span>
+                <div>
+                  <h2 className="text-3xl font-bold text-white mb-1">
+                    Daily Challenge
+                  </h2>
+                  <p className="text-purple-100 text-lg">
+                    Test your Shona knowledge today!
+                  </p>
+                </div>
+              </div>
+              <p className="text-white/90 text-lg mb-4 max-w-xl">
+                Take on fun challenges to improve your vocabulary. New challenges every day!
+              </p>
+              <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg text-white font-semibold group-hover:bg-white/30 transition-colors">
+                <span>Start Challenge</span>
+                <svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </div>
+            </div>
+            
+            {/* Decorative elements */}
+            <div className="hidden md:block">
+              <div className="text-8xl opacity-20 transform rotate-12">
+                ⚡
+              </div>
+            </div>
+          </div>
+        </div>
+      </Link>
+
       <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
         Explore the Shona Dictionary
       </h2>

@@ -14,7 +14,7 @@
     "sync-vercel-index": "node ./src/data/sync-vercel-index.js",
     "dev": "npm run export-data -- --overwrite=false --dev && next dev --turbopack",
     "validate-audio": "node ./src/scripts/validateAudioReferences.js",
-    "build": "npm run export-data -- --overwrite=false && node ./src/data/export-audio.js && npm run validate-audio && next build",
+    "build": "npm run export-data -- --overwrite=true && node ./src/data/export-audio.js && npm run validate-audio && next build",
     "export-audio": "node ./src/data/export-audio-index.js",
     "migrate-to-mongodb": "node ./src/data/migrate-to-mongodb.js",
     "start": "next start",
