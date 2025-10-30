@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getDatabase } from '@/lib/mongodb';
 import { getTodayInTimezone } from '@/utils/timezone';
 import { shuffleArray } from '@/utils/shuffle';
+import { ObjectId } from 'mongodb';
 
 export async function GET(request: NextRequest) {
   try {
@@ -36,7 +37,7 @@ export async function GET(request: NextRequest) {
     const challenges = await db
       .collection('challenges')
       .find({
-        _id: { $in: challengeIds.map((id: string) => id) },
+        _id: { $in: challengeIds.map((id: string) => new ObjectId(id)) },
       })
       .toArray();
 
@@ -53,14 +54,19 @@ export async function GET(request: NextRequest) {
         audioUrl: challenge.audioUrl,
       };
 
-      // Shuffle options for multiple choice
-      if (challenge.type === 'multiple_choice' && challenge.options) {
+      // Shuffle options for multiple choice and audio recognition
+      if ((challenge.type === 'multiple_choice' || challenge.type === 'audio_recognition') && challenge.options) {
         processed.options = shuffleArray([...challenge.options]);
       }
 
       // Add word bank for translation builder
-      if (challenge.type === 'translation_builder' && challenge.wordBank) {
-        processed.wordBank = shuffleArray([...challenge.wordBank]);
+      if (challenge.type === 'translation_builder') {
+        // Combine correctAnswer and distractors to create the word bank
+        const correctWords = Array.isArray(challenge.correctAnswer) 
+          ? challenge.correctAnswer 
+          : [challenge.correctAnswer];
+        const distractors = challenge.distractors || [];
+        processed.wordBank = shuffleArray([...correctWords, ...distractors]);
       }
 
       return processed;

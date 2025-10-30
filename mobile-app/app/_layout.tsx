@@ -20,7 +20,7 @@ export {
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
+  initialRouteName: 'index',
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -57,7 +57,34 @@ function RootLayoutNav() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
+          {/* Home/Dictionary Screen */}
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          
+          {/* Browse Screen */}
+          <Stack.Screen name="browse" options={{ headerShown: true }} />
+          
+          {/* Word Detail Screen */}
+          <Stack.Screen name="word/[id]" options={{ headerShown: true }} />
+          
+          {/* Challenge Hub - Shows start/completion/waiting */}
+          <Stack.Screen 
+            name="challenge" 
+            options={{ 
+              headerShown: false, // No navbar - X button in component
+            }} 
+          />
+          
+          {/* Challenge Session - Full screen challenge runner */}
+          <Stack.Screen 
+            name="challenge/session" 
+            options={{ 
+              headerShown: false, // No navbar - X button in component
+            }} 
+          />
+          
+          {/* Keep tabs folder hidden for now */}
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          
           <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
         </Stack>
       </ThemeProvider>

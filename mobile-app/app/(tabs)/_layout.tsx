@@ -34,14 +34,6 @@ export default function TabLayout() {
           headerShown: false,
         }}
       />
-      <Tabs.Screen
-        name="challenge"
-        options={{
-          title: 'Challenge',
-          tabBarIcon: ({ color }) => <TabBarIcon name="trophy" color={color} />,
-          headerShown: false,
-        }}
-      />
     </Tabs>
   );
 }

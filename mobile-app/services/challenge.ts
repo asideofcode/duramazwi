@@ -1,32 +1,20 @@
 import apiClient from './api';
-
-export type ChallengeType = 'multiple_choice' | 'audio_recognition' | 'translation_builder';
-
-export interface Challenge {
-  id: string;
-  type: ChallengeType;
-  question: string;
-  correctAnswer: string;
-  options?: string[];
-  audioUrl?: string;
-  wordBank?: string[];
-  explanation?: string;
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
-  points: number;
-}
-
-export interface DailyChallenge {
-  date: string;
-  challenges: Challenge[];
-}
+import { DailyChallenge } from '@/types/challenge';
 
 export const challengeService = {
   /**
    * Get daily challenge
    */
   getDailyChallenge: async (date?: string): Promise<DailyChallenge> => {
-    return await apiClient.get('/challenge/daily', {
-      params: date ? { date } : {},
-    });
+    const params = new URLSearchParams();
+    if (date) {
+      params.append('date', date);
+    }
+    
+    const response = await fetch(`http://192.168.1.216:3000/api/mobile/challenge/daily?${params.toString()}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch daily challenge');
+    }
+    return response.json();
   },
 };

@@ -44,4 +44,11 @@ export const dictionaryService = {
       params: { letter },
     });
   },
+
+  /**
+   * Get a random word
+   */
+  getRandomWord: async (): Promise<WordDetail> => {
+    return await apiClient.get('/random');
+  },
 };

@@ -5,25 +5,34 @@ export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const query = searchParams.get('q');
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '20', 10);
 
-    if (!query || query.trim().length === 0) {
-      return NextResponse.json({ error: 'Query parameter is required' }, { status: 400 });
+    if (!query) {
+      return NextResponse.json({ words: [], total: 0, page: 1, totalPages: 0 });
     }
 
     // Search for words
-    const results = dataService.search(query);
+    const searchResults = dataService.search(query);
 
-    // Limit to 30 results for mobile
-    const limitedResults = results.slice(0, 30);
+    // Calculate pagination
+    const totalResults = searchResults.length;
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const paginatedResults = searchResults.slice(startIndex, endIndex);
 
-    // Format for mobile - simplified response
-    const mobileResults = limitedResults.map((entry: any) => ({
-      id: entry.word,
-      word: entry.word,
-      briefDefinition: entry.meanings[0]?.definitions[0]?.definition || 'No definition available',
-    }));
+    // Fetch full details for paginated results
+    const wordsWithDetails = paginatedResults.map((result: any) => {
+      const details = dataService.getWordDetails(result.word) as any[];
+      return details && details.length > 0 ? details[0] : { word: result.word, meanings: [] };
+    });
 
-    return NextResponse.json(mobileResults);
+    return NextResponse.json({
+      words: wordsWithDetails,
+      total: totalResults,
+      page,
+      totalPages: Math.ceil(totalResults / limit),
+    });
   } catch (error) {
     console.error('Mobile search error:', error);
     return NextResponse.json(

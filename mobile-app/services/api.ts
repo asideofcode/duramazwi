@@ -1,8 +1,9 @@
 import axios from 'axios';
 
 // Configure base URL - update this to your actual API URL
+// Use your computer's IP address for iOS simulator to connect
 const API_BASE_URL = __DEV__ 
-  ? 'http://localhost:3000/api/mobile'  // Development
+  ? 'http://192.168.1.216:3000/api/mobile'  // Development - use network IP
   : 'https://shonadictionary.com/api/mobile';  // Production
 
 const apiClient = axios.create({
