@@ -24,9 +24,6 @@ export default function BlogPage() {
         </div>
       </header>
 
-      {/* Separator */}
-      <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-700" />
-
       {/* Blog Index */}
       <div className="container mx-auto max-w-6xl">
         {/* Header */}
@@ -34,8 +31,8 @@ export default function BlogPage() {
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
             Shona Dictionary Blog
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300">
-            Learn Shona through music, culture, and daily practice
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl">
+            Discover the rhythm and soul of Shona through stories, music, analysis and the words that bring our vibrant shared culture to life
           </p>
         </div>
 
