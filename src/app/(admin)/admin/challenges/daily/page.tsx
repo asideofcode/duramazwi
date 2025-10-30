@@ -260,14 +260,14 @@ export default function DailyChallengesOverviewPage() {
                       >
                         Edit
                       </Link>
-                      <a
+                      <Link
                         href={`/challenge/daily?date=${dailyChallenge.date}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="px-3 py-2 text-sm bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
                       >
                         View Live
-                      </a>
+                      </Link>
                       <button
                         onClick={() => handleDelete(dailyChallenge.date)}
                         className="px-3 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"

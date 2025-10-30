@@ -87,14 +87,14 @@ export default function ChallengeListItem({
           >
             Preview
           </button>
-          <a
+          <Link
             href={`/admin/challenges/${challenge.id}/edit`}
             target="_blank"
             rel="noopener noreferrer"
             className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
           >
             Edit
-          </a>
+          </Link>
           <button
             onClick={onRemove}
             className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
