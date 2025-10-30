@@ -12,7 +12,6 @@ import MultipleChoiceChallenge from '@/components/challenge/MultipleChoiceChalle
 import AudioChallenge from '@/components/challenge/AudioChallenge';
 import TranslationChallenge from '@/components/challenge/TranslationChallenge';
 import ChallengeBottomBar from '@/components/challenge/ChallengeBottomBar';
-import ChallengeCompletion from '@/components/challenge/ChallengeCompletion';
 import { useSoundEffects } from '@/hooks/useSoundEffects';
 
 export default function ChallengeSessionScreen() {
@@ -88,9 +87,9 @@ export default function ChallengeSessionScreen() {
     }
   };
 
-  // Save completion when finished (but don't navigate - let user see results)
+  // Save completion and navigate back to hub when finished
   useEffect(() => {
-    async function saveCompletion() {
+    async function saveCompletionAndNavigate() {
       if (!session || !session.isComplete || !session.endTime) return;
       
       const correctChallengeIds = session.results
@@ -111,10 +110,18 @@ export default function ChallengeSessionScreen() {
         correctChallengeIds,
       });
       
-      console.log('Challenge completion saved!');
+      console.log('Challenge completion saved! Navigating back to hub...');
+      
+      // Navigate back to hub to show completion screen
+      try {
+        router.back();
+      } catch (error) {
+        console.error('Navigation error:', error);
+        router.replace('/challenge');
+      }
     }
 
-    saveCompletion();
+    saveCompletionAndNavigate();
   }, [session?.isComplete, session?.endTime]);
 
   if (error) {
@@ -123,7 +130,7 @@ export default function ChallengeSessionScreen() {
         {/* X Button */}
         <View className="px-6 pt-4 pb-2">
           <TouchableOpacity onPress={handleClose} className="w-10 h-10 items-center justify-center">
-            <Ionicons name="close" size={32} color="#000" />
+            <Ionicons name="close" size={32} color="#6b7280" />
           </TouchableOpacity>
         </View>
         
@@ -140,23 +147,8 @@ export default function ChallengeSessionScreen() {
     return null;
   }
 
-  // Show completion screen when finished
-  if (session.isComplete) {
-    return (
-      <SafeAreaView className="flex-1 bg-white dark:bg-gray-900">
-        {/* X Button */}
-        <View className="px-6 pt-4 pb-2">
-          <TouchableOpacity onPress={handleClose} className="w-10 h-10 items-center justify-center">
-            <Ionicons name="close" size={32} color="#000" />
-          </TouchableOpacity>
-        </View>
-        
-        <View className="flex-1">
-          <ChallengeCompletion session={session} />
-        </View>
-      </SafeAreaView>
-    );
-  }
+  // Note: Completion screen is shown in the hub, not here
+  // When session completes, we navigate back to hub which displays ChallengeCompletion
 
   if (isLoading) {
     return (
@@ -164,7 +156,7 @@ export default function ChallengeSessionScreen() {
         {/* X Button */}
         <View className="px-6 pt-4 pb-2">
           <TouchableOpacity onPress={handleClose} className="w-10 h-10 items-center justify-center">
-            <Ionicons name="close" size={32} color="#000" />
+            <Ionicons name="close" size={32} color="#6b7280" />
           </TouchableOpacity>
         </View>
         
@@ -259,11 +251,9 @@ export default function ChallengeSessionScreen() {
 
     const isLastChallenge = session.currentChallengeIndex === session.challenges.length - 1;
 
-    // Play completion sound if this is the last challenge
+    // Play completion sound immediately if this is the last challenge (before navigation)
     if (isLastChallenge) {
-      setTimeout(() => {
-        playCompletion();
-      }, 500);
+      playCompletion();
     }
 
     // Reset hasCheckedCurrent for next challenge
@@ -334,7 +324,7 @@ export default function ChallengeSessionScreen() {
       <View className="flex-row items-center px-6 py-4 gap-4">
         {/* X Button */}
         <TouchableOpacity onPress={handleClose} className="w-10 h-10 items-center justify-center">
-          <Ionicons name="close" size={28} color="#000" />
+          <Ionicons name="close" size={28} color="#6b7280" />
         </TouchableOpacity>
         
         {/* Progress Bar */}

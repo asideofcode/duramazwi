@@ -1,9 +1,9 @@
-import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect, Stack } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { challengeService } from '@/services/challenge';
 import { getTodayDate, getCompletionStats } from '@/utils/challengeStorage';
 import ChallengeHero from '@/components/challenge/ChallengeHero';
@@ -25,19 +25,29 @@ export default function ChallengeHub() {
   });
 
   // Check if challenge is already completed
-  useEffect(() => {
-    async function checkCompletion() {
-      if (!dailyChallenge) return;
-      
-      const stats = await getCompletionStats(dailyChallenge.date);
-      if (stats) {
-        setIsCompleted(true);
-        setCompletionStats(stats);
-      }
-    }
+  const checkCompletion = useCallback(async () => {
+    if (!dailyChallenge) return;
     
-    checkCompletion();
+    const stats = await getCompletionStats(dailyChallenge.date);
+    if (stats) {
+      setIsCompleted(true);
+      setCompletionStats(stats);
+    } else {
+      setIsCompleted(false);
+      setCompletionStats(null);
+    }
   }, [dailyChallenge]);
+
+  useEffect(() => {
+    checkCompletion();
+  }, [checkCompletion]);
+
+  // Re-check completion when screen comes into focus (e.g., after navigating back)
+  useFocusEffect(
+    useCallback(() => {
+      checkCompletion();
+    }, [checkCompletion])
+  );
 
   const handleStartChallenge = () => {
     router.push('/challenge/session');
@@ -50,43 +60,54 @@ export default function ChallengeHub() {
   // Loading state
   if (isLoading) {
     return (
-      <SafeAreaView className="flex-1 bg-white dark:bg-gray-900">
-        {/* X Button */}
-        <View className="px-6 pt-4 pb-2">
-          <TouchableOpacity onPress={handleClose} className="w-10 h-10 items-center justify-center">
-            <Ionicons name="close" size={32} color="#000" />
-          </TouchableOpacity>
-        </View>
-        
-        <View className="flex-1 items-center justify-center">
+      <>
+        <Stack.Screen 
+          options={{
+            title: 'Daily Challenge',
+            headerBackTitle: 'Back',
+          }} 
+        />
+        <View className="flex-1 bg-white dark:bg-gray-900 items-center justify-center">
           <ActivityIndicator size="large" color="#2563eb" />
           <Text className="text-gray-600 dark:text-gray-400 mt-4">Loading challenge...</Text>
         </View>
-      </SafeAreaView>
+      </>
     );
   }
 
-  // Error state
+  // Error state or no challenge available
   if (error || !dailyChallenge) {
     return (
-      <SafeAreaView className="flex-1 bg-white dark:bg-gray-900">
-        {/* X Button */}
-        <View className="px-6 pt-4 pb-2">
-          <TouchableOpacity onPress={handleClose} className="w-10 h-10 items-center justify-center">
-            <Ionicons name="close" size={32} color="#000" />
-          </TouchableOpacity>
+      <>
+        <Stack.Screen 
+          options={{
+            title: 'Daily Challenge',
+            headerBackTitle: 'Back',
+          }} 
+        />
+        <View className="flex-1 bg-white dark:bg-gray-900">
+          <View className="flex-1 items-center justify-center px-6">
+            <Ionicons name="time-outline" size={80} color="#a855f7" />
+            <Text className="text-3xl font-bold text-gray-900 dark:text-white mt-8 mb-4 text-center">
+              No Challenge Yet
+            </Text>
+            <Text className="text-lg text-gray-600 dark:text-gray-400 text-center leading-7 mb-6">
+              Today's challenge isn't ready yet.
+            </Text>
+            <View className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-5 border border-purple-200 dark:border-purple-800">
+              <View className="flex-row items-center justify-center mb-2">
+                <Ionicons name="calendar" size={20} color="#a855f7" style={{ marginRight: 8 }} />
+                <Text className="text-purple-900 dark:text-purple-300 font-semibold">
+                  Check Back Later
+                </Text>
+              </View>
+              <Text className="text-purple-800 dark:text-purple-400 text-center text-base">
+                New challenges are released daily!
+              </Text>
+            </View>
+          </View>
         </View>
-        
-        <View className="flex-1 items-center justify-center px-6">
-          <Ionicons name="construct-outline" size={64} color="#9ca3af" />
-          <Text className="text-2xl font-bold text-gray-900 dark:text-white mt-6 mb-3 text-center">
-            We're Working On It
-          </Text>
-          <Text className="text-base text-gray-600 dark:text-gray-400 text-center leading-6">
-            Today's challenge isn't ready yet. Check back soon!
-          </Text>
-        </View>
-      </SafeAreaView>
+      </>
     );
   }
 
@@ -111,34 +132,32 @@ export default function ChallengeHub() {
     };
 
     return (
-      <SafeAreaView className="flex-1 bg-white dark:bg-gray-900">
-        {/* X Button */}
-        <View className="px-6 pt-4 pb-2">
-          <TouchableOpacity onPress={handleClose} className="w-10 h-10 items-center justify-center">
-            <Ionicons name="close" size={32} color="#000" />
-          </TouchableOpacity>
-        </View>
-        
-        <View className="flex-1">
+      <>
+        <Stack.Screen 
+          options={{
+            title: 'Daily Challenge',
+            headerBackTitle: 'Back',
+          }} 
+        />
+        <View className="flex-1 bg-white dark:bg-gray-900">
           <ChallengeCompletion session={mockSession} />
         </View>
-      </SafeAreaView>
+      </>
     );
   }
 
   // Not started - Show hero/start screen
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-gray-900">
-      {/* X Button */}
-      <View className="px-6 pt-4 pb-2">
-        <TouchableOpacity onPress={handleClose} className="w-10 h-10 items-center justify-center">
-          <Ionicons name="close" size={32} color="#000" />
-        </TouchableOpacity>
-      </View>
-      
-      <View className="flex-1">
+    <>
+      <Stack.Screen 
+        options={{
+          title: 'Daily Challenge',
+          headerBackTitle: 'Back',
+        }} 
+      />
+      <View className="flex-1 bg-white dark:bg-gray-900">
         <ChallengeHero challenge={dailyChallenge} onStart={handleStartChallenge} />
       </View>
-    </SafeAreaView>
+    </>
   );
 }

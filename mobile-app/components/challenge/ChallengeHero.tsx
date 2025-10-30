@@ -45,7 +45,7 @@ export default function ChallengeHero({ challenge, onStart }: ChallengeHeroProps
           <Text className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1">
             {totalQuestions}
           </Text>
-          <Text className="text-sm text-gray-600 dark:text-gray-400 text-center">
+          <Text className="text-base text-gray-600 dark:text-gray-400 text-center">
             Questions
           </Text>
         </View>
@@ -55,7 +55,7 @@ export default function ChallengeHero({ challenge, onStart }: ChallengeHeroProps
           <Text className="text-3xl font-bold text-green-600 dark:text-green-400 mb-1">
             {totalPoints}
           </Text>
-          <Text className="text-sm text-gray-600 dark:text-gray-400 text-center">
+          <Text className="text-base text-gray-600 dark:text-gray-400 text-center">
             Points
           </Text>
         </View>
@@ -65,7 +65,7 @@ export default function ChallengeHero({ challenge, onStart }: ChallengeHeroProps
           <Text className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-1">
             {estimatedTime}
           </Text>
-          <Text className="text-sm text-gray-600 dark:text-gray-400 text-center">
+          <Text className="text-base text-gray-600 dark:text-gray-400 text-center">
             Minutes
           </Text>
         </View>
@@ -87,7 +87,7 @@ export default function ChallengeHero({ challenge, onStart }: ChallengeHeroProps
         <View className="flex-row items-start">
           <Ionicons name="bulb" size={20} color="#3b82f6" style={{ marginRight: 8, marginTop: 2 }} />
           <View className="flex-1">
-            <Text className="text-blue-900 dark:text-blue-300 text-sm">
+            <Text className="text-blue-900 dark:text-blue-300 text-base">
               <Text className="font-semibold">Tip: </Text>
               Take your time and think carefully about each answer. You can only complete this challenge once per day!
             </Text>

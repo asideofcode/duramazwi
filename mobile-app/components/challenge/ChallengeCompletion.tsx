@@ -47,10 +47,23 @@ export default function ChallengeCompletion({ session, onRestart }: ChallengeCom
   return (
     <ScrollView className="flex-1 bg-white dark:bg-gray-900">
       <View className="px-6 py-12">
+        {/* Next Challenge Info */}
+        <View className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl p-5 mb-8 border border-purple-200 dark:border-purple-800">
+          <View className="flex-row items-center justify-center mb-2">
+            <Ionicons name="calendar" size={20} color="#a855f7" style={{ marginRight: 8 }} />
+            <Text className="text-purple-900 dark:text-purple-300 font-semibold text-base">
+              Next Challenge
+            </Text>
+          </View>
+          <Text className="text-purple-800 dark:text-purple-400 text-center text-base">
+            Come back tomorrow for a new daily challenge!
+          </Text>
+        </View>
+
         {/* Trophy Icon */}
         <View className="items-center mb-8">
-          <View className="w-32 h-32 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full items-center justify-center shadow-lg mb-4">
-            <Ionicons name="trophy" size={72} color="white" />
+          <View className="w-32 h-32 bg-yellow-400 rounded-full items-center justify-center shadow-lg mb-4">
+            <Ionicons name="trophy" size={72} color="#f59e0b" />
           </View>
           <Text className="text-4xl mb-2">{performance.emoji}</Text>
           <Text className={`text-3xl font-bold ${performance.color}`}>
@@ -76,7 +89,7 @@ export default function ChallengeCompletion({ session, onRestart }: ChallengeCom
             <Text className="text-2xl font-bold text-blue-600 dark:text-blue-400 mt-2">
               {session.totalScore}
             </Text>
-            <Text className="text-sm text-gray-600 dark:text-gray-400 text-center">
+            <Text className="text-base text-gray-600 dark:text-gray-400 text-center">
               Points
             </Text>
           </View>
@@ -87,7 +100,7 @@ export default function ChallengeCompletion({ session, onRestart }: ChallengeCom
             <Text className="text-2xl font-bold text-purple-600 dark:text-purple-400 mt-2">
               {Math.floor(timeSpent / 60)}:{(timeSpent % 60).toString().padStart(2, '0')}
             </Text>
-            <Text className="text-sm text-gray-600 dark:text-gray-400 text-center">
+            <Text className="text-base text-gray-600 dark:text-gray-400 text-center">
               Time
             </Text>
           </View>
@@ -98,7 +111,7 @@ export default function ChallengeCompletion({ session, onRestart }: ChallengeCom
             <Text className="text-2xl font-bold text-green-600 dark:text-green-400 mt-2">
               {accuracy}%
             </Text>
-            <Text className="text-sm text-gray-600 dark:text-gray-400 text-center">
+            <Text className="text-base text-gray-600 dark:text-gray-400 text-center">
               Accuracy
             </Text>
           </View>
@@ -129,7 +142,7 @@ export default function ChallengeCompletion({ session, onRestart }: ChallengeCom
                 <Text className="text-base font-semibold text-gray-900 dark:text-white">
                   Question {index + 1}
                 </Text>
-                <Text className="text-sm text-gray-600 dark:text-gray-400">
+                <Text className="text-base text-gray-600 dark:text-gray-400">
                   {session.challenges[index].type.replace('_', ' ')}
                 </Text>
               </View>
@@ -151,10 +164,10 @@ export default function ChallengeCompletion({ session, onRestart }: ChallengeCom
             <View className="flex-1">
               <Text className="text-blue-900 dark:text-blue-300 text-base leading-6">
                 {accuracy === 100
-                  ? "Outstanding! You've mastered today's challenge. Come back tomorrow for more!"
+                  ? "Outstanding! You've mastered today's challenge."
                   : accuracy >= 80
                   ? "Great work! You're making excellent progress. Keep it up!"
-                  : "Every challenge is a learning opportunity. Review the explanations and try again tomorrow!"}
+                  : "Every challenge is a learning opportunity. Keep practicing!"}
               </Text>
             </View>
           </View>
@@ -163,7 +176,7 @@ export default function ChallengeCompletion({ session, onRestart }: ChallengeCom
         {/* Dev Tools - Only in development */}
         {__DEV__ && (
           <View className="mt-4">
-            <Text className="text-sm text-gray-500 dark:text-gray-400 mb-2 text-center">
+            <Text className="text-base text-gray-500 dark:text-gray-400 mb-2 text-center">
               Development Tools
             </Text>
             <TouchableOpacity

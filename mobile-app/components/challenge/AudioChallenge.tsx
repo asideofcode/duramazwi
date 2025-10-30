@@ -206,7 +206,7 @@ export default function AudioChallenge({
             <Text className="text-red-600 dark:text-red-400 text-center font-medium mb-2">
               ⚠️ Audio failed to load
             </Text>
-            <Text className="text-red-500 dark:text-red-300 text-sm text-center">
+            <Text className="text-red-500 dark:text-red-300 text-base text-center">
               WebM format may not be supported. Try answering based on the options below.
             </Text>
           </View>

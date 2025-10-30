@@ -70,7 +70,7 @@ function RootLayoutNav() {
           <Stack.Screen 
             name="challenge" 
             options={{ 
-              headerShown: false, // No navbar - X button in component
+              headerShown: true, // Native navbar like browse page
             }} 
           />
           

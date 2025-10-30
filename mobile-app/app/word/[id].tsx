@@ -144,7 +144,7 @@ export default function WordDetailScreen() {
                     {(def as any).examples.map((example: any, exampleIndex: number) => (
                       <View key={exampleIndex} className="mb-4">
                         <View className="bg-blue-50 dark:bg-blue-900/20 p-5 rounded-lg border-l-4 border-blue-500">
-                          <Text className="text-sm font-semibold text-blue-700 dark:text-blue-300 mb-3 uppercase">
+                          <Text className="text-base font-semibold text-blue-700 dark:text-blue-300 mb-3 uppercase">
                             Example {exampleIndex + 1}
                           </Text>
                           {/* Shona Example */}
@@ -164,13 +164,13 @@ export default function WordDetailScreen() {
                 {/* Synonyms */}
                 {def.synonyms && def.synonyms.length > 0 && (
                   <View className="ml-6 mb-2">
-                    <Text className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase">
+                    <Text className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase">
                       Synonyms
                     </Text>
                     <View className="flex-row flex-wrap gap-2">
                       {def.synonyms.map((syn: string, idx: number) => (
                         <View key={idx} className="bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
-                          <Text className="text-sm text-gray-700 dark:text-gray-300">{syn}</Text>
+                          <Text className="text-base text-gray-700 dark:text-gray-300">{syn}</Text>
                         </View>
                       ))}
                     </View>
@@ -180,13 +180,13 @@ export default function WordDetailScreen() {
                 {/* Antonyms */}
                 {def.antonyms && def.antonyms.length > 0 && (
                   <View className="ml-6 mb-2">
-                    <Text className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase">
+                    <Text className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase">
                       Antonyms
                     </Text>
                     <View className="flex-row flex-wrap gap-2">
                       {def.antonyms.map((ant: string, idx: number) => (
                         <View key={idx} className="bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
-                          <Text className="text-sm text-gray-700 dark:text-gray-300">{ant}</Text>
+                          <Text className="text-base text-gray-700 dark:text-gray-300">{ant}</Text>
                         </View>
                       ))}
                     </View>

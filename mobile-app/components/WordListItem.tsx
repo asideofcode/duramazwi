@@ -37,7 +37,7 @@ export default function WordListItem({ wordDetail }: WordListItemProps) {
         </Text>
         {firstMeaning && (
           <View className="ml-3 bg-blue-100 dark:bg-blue-900 px-2 py-1 rounded-full">
-            <Text className="text-xs font-medium text-blue-700 dark:text-blue-300 uppercase">
+            <Text className="text-sm font-medium text-blue-700 dark:text-blue-300 uppercase">
               {firstMeaning.partOfSpeech}
             </Text>
           </View>
@@ -49,7 +49,7 @@ export default function WordListItem({ wordDetail }: WordListItemProps) {
             {firstDefinition.definition}
           </Text>
           {firstDefinition.examples?.[0] && (
-            <Text className="text-sm text-gray-500 dark:text-gray-400 italic">
+            <Text className="text-base text-gray-500 dark:text-gray-400 italic">
               "{firstDefinition.examples[0].shona}"
             </Text>
           )}

@@ -15,12 +15,12 @@ export default function ChallengeProgress({ currentQuestion, completed, total, s
     <View className="px-6 py-4 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
       {/* Progress Info */}
       <View className="flex-row items-center justify-between mb-3">
-        <Text className="text-sm font-medium text-gray-600 dark:text-gray-400">
+        <Text className="text-base font-medium text-gray-600 dark:text-gray-400">
           Question {currentQuestion} of {total}
         </Text>
         <View className="flex-row items-center">
           <Ionicons name="star" size={16} color="#f59e0b" />
-          <Text className="ml-1 text-sm font-semibold text-gray-900 dark:text-white">
+          <Text className="ml-1 text-base font-semibold text-gray-900 dark:text-white">
             {score} pts
           </Text>
         </View>
@@ -55,7 +55,7 @@ export default function ChallengeProgress({ currentQuestion, completed, total, s
                 <Ionicons name="checkmark" size={16} color="white" />
               ) : (
                 <Text
-                  className={`text-xs font-semibold ${
+                  className={`text-sm font-semibold ${
                     isCurrent
                       ? 'text-blue-600 dark:text-blue-400'
                       : 'text-gray-400 dark:text-gray-500'
