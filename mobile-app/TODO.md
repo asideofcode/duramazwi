@@ -388,6 +388,14 @@ Building a native mobile app (iOS & Android) for the Shona Dictionary using Expo
 - [x] Choose technology stack
 - [x] Create Expo app with tabs template
 - [x] Set up independent mobile-app directory
+- [x] Install and configure NativeWind (Tailwind CSS)
+- [x] Set up React Query for data fetching
+- [x] Create API service layer (dictionary, challenge)
+- [x] Build mobile API endpoints in Next.js
+- [x] Create Dictionary tab with search
+- [x] Create Word detail screen
+- [x] Create Challenge tab with multiple choice
+- [x] Add progress tracking and results screen
 
 ---
 
