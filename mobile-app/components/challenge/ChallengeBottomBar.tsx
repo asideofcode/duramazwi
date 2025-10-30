@@ -1,6 +1,7 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useEffect, useRef } from 'react';
 
 interface ChallengeBottomBarProps {
   hasAnswer: boolean;
@@ -20,6 +21,30 @@ export default function ChallengeBottomBar({
   onContinue,
 }: ChallengeBottomBarProps) {
   const insets = useSafeAreaInsets();
+  const feedbackHeight = useRef(new Animated.Value(0)).current;
+  const feedbackOpacity = useRef(new Animated.Value(0)).current;
+
+  // Animate feedback appearance
+  useEffect(() => {
+    if (hasChecked) {
+      Animated.parallel([
+        Animated.spring(feedbackHeight, {
+          toValue: 1,
+          useNativeDriver: false,
+          tension: 80,
+          friction: 10,
+        }),
+        Animated.timing(feedbackOpacity, {
+          toValue: 1,
+          duration: 200,
+          useNativeDriver: false, // Changed to false to match feedbackHeight
+        }),
+      ]).start();
+    } else {
+      feedbackHeight.setValue(0);
+      feedbackOpacity.setValue(0);
+    }
+  }, [hasChecked]);
   
   return (
     <View className="absolute bottom-0 left-0 right-0" style={{ bottom: -insets.bottom }}>
@@ -27,13 +52,22 @@ export default function ChallengeBottomBar({
       <View className={`${
         hasChecked
           ? isCorrect 
-            ? 'bg-green-50 dark:bg-green-900/20' 
-            : 'bg-red-50 dark:bg-red-900/20'
-          : 'bg-transparent'
+            ? 'bg-green-50 dark:bg-green-950' 
+            : 'bg-red-50 dark:bg-red-950'
+          : 'bg-white dark:bg-gray-900'
       }`}>
         {hasChecked && (
-          // Feedback Section - only shown when checked
-          <View className="px-6 pt-4 pb-3">
+          // Feedback Section - animated appearance
+          <Animated.View 
+            className="px-6 pt-4 pb-3"
+            style={{
+              opacity: feedbackOpacity,
+              maxHeight: feedbackHeight.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, 200],
+              }),
+            }}
+          >
             <View className="flex-row items-start mb-2">
               <Ionicons 
                 name={isCorrect ? 'checkmark-circle' : 'close-circle'}
@@ -58,7 +92,7 @@ export default function ChallengeBottomBar({
                 {explanation}
               </Text>
             )}
-          </View>
+          </Animated.View>
         )}
         
         {/* Button - always shown */}
@@ -74,12 +108,12 @@ export default function ChallengeBottomBar({
                   : 'bg-gray-300 dark:bg-gray-700'
               }`}
             >
-              <Text className={`font-bold text-lg ${
+              <Text className={`font-semibold text-lg ${
                 hasAnswer 
                   ? 'text-white' 
                   : 'text-gray-500 dark:text-gray-400'
               }`}>
-                CHECK
+                Check
               </Text>
             </TouchableOpacity>
           ) : (
@@ -92,8 +126,8 @@ export default function ChallengeBottomBar({
                   : 'bg-red-600'
               }`}
             >
-              <Text className="text-white font-bold text-lg">
-                CONTINUE
+              <Text className="text-white font-semibold text-lg">
+                Continue
               </Text>
             </TouchableOpacity>
           )}

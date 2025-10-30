@@ -24,6 +24,8 @@ export default function AudioChallenge({
   const [loadError, setLoadError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [playbackProgress, setPlaybackProgress] = useState(0);
+  const [lastKnownTime, setLastKnownTime] = useState(0);
+  const [lastUpdateTime, setLastUpdateTime] = useState(0);
 
   // Use the new expo-audio hook
   const player = useAudioPlayer(challenge.audioUrl || '');
@@ -72,28 +74,64 @@ export default function AudioChallenge({
     };
   }, [challenge.audioUrl]); // Remove player.duration from dependencies!
 
-  // Track playback progress
+  // Listen to playback status updates from the player
+  useEffect(() => {
+    const subscription = player.addListener('playbackStatusUpdate', (status) => {
+      if (status.playing && status.duration > 0) {
+        // Smoothly update position - don't jump if interpolation is close
+        const currentEstimate = lastKnownTime + ((Date.now() - lastUpdateTime) / 1000);
+        const actualTime = status.currentTime;
+        const drift = Math.abs(actualTime - currentEstimate);
+        
+        // Only hard update if drift is significant (> 0.3 seconds)
+        // Otherwise let interpolation continue smoothly
+        if (drift > 0.3 || lastKnownTime === 0) {
+          setLastKnownTime(actualTime);
+          setLastUpdateTime(Date.now());
+        }
+      } else if (!status.playing && playbackProgress > 0) {
+        // Reset progress when stopped
+        setTimeout(() => {
+          setPlaybackProgress(0);
+          setLastKnownTime(0);
+        }, 100);
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [player, playbackProgress, lastKnownTime, lastUpdateTime]);
+
+  // Smooth animation loop that interpolates between status updates
   useEffect(() => {
     if (!player.playing || player.duration === 0) {
-      // Reset progress when not playing
-      if (!player.playing && playbackProgress > 0) {
-        setPlaybackProgress(0);
-      }
       return;
     }
 
-    const interval = setInterval(() => {
-      const progress = (player.currentTime / player.duration) * 100;
-      setPlaybackProgress(progress);
+    let animationFrameId: number;
 
-      // Reset when playback finishes
-      if (progress >= 99) {
-        setPlaybackProgress(0);
+    const animate = () => {
+      const now = Date.now();
+      const timeSinceUpdate = (now - lastUpdateTime) / 1000; // Convert to seconds
+      const estimatedTime = lastKnownTime + timeSinceUpdate;
+      const progress = (estimatedTime / player.duration) * 100;
+
+      setPlaybackProgress(Math.min(progress, 100));
+
+      if (progress < 100 && player.playing) {
+        animationFrameId = requestAnimationFrame(animate);
       }
-    }, 50); // Update every 50ms for smooth animation
+    };
 
-    return () => clearInterval(interval);
-  }, [player.playing, player.currentTime, player.duration, playbackProgress]);
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
+  }, [player.playing, player.duration, lastKnownTime, lastUpdateTime]);
 
   const handlePlay = () => {
     try {
@@ -251,12 +289,15 @@ export default function AudioChallenge({
                   {option}
                 </Text>
                 
-                {showCorrect && (
-                  <Ionicons name="checkmark-circle" size={24} color="#10b981" />
-                )}
-                {showIncorrect && (
-                  <Ionicons name="close-circle" size={24} color="#ef4444" />
-                )}
+                {/* Reserve space for icon to prevent layout shift */}
+                <View style={{ width: 24, height: 24, marginLeft: 12 }}>
+                  {showCorrect && (
+                    <Ionicons name="checkmark-circle" size={24} color="#10b981" />
+                  )}
+                  {showIncorrect && (
+                    <Ionicons name="close-circle" size={24} color="#ef4444" />
+                  )}
+                </View>
               </View>
             </TouchableOpacity>
           );

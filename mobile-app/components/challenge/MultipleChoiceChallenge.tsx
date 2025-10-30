@@ -75,13 +75,15 @@ export default function MultipleChoiceChallenge({
                   {option}
                 </Text>
                 
-                {/* Feedback Icons */}
-                {showCorrect && (
-                  <Ionicons name="checkmark-circle" size={24} color="#10b981" />
-                )}
-                {showIncorrect && (
-                  <Ionicons name="close-circle" size={24} color="#ef4444" />
-                )}
+                {/* Reserve space for icon to prevent layout shift */}
+                <View style={{ width: 24, height: 24, marginLeft: 12 }}>
+                  {showCorrect && (
+                    <Ionicons name="checkmark-circle" size={24} color="#10b981" />
+                  )}
+                  {showIncorrect && (
+                    <Ionicons name="close-circle" size={24} color="#ef4444" />
+                  )}
+                </View>
               </View>
             </TouchableOpacity>
           );
