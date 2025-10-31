@@ -9,6 +9,12 @@ interface ChallengeListItemProps {
   onMoveDown: () => void;
   onPreview: () => void;
   onRemove: () => void;
+  onDragStart?: (index: number) => void;
+  onDragOver?: (e: React.DragEvent, index: number) => void;
+  onDrop?: (index: number) => void;
+  onDragEnd?: () => void;
+  isDragging?: boolean;
+  isDragOver?: boolean;
 }
 
 export default function ChallengeListItem({
@@ -18,10 +24,28 @@ export default function ChallengeListItem({
   onMoveUp,
   onMoveDown,
   onPreview,
-  onRemove
+  onRemove,
+  onDragStart,
+  onDragOver,
+  onDrop,
+  onDragEnd,
+  isDragging = false,
+  isDragOver = false
 }: ChallengeListItemProps) {
   return (
-    <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:border-blue-500 dark:hover:border-blue-400 transition-colors">
+    <div 
+      draggable={!!onDragStart}
+      onDragStart={() => onDragStart?.(index)}
+      onDragOver={(e) => onDragOver?.(e, index)}
+      onDrop={() => onDrop?.(index)}
+      onDragEnd={onDragEnd}
+      className={`border border-gray-200 dark:border-gray-600 rounded-lg p-4 transition-all ${
+        isDragging ? 'opacity-50 scale-95' : ''
+      } ${
+        isDragOver ? 'border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20' : 'hover:border-blue-500 dark:hover:border-blue-400'
+      } ${
+        onDragStart ? 'cursor-move' : ''
+      }`}>
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <div className="flex items-center space-x-3 mb-2">
@@ -56,6 +80,15 @@ export default function ChallengeListItem({
         </div>
         
         <div className="flex items-center space-x-2 ml-4">
+          {/* Drag handle */}
+          {onDragStart && (
+            <div className="flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 cursor-move" title="Drag to reorder">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M7 2a2 2 0 10.001 4.001A2 2 0 007 2zm0 6a2 2 0 10.001 4.001A2 2 0 007 8zm0 6a2 2 0 10.001 4.001A2 2 0 007 14zm6-8a2 2 0 10-.001-4.001A2 2 0 0013 6zm0 2a2 2 0 10.001 4.001A2 2 0 0013 8zm0 6a2 2 0 10.001 4.001A2 2 0 0013 14z" />
+              </svg>
+            </div>
+          )}
+          
           {/* Reorder buttons */}
           <div className="flex flex-col space-y-1">
             <button

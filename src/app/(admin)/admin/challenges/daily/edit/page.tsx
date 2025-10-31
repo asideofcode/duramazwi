@@ -19,10 +19,13 @@ function DailyChallengeEditor() {
   const [allChallenges, setAllChallenges] = useState<Challenge[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
   useEffect(() => {
     fetchDailyChallenge();
@@ -134,7 +137,7 @@ function DailyChallengeEditor() {
     };
 
     await saveDailyChallenge(updatedDailyChallenge);
-    setShowAddModal(false);
+    // Don't close modal - let user continue selecting
   };
 
   const handleRemoveChallenge = async (challengeId: string) => {
@@ -166,6 +169,29 @@ function DailyChallengeEditor() {
     await saveDailyChallenge(updatedDailyChallenge);
   };
 
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedIndex !== null && draggedIndex !== index) {
+      setDragOverIndex(index);
+    }
+  };
+
+  const handleDrop = (dropIndex: number) => {
+    if (draggedIndex === null || draggedIndex === dropIndex) return;
+    handleReorderChallenge(draggedIndex, dropIndex);
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
   const saveDailyChallenge = async (updatedDailyChallenge: DailyChallenge) => {
     try {
       setSaving(true);
@@ -193,6 +219,10 @@ function DailyChallengeEditor() {
         setDailyChallenge(updatedDailyChallenge);
         setSuccess('Daily challenge updated successfully!');
         setTimeout(() => setSuccess(null), 3000);
+        
+        // Show saved indicator
+        setSaved(true);
+        setTimeout(() => setSaved(false), 2000);
       } else {
         setError('Failed to save daily challenge: ' + (result.error || result.message));
       }
@@ -395,6 +425,12 @@ function DailyChallengeEditor() {
                 onMoveDown={() => handleReorderChallenge(index, index + 1)}
                 onPreview={() => setPreviewIndex(index)}
                 onRemove={() => handleRemoveChallenge(challenge.id)}
+                onDragStart={handleDragStart}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+                onDragEnd={handleDragEnd}
+                isDragging={draggedIndex === index}
+                isDragOver={dragOverIndex === index}
               />
             ))}
           </div>
@@ -407,6 +443,8 @@ function DailyChallengeEditor() {
           availableChallenges={getAvailableChallenges()}
           onSelect={handleAddChallenge}
           onClose={() => setShowAddModal(false)}
+          saving={saving}
+          saved={saved}
         />
       )}
 
@@ -417,14 +455,6 @@ function DailyChallengeEditor() {
           challengeNumber={previewIndex + 1}
           onClose={() => setPreviewIndex(null)}
         />
-      )}
-
-      {/* Save indicator */}
-      {saving && (
-        <div className="fixed bottom-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg flex items-center space-x-2">
-          <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
-          <span>Saving...</span>
-        </div>
       )}
     </div>
   );
