@@ -5,7 +5,8 @@ import PlusIcon from "./plus.icon";
 import SearchIcon from "./search.icon";
 import ToggleIcon from "./toggle.icon";
 import SpaceInvaderIcon from "./space-invader.icon";
-type Icons = "Book" | "Toggle" | "Search" | "LightDark" | "Play" | "Plus" | "SpaceInvader";
+import TrophyIcon from "./trophy.icon";
+type Icons = "Book" | "Toggle" | "Search" | "LightDark" | "Play" | "Plus" | "SpaceInvader" | "Trophy";
 
 export type SvgIconSize =
   | 1
@@ -111,6 +112,8 @@ function getSVGIcon(
       );
     case "SpaceInvader":
       return <SpaceInvaderIcon size={size} className={className} />;
+    case "Trophy":
+      return <TrophyIcon size={size} className={className} />;
 
     default:
       return <></>;
