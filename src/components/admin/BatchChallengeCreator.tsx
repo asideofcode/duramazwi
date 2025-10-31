@@ -380,7 +380,15 @@ export default function BatchChallengeCreator({ isOpen, onClose, onChallengesCre
                               : challenge.correctAnswer}
                           </span>
                         </div>
-                        {challenge.options && challenge.options.length > 0 && (
+                        {challenge.type === 'translation_builder' && challenge.distractors && challenge.distractors.length > 0 && (
+                          <div>
+                            <strong className="text-gray-700 dark:text-gray-300">Distractors:</strong>
+                            <span className="ml-2 text-gray-600 dark:text-gray-400">
+                              {challenge.distractors.join(', ')}
+                            </span>
+                          </div>
+                        )}
+                        {(challenge.type === 'multiple_choice' || challenge.type === 'audio_recognition') && challenge.options && challenge.options.length > 0 && (
                           <div>
                             <strong className="text-gray-700 dark:text-gray-300">Options:</strong>
                             <span className="ml-2 text-gray-600 dark:text-gray-400">

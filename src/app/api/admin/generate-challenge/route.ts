@@ -2,24 +2,47 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { generateStructuredResponse, generateText } from '@/lib/openai';
 
-// Schema for full challenge generation from text blob
-const ChallengeGenerationSchema = z.object({
-  type: z.enum(['multiple_choice', 'audio_recognition', 'translation_builder']).describe("The most appropriate challenge type for this content"),
+// Base schema with common fields
+const BaseChallengeSchema = z.object({
   difficulty: z.enum(['beginner', 'intermediate', 'advanced']).describe("Difficulty level based on language complexity"),
   points: z.number().min(1).max(100).describe("Points to award (1-100, typically 10-50)"),
   question: z.string().describe("Clear, engaging question text"),
-  correctAnswer: z.union([
-    z.string(),
-    z.array(z.string())
-  ]).describe("Correct answer - string for multiple choice/audio, array for translation builder"),
-  options: z.array(z.string()).optional().describe("Answer options for multiple choice and audio recognition"),
   explanation: z.string().describe("Brief explanation of the answer and concept"),
   labels: z.array(z.string()).optional().describe("Labels/tags for grouping this challenge")
 });
 
+// Multiple Choice Challenge Schema
+const MultipleChoiceChallengeSchema = BaseChallengeSchema.extend({
+  type: z.literal('multiple_choice').describe("Multiple choice challenge type"),
+  correctAnswer: z.string().describe("The correct answer as a string"),
+  options: z.array(z.string()).min(2).max(6).describe("Array of answer options including the correct answer")
+});
+
+// Audio Recognition Challenge Schema
+const AudioRecognitionChallengeSchema = BaseChallengeSchema.extend({
+  type: z.literal('audio_recognition').describe("Audio recognition challenge type"),
+  correctAnswer: z.string().describe("The correct answer as a string"),
+  options: z.array(z.string()).min(2).max(6).describe("Array of answer options including the correct answer"),
+  audioUrl: z.string().optional().describe("URL to the audio file (optional, can be added later)")
+});
+
+// Translation Builder Challenge Schema
+const TranslationBuilderChallengeSchema = BaseChallengeSchema.extend({
+  type: z.literal('translation_builder').describe("Translation builder challenge type"),
+  correctAnswer: z.array(z.string()).min(1).describe("Array of words in the correct order"),
+  distractors: z.array(z.string()).optional().describe("Array of wrong words to make the challenge harder")
+});
+
+// Discriminated union of all challenge types
+const ChallengeGenerationSchema = z.discriminatedUnion('type', [
+  MultipleChoiceChallengeSchema,
+  AudioRecognitionChallengeSchema,
+  TranslationBuilderChallengeSchema
+]);
+
 // Schema for batch challenge generation
 const BatchChallengeGenerationSchema = z.object({
-  challenges: z.array(ChallengeGenerationSchema).min(1).max(50).describe("Array of generated challenges")
+  challenges: z.array(ChallengeGenerationSchema).min(1).max(50).describe("Array of generated challenges, each adhering to their specific type schema")
 });
 
 // Schema for generating answer options
@@ -86,12 +109,14 @@ Your task is to analyze the provided text and create an appropriate language lea
 
 For translation_builder challenges:
 - correctAnswer should be an array of words in the correct order
-- options should include all words needed plus some distractors
+- distractors should be an array of wrong words to make the challenge harder
+- Do NOT use the 'options' field for translation_builder
 - Focus on sentence construction and word order
 
 For multiple_choice and audio_recognition:
 - correctAnswer should be a single string
 - options should be an array of 3-5 choices including the correct answer
+- Do NOT use the 'distractors' field for these types
 - Include plausible but incorrect alternatives`;
 
   const userPrompt = `Create a Shona language learning challenge based on this content:
@@ -138,12 +163,14 @@ Your task is to analyze the provided text and create approximately ${targetQuant
 
 For translation_builder challenges:
 - correctAnswer should be an array of words in the correct order
-- options should include all words needed plus some distractors
+- distractors should be an array of wrong words to make the challenge harder
+- Do NOT use the 'options' field for translation_builder
 - Focus on sentence construction and word order
 
 For multiple_choice and audio_recognition:
 - correctAnswer should be a single string
 - options should be an array of 3-5 choices including the correct answer
+- Do NOT use the 'distractors' field for these types
 - Include plausible but incorrect alternatives
 
 Include appropriate labels for grouping related challenges.`;
