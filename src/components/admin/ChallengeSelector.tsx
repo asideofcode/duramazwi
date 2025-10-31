@@ -7,14 +7,17 @@ interface ChallengeSelectorProps {
   availableChallenges: Challenge[];
   onSelect: (challengeId: string) => void;
   onClose: () => void;
+  saving?: boolean;
+  saved?: boolean;
 }
 
-export default function ChallengeSelector({ availableChallenges, onSelect, onClose }: ChallengeSelectorProps) {
+export default function ChallengeSelector({ availableChallenges, onSelect, onClose, saving = false, saved = false }: ChallengeSelectorProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState<string>('all');
   const [filterDifficulty, setFilterDifficulty] = useState<string>('all');
   const [filterLabel, setFilterLabel] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState(1);
+  const [addedChallenges, setAddedChallenges] = useState<Set<string>>(new Set());
   const itemsPerPage = 10;
 
   // Get all unique labels
@@ -40,10 +43,17 @@ export default function ChallengeSelector({ availableChallenges, onSelect, onClo
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedChallenges = filteredChallenges.slice(startIndex, startIndex + itemsPerPage);
 
-  // Reset to page 1 when filters change
+  // Reset to page 1 when filters change, and clamp to valid page range
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, filterType, filterDifficulty, filterLabel]);
+
+  // Clamp current page to valid range when total pages changes
+  useEffect(() => {
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(totalPages);
+    }
+  }, [totalPages, currentPage]);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-[9999] overflow-y-auto" onClick={(e) => {
@@ -53,9 +63,25 @@ export default function ChallengeSelector({ availableChallenges, onSelect, onClo
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-5xl w-full my-8">
           {/* Header */}
           <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-              Select Challenge to Add
-            </h2>
+            <div className="flex items-center space-x-3">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                Select Challenge to Add
+              </h2>
+              {saving && (
+                <div className="flex items-center space-x-2 text-blue-600 dark:text-blue-400">
+                  <div className="animate-spin h-4 w-4 border-2 border-blue-600 dark:border-blue-400 border-t-transparent rounded-full"></div>
+                  <span className="text-sm">Saving...</span>
+                </div>
+              )}
+              {!saving && saved && (
+                <div className="flex items-center space-x-2 text-green-600 dark:text-green-400">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-sm">Saved</span>
+                </div>
+              )}
+            </div>
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl"
@@ -182,10 +208,26 @@ export default function ChallengeSelector({ availableChallenges, onSelect, onClo
                         )}
                       </div>
                       <button
-                        onClick={() => onSelect(challenge.id)}
-                        className="ml-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 whitespace-nowrap"
+                        onClick={() => {
+                          onSelect(challenge.id);
+                          setAddedChallenges(prev => new Set(prev).add(challenge.id));
+                          // Clear the feedback after 2 seconds
+                          setTimeout(() => {
+                            setAddedChallenges(prev => {
+                              const next = new Set(prev);
+                              next.delete(challenge.id);
+                              return next;
+                            });
+                          }, 2000);
+                        }}
+                        disabled={addedChallenges.has(challenge.id)}
+                        className={`ml-4 px-4 py-2 rounded whitespace-nowrap transition-colors ${
+                          addedChallenges.has(challenge.id)
+                            ? 'bg-gray-400 text-white cursor-not-allowed'
+                            : 'bg-green-600 text-white hover:bg-green-700'
+                        }`}
                       >
-                        Add
+                        {addedChallenges.has(challenge.id) ? '✓ Added' : 'Add'}
                       </button>
                     </div>
                   </div>
