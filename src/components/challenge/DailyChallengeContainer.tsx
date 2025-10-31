@@ -310,9 +310,13 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
               </div>
             </div>
             
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
               Ready for Today's Challenge?
             </h2>
+            
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              Test your Shona skills with today's mix of questions. Each challenge helps you improve your vocabulary, pronunciation, and comprehension. 🎯
+            </p>
 
             {/* Challenge Stats */}
             <div className="grid grid-cols-3 gap-4 mb-8">

@@ -151,6 +151,7 @@ export default function Appbar() {
             {navItems.map((item) => {
               const isActive = pathname === item.href || 
                 (item.href === "/random" && pathname.startsWith("/word/"));
+              const isChallenge = item.href === "/challenge/daily";
               
               return (
                 <Link
@@ -160,8 +161,12 @@ export default function Appbar() {
                   aria-label={item.title}
                   className={`px-4 py-2 text-sm font-medium transition-colors ${
                     isActive
-                      ? "text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400"
-                      : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md"
+                      ? isChallenge
+                        ? "text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400"
+                        : "text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400"
+                      : isChallenge
+                        ? "text-purple-700 dark:text-purple-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md"
+                        : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md"
                   }`}
                 >
                   {item.label}
@@ -289,6 +294,7 @@ export default function Appbar() {
               {navItems.map((item) => {
                 const isActive = pathname === item.href || 
                   (item.href === "/random" && pathname.startsWith("/word/"));
+                const isChallenge = item.href === "/challenge/daily";
                 
                 return (
                   <Link
@@ -299,8 +305,12 @@ export default function Appbar() {
                     aria-label={item.title}
                     className={`flex items-center space-x-3 px-4 py-3 text-sm font-medium transition-colors ${
                       isActive
-                        ? "text-blue-600 dark:text-blue-400 border-l-4 border-blue-600 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20"
-                        : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md"
+                        ? isChallenge
+                          ? "text-purple-600 dark:text-purple-400 border-l-4 border-purple-600 dark:border-purple-400 bg-purple-50 dark:bg-purple-900/20"
+                          : "text-blue-600 dark:text-blue-400 border-l-4 border-blue-600 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20"
+                        : isChallenge
+                          ? "text-purple-700 dark:text-purple-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md"
+                          : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md"
                     }`}
                   >
                     <SvgIcon

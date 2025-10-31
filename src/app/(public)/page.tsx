@@ -152,8 +152,8 @@ export default async function HomePage({ searchParams }: { searchParams: { q?: s
             </Link>
             <span className="text-gray-400 text-sm">•</span>
             <Link 
-              href="/challenge" 
-              className="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 underline transition-colors duration-200 px-2 py-1 font-semibold"
+              href="/challenge/daily" 
+              className="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 underline transition-colors duration-200 px-2 py-1"
               title="Take the daily challenge"
               aria-label="Take the daily challenge"
             >
