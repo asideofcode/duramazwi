@@ -13,7 +13,7 @@ interface TranslationChallengeProps {
 export default function TranslationChallenge({ challenge, onComplete, onAnswerChecked }: TranslationChallengeProps) {
   // Combine correct answer + distractors and shuffle them
   const correctAnswer = Array.isArray(challenge.correctAnswer) ? challenge.correctAnswer : [challenge.correctAnswer];
-  const distractors = challenge.distractors || challenge.options || []; // Support both old and new field names
+  const distractors = challenge.distractors || []; // Only use distractors field
   const allWords = [...correctAnswer, ...distractors];
   
   // Shuffle the words (Fisher-Yates algorithm)

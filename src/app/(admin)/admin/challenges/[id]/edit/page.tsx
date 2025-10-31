@@ -137,6 +137,35 @@ export default function EditChallengePage() {
     setFormData({ ...formData, options: allOptions });
   };
 
+  const handleTypeChange = (newType: string) => {
+    // Preserve common fields, reset type-specific fields
+    const baseData = {
+      type: newType as any,
+      difficulty: formData.difficulty,
+      points: formData.points,
+      question: formData.question,
+      explanation: formData.explanation,
+      labels: formData.labels,
+      audioUrl: formData.audioUrl
+    };
+
+    // Set type-specific defaults
+    if (newType === 'multiple_choice' || newType === 'audio_recognition') {
+      setFormData({
+        ...baseData,
+        options: formData.options || ['', '', '', ''],
+        correctAnswer: Array.isArray(formData.correctAnswer) ? '' : formData.correctAnswer || '',
+        audioUrl: newType === 'audio_recognition' ? baseData.audioUrl : ''
+      });
+    } else if (newType === 'translation_builder') {
+      setFormData({
+        ...baseData,
+        correctAnswer: Array.isArray(formData.correctAnswer) ? formData.correctAnswer : [],
+        distractors: formData.distractors || []
+      });
+    }
+  };
+
   const addLabel = (label: string) => {
     if (label.trim() && !(formData.labels || []).includes(label.trim())) {
       setFormData({ 
@@ -220,7 +249,7 @@ export default function EditChallengePage() {
               </label>
               <select
                 value={formData.type}
-                onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
+                onChange={(e) => handleTypeChange(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
                 required
               >
