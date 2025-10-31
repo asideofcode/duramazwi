@@ -83,8 +83,17 @@ async function getTodaysChallenge(dateOverride?: string, timezone?: string): Pro
       return null;
     }
     
+    // Preserve the order from challengeIds
+    const challengeMap = new Map(
+      challenges.map(doc => [doc._id.toString(), doc])
+    );
+    
+    const orderedChallenges = dailyChallenge.challengeIds
+      .map((id: string) => challengeMap.get(id))
+      .filter((doc: any) => doc !== undefined);
+    
     // Map and shuffle options/distractors for each challenge
-    const shuffledChallenges: Challenge[] = challenges.map(dbChallenge => ({
+    const shuffledChallenges: Challenge[] = orderedChallenges.map(dbChallenge => ({
       id: dbChallenge._id.toString(),
       type: dbChallenge.type,
       question: dbChallenge.question,

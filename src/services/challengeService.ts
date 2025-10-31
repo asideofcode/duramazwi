@@ -142,11 +142,19 @@ export class ChallengeService {
 
       if (challenges.length === 0) continue;
 
-      const challengeObjects = challenges.map(doc => ({
-        ...doc,
-        id: doc._id.toString(),
-        _id: undefined
-      })) as Challenge[];
+      // Preserve the order from challengeIds
+      const challengeMap = new Map(
+        challenges.map(doc => [doc._id.toString(), doc])
+      );
+      
+      const challengeObjects = assignment.challengeIds
+        .map((id: string) => challengeMap.get(id))
+        .filter((doc): doc is typeof challenges[0] => doc !== undefined)
+        .map(doc => ({
+          ...doc,
+          id: doc._id.toString(),
+          _id: undefined
+        })) as Challenge[];
 
       const totalPoints = challengeObjects.reduce((sum, c) => sum + c.points, 0);
       const estimatedTime = challengeObjects.length * 2;
@@ -187,12 +195,21 @@ export class ChallengeService {
       { upsert: true }
     );
 
-    // Return the daily challenge
-    const challengeObjects = validChallenges.map(doc => ({
-      ...doc,
-      id: doc._id.toString(),
-      _id: undefined
-    })) as Challenge[];
+    // Return the daily challenge with challenges in the correct order
+    // Create a map for quick lookup
+    const challengeMap = new Map(
+      validChallenges.map(doc => [doc._id.toString(), doc])
+    );
+    
+    // Map challengeIds to challenge objects in the correct order
+    const challengeObjects = challengeIds
+      .map(id => challengeMap.get(id))
+      .filter((doc): doc is typeof validChallenges[0] => doc !== undefined)
+      .map(doc => ({
+        ...doc,
+        id: doc._id.toString(),
+        _id: undefined
+      })) as Challenge[];
 
     const totalPoints = challengeObjects.reduce((sum, c) => sum + c.points, 0);
     const estimatedTime = challengeObjects.length * 2;
