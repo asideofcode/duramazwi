@@ -13,7 +13,12 @@ export async function GET(request: NextRequest) {
     const totalMeanings = parseInt(searchParams.get('totalMeanings') || '1');
     
     // Format word display
-    const displayWord = hasBothForms ? `${word} / ku-${word}` : word;
+    let displayWord = word;
+    if (hasBothForms) {
+      displayWord = `${word} / ku-${word}`;
+    } else if (partOfSpeech.toLowerCase() === 'verb') {
+      displayWord = `ku-${word}`;
+    }
     
     // Truncate definition if too long
     const maxLength = 120;
@@ -25,7 +30,7 @@ export async function GET(request: NextRequest) {
     const getColors = (pos: string) => {
       const colors: { [key: string]: { bg: string; text: string; badge: string } } = {
         'noun': { bg: '#1e40af', text: '#93c5fd', badge: '#3b82f6' },
-        'verb': { bg: '#15803d', text: '#86efac', badge: '#22c55e' },
+        'verb': { bg: '#15803d', text: '#86efac', badge: '#16a34a' }, // Darker green for better contrast
         'adjective': { bg: '#7e22ce', text: '#d8b4fe', badge: '#a855f7' },
         'adverb': { bg: '#ca8a04', text: '#fde047', badge: '#eab308' },
       };
@@ -60,7 +65,7 @@ export async function GET(request: NextRequest) {
             {/* Main Content */}
             <div tw="flex flex-col flex-1 justify-center">
               {/* Part of Speech Badge and Multiple Meanings Indicator */}
-              <div tw="flex items-center gap-4 mb-6">
+              <div tw="flex items-center mb-6" style={{ gap: '16px' }}>
                 <div 
                   tw="flex text-2xl px-6 py-3 rounded-full font-semibold"
                   style={{ 

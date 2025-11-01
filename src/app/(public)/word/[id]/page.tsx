@@ -85,7 +85,7 @@ export async function generateMetadata({
       ogImageParams.set('totalMeanings', totalMeanings.toString());
     }
     
-    const ogImageUrl = `https://asideofcode-dev.ngrok.app/api/og/word?${ogImageParams.toString()}`;
+    const ogImageUrl = `https://shonadictionary.com/api/og/word?${ogImageParams.toString()}`;
     
     return createMetadata(
       {
