@@ -13,6 +13,8 @@ import SoundControls from '../SoundControls';
 import { useSoundEffects } from '@/hooks/useSoundEffects';
 import ImageWithPlaceholder from '@/components/ImageWithPlaceholder';
 import { useImagePreload } from '@/hooks/useImagePreload';
+import SocialLinks from '@/components/SocialLinks';
+import ShareChallenge from '@/components/ShareChallenge';
 
 interface DailyChallengeContainerProps {
   challenge: DailyChallenge;
@@ -261,12 +263,15 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
     <div className="text-center mb-8">
       <div className="relative flex items-center justify-center mb-4">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Daily Challenge
+          Daily Shona Challenge
         </h1>
-        <div className="absolute right-0">
+        <div className="absolute right-0 flex items-center gap-3">
+          <ShareChallenge date={challenge.date} />
           <SoundControls compact={true} showLabel={false} />
         </div>
       </div>
+      
+      {/* Simple Date Display */}
       <p className="text-gray-600 dark:text-gray-400">
         {new Date(challenge.date).toLocaleDateString('en-US', { 
           weekday: 'long', 
