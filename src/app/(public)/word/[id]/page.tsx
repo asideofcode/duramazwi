@@ -103,6 +103,7 @@ export async function generateMetadata({
               width: 1200,
               height: 630,
               alt: `Meaning of ${formattedWord} in Shona`,
+              // type: 'image/png',
             }
           ],
         },

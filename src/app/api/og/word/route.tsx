@@ -20,8 +20,8 @@ export async function GET(request: NextRequest) {
       displayWord = `ku-${word}`;
     }
     
-    // Truncate definition if too long
-    const maxLength = 120;
+    // Truncate definition if too long to prevent overlap
+    const maxLength = 60;
     const displayDefinition = definition.length > maxLength 
       ? definition.substring(0, maxLength) + '...'
       : definition;
@@ -107,10 +107,10 @@ export async function GET(request: NextRequest) {
 
               {/* Definition */}
               <div 
-                tw="flex text-5xl leading-tight"
+                tw="flex text-4xl leading-snug"
                 style={{ 
                   opacity: 0.95,
-                  maxWidth: '90%'
+                  maxWidth: '85%'
                 }}
               >
                 {displayDefinition}
@@ -118,7 +118,7 @@ export async function GET(request: NextRequest) {
             </div>
 
             {/* Footer */}
-            <div tw="flex justify-between items-end">
+            <div tw="flex justify-between items-end" style={{ marginTop: '60px' }}>
               <div tw="flex flex-col">
                 <div tw="flex text-3xl" style={{ opacity: 0.7 }}>
                   Learn more at
@@ -143,7 +143,9 @@ export async function GET(request: NextRequest) {
     );
 
     imageResponse.headers.set('Content-Type', 'image/png');
-    imageResponse.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+    // Some browsers also check this header for download naming
+    imageResponse.headers.set('X-Content-Type-Options', 'nosniff');
+    // imageResponse.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
     
     return imageResponse;
   } catch (e) {
