@@ -14,23 +14,23 @@ export const dynamic = "force-dynamic"; // Need dynamic for search params
 
 // Helper function to format word display for metadata (same as in word page)
 const formatWordForMetadata = (word: string, meanings: Meaning[]) => {
-  const hasVerbMeaning = meanings.some(meaning => 
+  const hasVerbMeaning = meanings.some(meaning =>
     meaning.partOfSpeech && meaning.partOfSpeech.toLowerCase() === 'verb'
   );
-  const hasNonVerbMeaning = meanings.some(meaning => 
+  const hasNonVerbMeaning = meanings.some(meaning =>
     meaning.partOfSpeech && meaning.partOfSpeech.toLowerCase() !== 'verb'
   );
-  
+
   // If it has both verb and non-verb meanings, show both forms
   if (hasVerbMeaning && hasNonVerbMeaning) {
     return `${word} / ku-${word}`;
   }
-  
+
   // If it's only a verb, show ku- form
   if (hasVerbMeaning && !hasNonVerbMeaning) {
     return `ku-${word}`;
   }
-  
+
   // Otherwise just the base word
   return word;
 };
@@ -38,15 +38,15 @@ const formatWordForMetadata = (word: string, meanings: Meaning[]) => {
 export async function generateMetadata({ searchParams }: { searchParams: { q?: string } }): Promise<Metadata> {
   const { q } = await searchParams;
   const searchQuery = q || "";
-  
+
   if (searchQuery) {
     // Check if we have results for this search
     const searchResults = dataService.search(searchQuery);
-    
+
     if (searchResults && searchResults.length > 0) {
       const firstResult = searchResults[0];
       const formattedWord = formatWordForMetadata(firstResult.word, firstResult.meanings);
-      
+
       return createMetadata({
         title: `Search results for "${searchQuery}" - ${formattedWord} | Shona Dictionary`,
         description: `Found ${searchResults.length} result${searchResults.length > 1 ? 's' : ''} for "${searchQuery}". Including ${formattedWord} and more Shona words.`,
@@ -60,7 +60,7 @@ export async function generateMetadata({ searchParams }: { searchParams: { q?: s
       });
     }
   }
-  
+
   // Default homepage metadata
   return createMetadata({});
 }
@@ -68,7 +68,7 @@ export async function generateMetadata({ searchParams }: { searchParams: { q?: s
 export default async function HomePage({ searchParams }: { searchParams: { q?: string } }) {
   const { q } = await searchParams; // Extract query parameter
   const searchQuery = q || ""; // Extract query parameter
-  
+
   // Development logging only
   if (process.env.NODE_ENV === 'development' && searchQuery) {
     console.log("HomePage searchQuery:", searchQuery);
@@ -78,55 +78,50 @@ export default async function HomePage({ searchParams }: { searchParams: { q?: s
     <div>
       <WebsiteStructuredData />
       {/* Animated Header - transitions between full hero and compact search */}
-      <header className={`text-center transition-all duration-500 ease-in-out ${
-        searchQuery 
-          ? 'py-0 mb-0' 
+      <header className={`text-center transition-all duration-500 ease-in-out ${searchQuery
+          ? 'py-0 mb-0'
           : 'py-12 mb-0'
-      }`}>
-        {/* Title - fades out in search mode */}
-        <div className={`transition-all duration-500 ease-in-out ${
-          searchQuery 
-            ? 'hidden max-h-0 overflow-hidden' 
-            : 'opacity-100 max-h-20 mb-4'
         }`}>
+        {/* Title - fades out in search mode */}
+        <div className={`transition-all duration-500 ease-in-out ${searchQuery
+            ? 'hidden max-h-0 overflow-hidden'
+            : 'opacity-100 max-h-20 mb-4'
+          }`}>
           <h1 className="text-5xl font-bold text-blue-600 dark:text-blue-500 transition-all duration-500">
             Shona Dictionary
           </h1>
         </div>
 
         {/* Subtitle and Description - fade out when searching */}
-        <div className={`transition-all duration-500 ease-in-out ${
-          searchQuery 
-            ? 'hidden max-h-0 overflow-hidden' 
+        <div className={`transition-all duration-500 ease-in-out ${searchQuery
+            ? 'hidden max-h-0 overflow-hidden'
             : 'opacity-100 max-h-96'
-        }`}>
+          }`}>
           <p className="text-xl text-gray-600 dark:text-gray-400 mb-2 transition-all duration-300">
             Duramazwi
           </p>
           <p className="text-xl text-gray-600 dark:text-gray-400 mb-4 max-w-2xl mx-auto leading-relaxed transition-all duration-300">
-            Explore the meanings of Shona words or find Shona equivalents for English words. 
+            Explore the meanings of Shona words or find Shona equivalents for English words.
             Your comprehensive guide to the Shona language.
           </p>
         </div>
-        
+
         {/* Search Bar - animates width and positioning */}
-        <div className={`mx-auto transition-all duration-500 ease-in-out ${
-          searchQuery ? 'w-full mb-0' : 'max-w-2xl mb-6'
-        }`}>
+        <div className={`mx-auto transition-all duration-500 ease-in-out ${searchQuery ? 'w-full mb-0' : 'max-w-2xl mb-6'
+          }`}>
           <div id="search-bar">
             <SimpleSearchBar initialQuery={searchQuery} />
           </div>
         </div>
-        
+
         {/* Quick Actions - fade out when searching */}
-        <div className={`transition-all duration-500 ease-in-out ${
-          searchQuery 
-            ? 'hidden max-h-0 overflow-hidden' 
+        <div className={`transition-all duration-500 ease-in-out ${searchQuery
+            ? 'hidden max-h-0 overflow-hidden'
             : 'opacity-100 mb-0'
-        }`}>
-          <div className="flex flex-col sm:flex-row sm:flex-wrap justify-center items-center gap sm:gap-2 text-base">
-            <Link 
-              href="/browse" 
+          }`}>
+          <div className="flex flex-row flex-wrap justify-center items-center gap-1 sm:gap-2 text-base">
+            <Link
+              href="/browse"
               className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200 px-2 py-1"
               title="Browse all dictionary entries"
               aria-label="Browse all dictionary entries"
@@ -134,8 +129,8 @@ export default async function HomePage({ searchParams }: { searchParams: { q?: s
               Browse all entries
             </Link>
             <span className="text-gray-400 text-sm">•</span>
-            <Link 
-              href="/random" 
+            <Link
+              href="/random"
               className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200 px-2 py-1"
               title="Get a random Shona word"
               aria-label="Get a random Shona word"
@@ -143,8 +138,8 @@ export default async function HomePage({ searchParams }: { searchParams: { q?: s
               Random word
             </Link>
             <span className="text-gray-400 text-sm">•</span>
-            <Link 
-              href="/suggest" 
+            <Link
+              href="/suggest"
               className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200 px-2 py-1"
               title="Suggest a new word for the dictionary"
               aria-label="Suggest a new word for the dictionary"
@@ -152,8 +147,8 @@ export default async function HomePage({ searchParams }: { searchParams: { q?: s
               Suggest a word
             </Link>
             <span className="text-gray-400 text-sm">•</span>
-            <Link 
-              href="/challenge/daily" 
+            <Link
+              href="/challenge/daily"
               className="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 transition-colors duration-200 px-2 py-1"
               title="Take the daily challenge"
               aria-label="Take the daily challenge"
@@ -190,13 +185,13 @@ function WelcomeContent() {
   return (
     <div className="max-w-4xl mx-auto">
       {/* Daily Challenge Card - Prominent and Inviting */}
-      <Link href="/challenge/daily" className="block mb-6 group">
+      <Link href="/challenge/daily" className="block mb-8 group">
         <div className="relative overflow-hidden bg-gradient-to-br from-purple-600 via-purple-500 to-pink-500 dark:from-purple-700 dark:via-purple-600 dark:to-pink-600 rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02]">
           {/* Animated background pattern */}
           <div className="absolute inset-0 opacity-10">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.3),transparent)]"></div>
           </div>
-          
+
           <div className="relative flex items-center justify-between">
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-3">
@@ -220,7 +215,7 @@ function WelcomeContent() {
                 </svg>
               </div>
             </div>
-            
+
             {/* Decorative elements */}
             <div className="hidden md:block">
               <div className="text-8xl opacity-20 transform rotate-12">
@@ -231,23 +226,25 @@ function WelcomeContent() {
         </div>
       </Link>
 
-      {/* Social Media Links */}
-      <div className="mb-8">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-          Follow us for daily Shona content
-        </h3>
-        <SocialLinks variant="default" />
-      </div>
-
       <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
         Explore the Shona Dictionary
       </h2>
+
       <div className="space-y-6 text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
         <p>
           Welcome to our growing repository of words from the rich and vibrant
           Shona lexicon. This project is a community-driven effort to document and
           celebrate the language.
         </p>
+        {/* Social Media Links */}
+        <div className="mb-6 text-center">
+          <div className="flex justify-center  mb-2">
+            <SocialLinks variant="compact" />
+          </div>
+          <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 underline">
+            Follow us for daily Shona content
+          </h3>
+        </div>
         <p>
           Our ambition is to build the most comprehensive dataset of Shona words,
           making it a valuable resource for speakers and learners alike.

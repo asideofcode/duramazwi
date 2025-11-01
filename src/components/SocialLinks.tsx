@@ -55,7 +55,7 @@ export default function SocialLinks({
               aria-label={`Follow us on ${social.name}`}
               title={`Follow us on ${social.name}`}
             >
-              <Icon className="w-5 h-5" />
+              <Icon className="w-7 h-7" />
             </a>
           );
         })}
@@ -97,9 +97,9 @@ export default function SocialLinks({
             href={social.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 px-4 py-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-400 transition-all hover:shadow-md group"
+            className="flex items-center gap-3 px-4 py-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 transition-all hover:shadow-md group"
           >
-            <Icon className={`w-6 h-6 transition-colors ${social.color}`} />
+            <Icon className={`w-6 h-6 transition-colors text-gray-600 dark:text-gray-400 ${social.name === 'Instagram' ? 'group-hover:text-pink-600 dark:group-hover:text-pink-400' : 'group-hover:text-black dark:group-hover:text-white'}`} />
             <div className="flex-1">
               <div className="text-sm font-semibold text-gray-900 dark:text-white">
                 {social.name}
@@ -109,7 +109,7 @@ export default function SocialLinks({
               </div>
             </div>
             <svg 
-              className="w-4 h-4 text-gray-400 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors" 
+              className="w-4 h-4 text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" 
               fill="none" 
               stroke="currentColor" 
               viewBox="0 0 24 24"
