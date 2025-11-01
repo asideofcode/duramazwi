@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import StaticAudioPlayer from './StaticAudioPlayer';
 import { AudioRecord } from '@/services/audioAPIClient';
+import ShareWord from './ShareWord';
 
 // New schema types
 interface Example {
@@ -143,6 +144,12 @@ export default function DictionaryEntryClean({
             <div className="flex items-center gap-3">
               <StaticAudioPlayer
                 recordings={getAudioForLevel('word')}
+                className="flex-shrink-0"
+              />
+              {/* Share Button */}
+              <ShareWord 
+                word={entry.word}
+                definition={entry.meanings[0]?.definitions[0]?.definition || ''}
                 className="flex-shrink-0"
               />
               {/* Development Edit Button */}
