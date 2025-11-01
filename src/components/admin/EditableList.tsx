@@ -20,6 +20,7 @@ export default function EditableList({
   showNumbers = false,
 }: EditableListProps) {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
   const handleUpdate = (index: number, value: string) => {
     const newItems = [...items];
@@ -40,8 +41,11 @@ export default function EditableList({
     setDraggedIndex(index);
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = (e: React.DragEvent, index: number) => {
     e.preventDefault();
+    if (draggedIndex !== null && draggedIndex !== index) {
+      setDragOverIndex(index);
+    }
   };
 
   const handleDrop = (dropIndex: number) => {
@@ -52,10 +56,12 @@ export default function EditableList({
     newItems.splice(dropIndex, 0, draggedItem);
     onChange(newItems);
     setDraggedIndex(null);
+    setDragOverIndex(null);
   };
 
   const handleDragEnd = () => {
     setDraggedIndex(null);
+    setDragOverIndex(null);
   };
 
   const handleMoveUp = (index: number) => {
@@ -79,10 +85,16 @@ export default function EditableList({
           key={index}
           draggable={draggable}
           onDragStart={() => handleDragStart(index)}
-          onDragOver={handleDragOver}
+          onDragOver={(e) => handleDragOver(e, index)}
           onDrop={() => handleDrop(index)}
           onDragEnd={handleDragEnd}
-          className={`flex items-center space-x-3 ${draggable ? 'cursor-move' : ''}`}
+          className={`flex items-center space-x-3 transition-all ${
+            draggable ? 'cursor-move' : ''
+          } ${
+            draggedIndex === index ? 'opacity-50 scale-95' : ''
+          } ${
+            dragOverIndex === index ? 'ring-2 ring-blue-400 rounded-md' : ''
+          }`}
         >
           {/* Drag handle with up/down arrows - only show when draggable and multiple items */}
           {draggable && items.length > 1 && (

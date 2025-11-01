@@ -46,7 +46,45 @@ export default function ChallengeListItem({
       } ${
         onDragStart ? 'cursor-move' : ''
       }`}>
-      <div className="flex items-start justify-between">
+      <div className="flex items-start space-x-4">
+        {/* Drag handle and reorder buttons on the left - vertically stacked */}
+        <div className="flex flex-col items-center text-gray-400 dark:text-gray-500 pt-1">
+          <button
+            type="button"
+            onClick={onMoveUp}
+            disabled={index === 0}
+            className={`transition-colors ${
+              index === 0 
+                ? 'opacity-30 cursor-not-allowed' 
+                : 'hover:text-gray-600 dark:hover:text-gray-300'
+            }`}
+            title="Move up"
+          >
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 15l7-7 7 7" />
+            </svg>
+          </button>
+          <svg className="w-5 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
+          </svg>
+          <button
+            type="button"
+            onClick={onMoveDown}
+            disabled={index === totalChallenges - 1}
+            className={`transition-colors ${
+              index === totalChallenges - 1 
+                ? 'opacity-30 cursor-not-allowed' 
+                : 'hover:text-gray-600 dark:hover:text-gray-300'
+            }`}
+            title="Move down"
+          >
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Challenge content */}
         <div className="flex-1">
           <div className="flex items-center space-x-3 mb-2">
             <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
@@ -78,42 +116,9 @@ export default function ChallengeListItem({
             </div>
           )}
         </div>
-        
-        <div className="flex items-center space-x-2 ml-4">
-          {/* Drag handle */}
-          {onDragStart && (
-            <div className="flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 cursor-move" title="Drag to reorder">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M7 2a2 2 0 10.001 4.001A2 2 0 007 2zm0 6a2 2 0 10.001 4.001A2 2 0 007 8zm0 6a2 2 0 10.001 4.001A2 2 0 007 14zm6-8a2 2 0 10-.001-4.001A2 2 0 0013 6zm0 2a2 2 0 10.001 4.001A2 2 0 0013 8zm0 6a2 2 0 10.001 4.001A2 2 0 0013 14z" />
-              </svg>
-            </div>
-          )}
-          
-          {/* Reorder buttons */}
-          <div className="flex flex-col space-y-1">
-            <button
-              onClick={onMoveUp}
-              disabled={index === 0}
-              className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed"
-              title="Move up"
-            >
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
-              </svg>
-            </button>
-            <button
-              onClick={onMoveDown}
-              disabled={index === totalChallenges - 1}
-              className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed"
-              title="Move down"
-            >
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-              </svg>
-            </button>
-          </div>
 
-          {/* Action buttons */}
+        {/* Action buttons on the right */}
+        <div className="flex items-center space-x-2">
           <button
             onClick={onPreview}
             className="px-3 py-1 text-sm bg-purple-600 text-white rounded hover:bg-purple-700"

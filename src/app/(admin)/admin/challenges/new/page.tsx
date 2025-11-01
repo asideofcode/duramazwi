@@ -534,7 +534,7 @@ export default function NewChallengePage() {
                 </p>
                 
                 <EditableList
-                  items={(Array.isArray(formData.correctAnswer) ? formData.correctAnswer : [formData.correctAnswer]).filter((w): w is string => Boolean(w))}
+                  items={Array.isArray(formData.correctAnswer) && formData.correctAnswer.length > 0 ? formData.correctAnswer : ['']}
                   onChange={(items) => setFormData({ ...formData, correctAnswer: items })}
                   placeholder="Word"
                   addButtonText="+ Add Word"
@@ -553,7 +553,7 @@ export default function NewChallengePage() {
                 </p>
                 
                 <EditableList
-                  items={formData.distractors || []}
+                  items={formData.distractors && formData.distractors.length > 0 ? formData.distractors : ['']}
                   onChange={(items) => setFormData({ ...formData, distractors: items })}
                   placeholder="Distractor word"
                   addButtonText="+ Add Distractor"
