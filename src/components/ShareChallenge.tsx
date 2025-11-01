@@ -14,13 +14,6 @@ export default function ShareChallenge({ date, className = '' }: ShareChallengeP
     ? window.location.href 
     : `https://shonadictionary.com/challenge/daily`;
   
-  const formattedDate = new Date(date).toLocaleDateString('en-US', { 
-    weekday: 'long', 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
-  });
-  
   const shareText = `Check out today's Daily Shona Challenge! Test your Shona language skills.`;
 
   const handleCopy = async () => {
@@ -37,7 +30,7 @@ export default function ShareChallenge({ date, className = '' }: ShareChallengeP
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `Daily Shona Challenge - ${formattedDate}`,
+          title: 'Daily Shona Challenge',
           text: shareText,
           url: shareUrl,
         });
