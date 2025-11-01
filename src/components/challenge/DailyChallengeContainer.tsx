@@ -260,26 +260,26 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
 
   // Consistent header for all states
   const renderHeader = () => (
-    <div className="text-center mb-8">
-      <div className="relative flex items-center justify-center mb-4">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Daily Shona Challenge
-        </h1>
-        <div className="absolute right-0 flex items-center gap-3">
+    <div className="mb-8">
+      <div className="flex items-start justify-between mb-2">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            Daily Shona Challenge
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
+            {new Date(challenge.date).toLocaleDateString('en-US', { 
+              weekday: 'long', 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric' 
+            })}
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
           <ShareChallenge date={challenge.date} />
           <SoundControls compact={true} showLabel={false} />
         </div>
       </div>
-      
-      {/* Simple Date Display */}
-      <p className="text-gray-600 dark:text-gray-400">
-        {new Date(challenge.date).toLocaleDateString('en-US', { 
-          weekday: 'long', 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric' 
-        })}
-      </p>
     </div>
   );
 
