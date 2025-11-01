@@ -62,6 +62,30 @@ export async function generateMetadata({
     const firstEntry = wordDetails[0];
     const firstDefinition = firstEntry.meanings[0].definitions[0].definition;
     const formattedWord = formatWordForMetadata(firstEntry.word, firstEntry.meanings);
+    const partOfSpeech = firstEntry.meanings[0].partOfSpeech || 'noun';
+    
+    // Check if word has multiple meanings or can be used as verb
+    const hasVerbMeaning = firstEntry.meanings.some(m => m.partOfSpeech?.toLowerCase() === 'verb');
+    const hasNonVerbMeaning = firstEntry.meanings.some(m => m.partOfSpeech?.toLowerCase() !== 'verb');
+    const hasBothForms = hasVerbMeaning && hasNonVerbMeaning;
+    const totalMeanings = firstEntry.meanings.reduce((sum, m) => sum + m.definitions.length, 0);
+    
+    // Generate dynamic OG image URL
+    const ogImageParams = new URLSearchParams({
+      word: firstEntry.word,
+      definition: firstDefinition,
+      pos: partOfSpeech,
+    });
+    
+    if (hasBothForms) {
+      ogImageParams.set('hasBothForms', 'true');
+    }
+    
+    if (totalMeanings > 1) {
+      ogImageParams.set('totalMeanings', totalMeanings.toString());
+    }
+    
+    const ogImageUrl = `https://asideofcode-dev.ngrok.app/api/og/word?${ogImageParams.toString()}`;
     
     return createMetadata(
       {
@@ -73,6 +97,20 @@ export async function generateMetadata({
         },
         openGraph: {
           url: `https://shonadictionary.com/word/${encodeURIComponent(id)}`,
+          images: [
+            {
+              url: ogImageUrl,
+              width: 1200,
+              height: 630,
+              alt: `Meaning of ${formattedWord} in Shona`,
+            }
+          ],
+        },
+        twitter: {
+          card: 'summary_large_image',
+          title: `Meaning of ${formattedWord} in Shona`,
+          description: firstDefinition,
+          images: [ogImageUrl],
         }
       }
     );
