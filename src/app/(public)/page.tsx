@@ -8,6 +8,7 @@ import WebsiteStructuredData from "@/component/website-structured-data.component
 import dataService from "@/services/dataService";
 import { Meaning } from "@/components/dictionary-entry-clean";
 import { createMetadata } from "@/utils/metadata";
+import SocialLinks from "@/components/SocialLinks";
 
 export const dynamic = "force-dynamic"; // Need dynamic for search params
 
@@ -126,7 +127,7 @@ export default async function HomePage({ searchParams }: { searchParams: { q?: s
           <div className="flex flex-col sm:flex-row sm:flex-wrap justify-center items-center gap sm:gap-2 text-base">
             <Link 
               href="/browse" 
-              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline transition-colors duration-200 px-2 py-1"
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200 px-2 py-1"
               title="Browse all dictionary entries"
               aria-label="Browse all dictionary entries"
             >
@@ -135,7 +136,7 @@ export default async function HomePage({ searchParams }: { searchParams: { q?: s
             <span className="text-gray-400 text-sm">•</span>
             <Link 
               href="/random" 
-              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline transition-colors duration-200 px-2 py-1"
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200 px-2 py-1"
               title="Get a random Shona word"
               aria-label="Get a random Shona word"
             >
@@ -144,7 +145,7 @@ export default async function HomePage({ searchParams }: { searchParams: { q?: s
             <span className="text-gray-400 text-sm">•</span>
             <Link 
               href="/suggest" 
-              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline transition-colors duration-200 px-2 py-1"
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200 px-2 py-1"
               title="Suggest a new word for the dictionary"
               aria-label="Suggest a new word for the dictionary"
             >
@@ -153,7 +154,7 @@ export default async function HomePage({ searchParams }: { searchParams: { q?: s
             <span className="text-gray-400 text-sm">•</span>
             <Link 
               href="/challenge/daily" 
-              className="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 underline transition-colors duration-200 px-2 py-1"
+              className="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 transition-colors duration-200 px-2 py-1"
               title="Take the daily challenge"
               aria-label="Take the daily challenge"
             >
@@ -189,7 +190,7 @@ function WelcomeContent() {
   return (
     <div className="max-w-4xl mx-auto">
       {/* Daily Challenge Card - Prominent and Inviting */}
-      <Link href="/challenge/daily" className="block mb-8 group">
+      <Link href="/challenge/daily" className="block mb-6 group">
         <div className="relative overflow-hidden bg-gradient-to-br from-purple-600 via-purple-500 to-pink-500 dark:from-purple-700 dark:via-purple-600 dark:to-pink-600 rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02]">
           {/* Animated background pattern */}
           <div className="absolute inset-0 opacity-10">
@@ -229,6 +230,14 @@ function WelcomeContent() {
           </div>
         </div>
       </Link>
+
+      {/* Social Media Links */}
+      <div className="mb-8">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+          Follow us for daily Shona content
+        </h3>
+        <SocialLinks variant="default" />
+      </div>
 
       <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
         Explore the Shona Dictionary
