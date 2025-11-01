@@ -43,6 +43,7 @@ class LocalAudioService implements AudioService {
     const { existsSync } = await import('fs');
     const path = await import('path');
     const { v4: uuidv4 } = await import('uuid');
+    const { convertToMp3 } = await import('@/utils/audioConverter');
     
     // Ensure directory exists
     if (!existsSync(this.uploadDir)) {
@@ -55,20 +56,39 @@ class LocalAudioService implements AudioService {
     const filename = `${audioId}.${fileExtension}`;
     const filePath = path.join(this.uploadDir, filename);
     
-    // Save file
+    // Save original file
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     await writeFile(filePath, buffer);
     
-    // Create record
+    console.log(`💾 Saved original: ${filename}`);
+    
+    // Try to convert to MP3 for better compatibility
+    let mp3Url: string | undefined;
+    let duration: number | undefined;
+    let mp3Filename: string | undefined;
+    
+    try {
+      const result = await convertToMp3(filePath, this.uploadDir, '/uploads/audio');
+      mp3Url = result.mp3Url;
+      duration = result.duration;
+      mp3Filename = path.basename(result.mp3Path);
+      console.log(`✅ MP3 conversion successful: ${mp3Filename}`);
+    } catch (error) {
+      console.warn(`⚠️ MP3 conversion failed, using original file:`, error);
+      // Continue without MP3 - original file will be used
+    }
+    
+    // Create record - use MP3 if available, otherwise use original
     const audioRecord: AudioRecord = {
       id: audioId,
-      filename,
+      filename: mp3Filename || filename,
       originalName: file.name,
-      mimeType: file.type,
+      mimeType: mp3Url ? 'audio/mpeg' : file.type,
       size: file.size,
+      duration,
       metadata,
-      url: `/uploads/audio/${filename}`,
+      url: mp3Url || `/uploads/audio/${filename}`,
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -76,7 +96,6 @@ class LocalAudioService implements AudioService {
     // Update index
     await this.addToIndex(audioRecord);
     
-    console.log(`💾 Saved locally: ${filename}`);
     return audioRecord;
   }
   
@@ -261,28 +280,78 @@ class ProductionAudioService implements AudioService {
   async upload(file: File, metadata: AudioMetadata): Promise<AudioRecord> {
     const { put } = await import('@vercel/blob');
     const { v4: uuidv4 } = await import('uuid');
+    const { writeFile, unlink, mkdir } = await import('fs/promises');
+    const { existsSync } = await import('fs');
+    const path = await import('path');
+    const { convertToMp3 } = await import('@/utils/audioConverter');
     
-    // Upload to Vercel Blob
     const audioId = uuidv4();
     const fileExtension = file.name.split('.').pop() || 'webm';
     const filename = `${audioId}.${fileExtension}`;
-    const blobPath = `audio/${metadata.entryId}/${metadata.level}/${filename}`;
     
+    // Upload original to Vercel Blob first (as backup)
+    const blobPath = `audio/${metadata.entryId}/${metadata.level}/${filename}`;
     const blob = await put(blobPath, file, {
       access: 'public',
       addRandomSuffix: false,
     });
     
-    // Create record
+    console.log(`📤 Uploaded original to Vercel Blob: ${blobPath}`);
+    
+    // Convert to MP3 for better browser compatibility
+    let mp3Url: string | undefined;
+    let duration: number | undefined;
+    
+    try {
+      // Create temp directory
+      const tempDir = path.join('/tmp'); // Use /tmp for serverless
+      if (!existsSync(tempDir)) {
+        await mkdir(tempDir, { recursive: true });
+      }
+      
+      // Save file temporarily
+      const tempPath = path.join(tempDir, filename);
+      const bytes = await file.arrayBuffer();
+      await writeFile(tempPath, Buffer.from(bytes));
+      
+      // Convert to MP3
+      const result = await convertToMp3(tempPath, tempDir, '');
+      const mp3Filename = `${audioId}.mp3`;
+      const mp3BlobPath = `audio/${metadata.entryId}/${metadata.level}/${mp3Filename}`;
+      
+      // Upload MP3 to Vercel Blob
+      const { readFile } = await import('fs/promises');
+      const mp3Buffer = await readFile(result.mp3Path);
+      const mp3Blob = await put(mp3BlobPath, mp3Buffer, {
+        access: 'public',
+        contentType: 'audio/mpeg',
+        addRandomSuffix: false,
+      });
+      
+      mp3Url = mp3Blob.url;
+      duration = result.duration;
+      
+      console.log(`✅ MP3 uploaded to Vercel Blob: ${mp3BlobPath}`);
+      
+      // Clean up temp files
+      await unlink(tempPath);
+      await unlink(result.mp3Path);
+    } catch (error) {
+      console.error(`❌ MP3 conversion failed:`, error);
+      // Continue without MP3 - original WebM will be used
+    }
+    
+    // Create record - use MP3 if available, otherwise use original
     const audioRecord: AudioRecord = {
       id: audioId,
-      filename,
+      filename: mp3Url ? `${audioId}.mp3` : filename,
       originalName: file.name,
-      mimeType: file.type,
+      mimeType: mp3Url ? 'audio/mpeg' : file.type,
       size: file.size,
+      duration,
       metadata,
-      url: blob.url,
-      blobUrl: blob.url,
+      url: mp3Url || blob.url,
+      blobUrl: mp3Url || blob.url,
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -294,7 +363,6 @@ class ProductionAudioService implements AudioService {
     // Also update static index for immediate visibility
     await this.updateStaticIndex();
     
-    console.log(`📤 Uploaded to production: ${blobPath}`);
     return audioRecord;
   }
   
