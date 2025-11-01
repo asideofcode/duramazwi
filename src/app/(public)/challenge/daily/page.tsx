@@ -25,10 +25,10 @@ export async function generateMetadata(): Promise<Metadata> {
   
   return createMetadata({
     title: hasChallenge 
-      ? `Daily Shona Challenge - ${challengeCount} Questions | Shona Dictionary`
+      ? 'Daily Shona Challenge | Shona Dictionary'
       : 'Daily Shona Challenge - Coming Soon | Shona Dictionary',
     description: hasChallenge
-      ? `Test your Shona language skills with today's ${challengeCount}-question challenge. Improve your vocabulary, pronunciation, and comprehension with interactive exercises.`
+      ? 'Test your Shona language skills with today\'s challenge. Improve your vocabulary, pronunciation, and comprehension with interactive exercises.'
       : 'Daily Shona language challenge coming soon! Test your knowledge with interactive exercises including multiple choice, audio recognition, and translation challenges.',
     keywords: 'Shona challenge, daily Shona quiz, learn Shona, Shona exercises, Shona practice, Shona language learning, interactive Shona lessons',
     alternates: {
