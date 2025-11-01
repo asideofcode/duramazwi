@@ -27,7 +27,7 @@ export default function ChallengeComplete({ session, onRestart, playCompletionSo
   const minutes = Math.floor(totalTime / 60);
   const seconds = totalTime % 60;
 
-  const shareImageUrl = `/api/og/Shona%20Daily%20Challenge%20Results?score=${session.totalScore}&accuracy=${accuracy}&correct=${correctAnswers}&total=${totalQuestions}&time=${minutes}:${seconds.toString().padStart(2, '0')}&date=${challengeDate}`;
+  const shareImageUrl = `/api/og/Daily%20Shona%20Challenge%20Results?score=${session.totalScore}&accuracy=${accuracy}&correct=${correctAnswers}&total=${totalQuestions}&time=${minutes}:${seconds.toString().padStart(2, '0')}&date=${challengeDate}`;
 
   // Share with file via Web Share API (for Instagram)
   const handleInstagramShare = async () => {
@@ -37,7 +37,7 @@ export default function ChallengeComplete({ session, onRestart, playCompletionSo
       const blob = await response.blob();
       
       // Create a file from the blob
-      const file = new File([blob], 'Shona Daily Challenge Results.png', { type: 'image/png' });
+      const file = new File([blob], 'Daily Shona Challenge Results.png', { type: 'image/png' });
       
       // Check if Web Share API is supported and can share files
       if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
