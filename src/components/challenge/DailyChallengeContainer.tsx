@@ -304,12 +304,11 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
           <div className="mb-8">
             {/* Challenge Image */}
             <div className="mb-6">
-              <div className="w-40 mx-auto">
+              <div className="h-60 mx-auto flex items-center justify-center">
                 <ImageWithPlaceholder
                   src={heroImagePreload}
                   alt="Daily Challenge"
-                  className="w-full h-auto"
-                  placeholderClassName="w-full h-60"
+                  className="h-60 w-auto"
                   fallbackIcon="🎯"
                 />
               </div>

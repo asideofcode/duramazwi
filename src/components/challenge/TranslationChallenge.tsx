@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Challenge } from '@/types/challenge';
 import { useSoundEffects } from '@/hooks/useSoundEffects';
-import ChallengeHero from './ChallengeHero';
+import ChallengeHero, { CharacterVariation, randomiseCharacter } from './ChallengeHero';
 
 interface TranslationChallengeProps {
   challenge: Challenge;
@@ -26,6 +26,9 @@ export default function TranslationChallenge({ challenge, onComplete, onAnswerCh
     }
     return shuffled;
   };
+  
+  // Randomly select a character variation (1-8) - stable across re-renders
+  const [characterVariation] = useState<CharacterVariation>(randomiseCharacter);
   
   const [selectedWords, setSelectedWords] = useState<string[]>([]);
   const [availableWords, setAvailableWords] = useState<string[]>(() => shuffleArray(allWords));
@@ -192,7 +195,7 @@ export default function TranslationChallenge({ challenge, onComplete, onAnswerCh
       {/* Challenge Hero */}
       <ChallengeHero 
         question={challenge.question}
-        characterVariation={1}
+        characterVariation={characterVariation}
         gap={4}
       />
 

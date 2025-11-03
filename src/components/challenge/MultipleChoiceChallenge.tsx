@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Challenge } from '@/types/challenge';
 import { useSoundEffects } from '@/hooks/useSoundEffects';
-import ChallengeHero, { CharacterVariation } from './ChallengeHero';
+import ChallengeHero, { CharacterVariation, randomiseCharacter } from './ChallengeHero';
 
 interface MultipleChoiceChallengeProps {
   challenge: Challenge;
@@ -18,10 +18,8 @@ export default function MultipleChoiceChallenge({ challenge, onComplete, onAnswe
   const { playSound } = useSoundEffects();
   const continueButtonRef = useRef<HTMLButtonElement>(null);
   
-  // Randomly select a character variation (1-4) - stable across re-renders
-  const [characterVariation] = useState<CharacterVariation>(() => 
-    (Math.floor(Math.random() * 4) + 1) as CharacterVariation
-  );
+  // Randomly select a character variation (1-8) - stable across re-renders
+  const [characterVariation] = useState<CharacterVariation>(randomiseCharacter);
 
   // Scroll continue button into view when result is shown
   useEffect(() => {
