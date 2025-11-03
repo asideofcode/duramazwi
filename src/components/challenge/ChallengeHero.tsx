@@ -1,6 +1,10 @@
 'use client';
 
 import SpeechBubble from './SpeechBubble';
+import Character1 from '@/assets/characters/group-5.svg';
+import Character2 from '@/assets/characters/group-4.svg';
+import Character3 from '@/assets/characters/group-7.svg';
+import Character4 from '@/assets/characters/group-6.svg';
 
 /** Character variation options (1-4) */
 export type CharacterVariation = 1 | 2 | 3 | 4;
@@ -32,13 +36,16 @@ export default function ChallengeHero({
   offsetX = -18,
   offsetY = 18
 }: ChallengeHeroProps) {
-  // Map character variations to SVG files
-  const characterSvgs = {
-    1: '/characters/group-5.svg',
-    2: '/characters/group-4.svg',
-    3: '/characters/group-7.svg',
-    4: '/characters/group-6.svg',
+  // Map character variations to SVG components
+  const characterComponents = {
+    1: Character1,
+    2: Character2,
+    3: Character3,
+    4: Character4,
   };
+
+  // Get the selected character component
+  const CharacterComponent = characterComponents[characterVariation];
 
   // Map gap number to Tailwind class
   const gapClass = `gap-${gap}`;
@@ -49,10 +56,11 @@ export default function ChallengeHero({
       <div className={`flex items-start ${gapClass} mb-4`}>
         {/* Character SVG - Much larger */}
         <div className="w-40 h-40 flex-shrink-0">
-          <img
-            src={characterSvgs[characterVariation]}
-            alt="Character"
-            className="w-full h-full object-contain"
+          <CharacterComponent 
+            width="100%"
+            height="100%"
+            className="w-full h-full"
+            aria-label="Character"
           />
         </div>
         

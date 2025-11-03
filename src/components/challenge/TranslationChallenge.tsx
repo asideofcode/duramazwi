@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Challenge } from '@/types/challenge';
 import { useSoundEffects } from '@/hooks/useSoundEffects';
+import ChallengeHero from './ChallengeHero';
 
 interface TranslationChallengeProps {
   challenge: Challenge;
@@ -188,15 +189,12 @@ export default function TranslationChallenge({ challenge, onComplete, onAnswerCh
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg p-8 shadow-lg">
-      {/* Question */}
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-          {challenge.question}
-        </h2>
-        <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-          {challenge.difficulty} • {challenge.points} points
-        </div>
-      </div>
+      {/* Challenge Hero */}
+      <ChallengeHero 
+        question={challenge.question}
+        characterVariation={1}
+        gap={4}
+      />
 
       {/* Answer Area */}
       <div className="mb-8">
