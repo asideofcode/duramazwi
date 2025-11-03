@@ -208,7 +208,7 @@ function WelcomeContent() {
               <p className="text-white/90 text-lg mb-4 max-w-xl">
                 Take on fun challenges to improve your vocabulary. New challenges every day!
               </p>
-              <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg text-white font-semibold group-hover:bg-white/30 transition-colors">
+              <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg text-white font-semibold group-hover:bg-white/30 transition-colors border-b-4 border-white/30 group-hover:border-white/40">
                 <span>Start Challenge</span>
                 <svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />

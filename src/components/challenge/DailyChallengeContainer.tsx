@@ -360,7 +360,7 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
                 setHasStarted(true);
                 setSession(prev => ({ ...prev, startTime: Date.now() }));
               }}
-              className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-lg transition-colors shadow-lg touch-manipulation select-none"
+              className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-lg transition-colors shadow-lg touch-manipulation select-none border-b-4 border-blue-800 hover:border-blue-900"
               aria-label="Start today's challenge"
             >
               Start Challenge

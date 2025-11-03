@@ -68,9 +68,6 @@ export default function AudioChallenge({ challenge, onComplete, onAnswerChecked 
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
           {challenge.question}
         </h2>
-        <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-          {challenge.difficulty} • {challenge.points} points
-        </div>
       </div>
 
       {/* Audio Player */}
@@ -81,7 +78,7 @@ export default function AudioChallenge({ challenge, onComplete, onAnswerChecked 
       {/* Options */}
       <div className="grid grid-cols-1 gap-3 mb-8">
         {challenge.options?.map((option, index) => {
-          let buttonClass = "w-full p-4 text-center rounded-lg border-2 transition-all duration-200 touch-manipulation select-none ";
+          let buttonClass = "w-full p-4 text-center rounded-lg border-2 border-b-4 transition-all duration-200 touch-manipulation select-none ";
           
           if (!showResult) {
             buttonClass += selectedAnswer === option
@@ -137,10 +134,10 @@ export default function AudioChallenge({ challenge, onComplete, onAnswerChecked 
           <button
             onClick={handleCheck}
             disabled={!selectedAnswer}
-            className={`w-full py-3 rounded-lg font-medium transition-colors select-none ${
+            className={`w-full py-3 rounded-lg font-medium transition-colors select-none border-b-4 ${
               selectedAnswer
-                ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+                ? 'bg-blue-600 hover:bg-blue-700 text-white border-blue-800 hover:border-blue-900'
+                : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed border-gray-400 dark:border-gray-700'
             }`}
             aria-label={selectedAnswer ? 'Check your answer' : 'Select an answer first'}
           >
@@ -179,10 +176,10 @@ export default function AudioChallenge({ challenge, onComplete, onAnswerChecked 
             <button
               ref={continueButtonRef}
               onClick={handleContinue}
-              className={`w-full py-3 text-white rounded-lg font-medium transition-colors select-none ${
+              className={`w-full py-3 text-white rounded-lg font-medium transition-colors select-none border-b-4 ${
                 isCorrect 
-                  ? 'bg-green-600 hover:bg-green-700' 
-                  : 'bg-red-600 hover:bg-red-700'
+                  ? 'bg-green-600 hover:bg-green-700 border-green-800 hover:border-green-900' 
+                  : 'bg-red-600 hover:bg-red-700 border-red-800 hover:border-red-900'
               }`}
               aria-label="Continue to next question"
             >

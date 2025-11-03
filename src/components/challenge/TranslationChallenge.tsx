@@ -274,10 +274,10 @@ export default function TranslationChallenge({ challenge, onComplete, onAnswerCh
               onDragStart={(e) => handleDragStart(e, word, false)}
               onDragEnd={handleDragEnd}
               onClick={() => handleWordSelect(word)}
-              className={`px-4 py-2 h-10 flex items-center rounded-lg font-medium transition-all duration-300 cursor-move ${
+              className={`px-4 py-2 h-10 flex items-center rounded-lg font-medium transition-all duration-300 cursor-move border-b-4 ${
                 showResult
-                  ? 'bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 border-2 border-transparent hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-md hover:-translate-y-1'
+                  ? 'bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed border-gray-400 dark:border-gray-700'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 border-gray-300 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-700 hover:shadow-md hover:-translate-y-1'
               } ${draggedWord === word && !draggedFromSelected ? 'opacity-50' : ''}`}
               style={{
                 transform: draggedWord === word && !draggedFromSelected ? 'scale(0.95)' : 'scale(1)',
@@ -301,10 +301,10 @@ export default function TranslationChallenge({ challenge, onComplete, onAnswerCh
           <button
             onClick={handleSubmit}
             disabled={!canSubmit}
-            className={`w-full py-3 rounded-lg font-medium transition-colors select-none ${
+            className={`w-full py-3 rounded-lg font-medium transition-colors select-none border-b-4 ${
               canSubmit
-                ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+                ? 'bg-blue-600 hover:bg-blue-700 text-white border-blue-800 hover:border-blue-900'
+                : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed border-gray-400 dark:border-gray-700'
             }`}
             aria-label={canSubmit ? 'Submit your translation' : 'Complete the translation first'}
           >
@@ -350,10 +350,10 @@ export default function TranslationChallenge({ challenge, onComplete, onAnswerCh
             <button
               ref={continueButtonRef}
               onClick={handleContinue}
-              className={`w-full py-3 text-white rounded-lg font-medium transition-colors select-none ${
+              className={`w-full py-3 text-white rounded-lg font-medium transition-colors select-none border-b-4 ${
                 isCorrect 
-                  ? 'bg-green-600 hover:bg-green-700' 
-                  : 'bg-red-600 hover:bg-red-700'
+                  ? 'bg-green-600 hover:bg-green-700 border-green-800 hover:border-green-900' 
+                  : 'bg-red-600 hover:bg-red-700 border-red-800 hover:border-red-900'
               }`}
               aria-label="Continue to next question"
             >

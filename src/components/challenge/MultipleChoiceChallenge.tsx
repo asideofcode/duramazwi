@@ -69,7 +69,6 @@ export default function MultipleChoiceChallenge({ challenge, onComplete, onAnswe
       <ChallengeHero 
         question={challenge.question}
         characterVariation={characterVariation}
-        subtitle={`${challenge.difficulty} • ${challenge.points} points`}
       />
 
       {/* Hidden heading for accessibility */}
@@ -82,7 +81,7 @@ export default function MultipleChoiceChallenge({ challenge, onComplete, onAnswe
         <legend className="sr-only">Choose the correct answer</legend>
         <div className="grid grid-cols-1 gap-3" role="radiogroup" aria-labelledby="question-heading">
           {challenge.options?.map((option, index) => {
-          let buttonClass = "w-full p-4 text-left rounded-lg border-2 transition-all duration-200 touch-manipulation select-none ";
+          let buttonClass = "w-full p-4 text-left rounded-lg border-2 border-b-4 transition-all duration-200 touch-manipulation select-none ";
           
           if (!showResult) {
             buttonClass += selectedAnswer === option
@@ -138,10 +137,10 @@ export default function MultipleChoiceChallenge({ challenge, onComplete, onAnswe
           <button
             onClick={handleCheck}
             disabled={!selectedAnswer}
-            className={`w-full py-3 rounded-lg font-medium transition-colors select-none ${
+            className={`w-full py-3 rounded-lg font-medium transition-colors select-none border-b-4 ${
               selectedAnswer
-                ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+                ? 'bg-blue-600 hover:bg-blue-700 text-white border-blue-800 hover:border-blue-900'
+                : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed border-gray-400 dark:border-gray-700'
             }`}
             aria-label={selectedAnswer ? 'Check your answer' : 'Select an answer first'}
           >
@@ -180,10 +179,10 @@ export default function MultipleChoiceChallenge({ challenge, onComplete, onAnswe
             <button
               ref={continueButtonRef}
               onClick={handleContinue}
-              className={`w-full py-3 text-white rounded-lg font-medium transition-colors select-none ${
+              className={`w-full py-3 text-white rounded-lg font-medium transition-colors select-none border-b-4 ${
                 isCorrect 
-                  ? 'bg-green-600 hover:bg-green-700' 
-                  : 'bg-red-600 hover:bg-red-700'
+                  ? 'bg-green-600 hover:bg-green-700 border-green-800 hover:border-green-900' 
+                  : 'bg-red-600 hover:bg-red-700 border-red-800 hover:border-red-900'
               }`}
               aria-label="Continue to next question"
             >
