@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Challenge } from '@/types/challenge';
 import { useSoundEffects } from '@/hooks/useSoundEffects';
+import ChallengeHero, { CharacterVariation } from './ChallengeHero';
 
 interface MultipleChoiceChallengeProps {
   challenge: Challenge;
@@ -16,6 +17,11 @@ export default function MultipleChoiceChallenge({ challenge, onComplete, onAnswe
   const [isCorrect, setIsCorrect] = useState(false);
   const { playSound } = useSoundEffects();
   const continueButtonRef = useRef<HTMLButtonElement>(null);
+  
+  // Randomly select a character variation (1-4) - stable across re-renders
+  const [characterVariation] = useState<CharacterVariation>(() => 
+    (Math.floor(Math.random() * 4) + 1) as CharacterVariation
+  );
 
   // Scroll continue button into view when result is shown
   useEffect(() => {
@@ -59,15 +65,17 @@ export default function MultipleChoiceChallenge({ challenge, onComplete, onAnswe
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg p-8 shadow-lg">
-      {/* Question */}
-      <div className="text-center mb-8">
-        <h2 id="question-heading" className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-          {challenge.question}
-        </h2>
-        <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-          {challenge.difficulty} • {challenge.points} points
-        </div>
-      </div>
+      {/* Character Hero */}
+      <ChallengeHero 
+        question={challenge.question}
+        characterVariation={characterVariation}
+        subtitle={`${challenge.difficulty} • ${challenge.points} points`}
+      />
+
+      {/* Hidden heading for accessibility */}
+      <h2 id="question-heading" className="sr-only">
+        {challenge.question}
+      </h2>
 
       {/* Options */}
       <fieldset className="mb-8">

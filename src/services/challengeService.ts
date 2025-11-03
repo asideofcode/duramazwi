@@ -170,6 +170,16 @@ export class ChallengeService {
     return dailyChallenges;
   }
 
+  // Get all daily challenges that use a specific challenge
+  static async getDailyChallengesUsingChallenge(challengeId: string): Promise<string[]> {
+    const collection = await this.getDailyChallengeCollection();
+    const assignments = await collection.find({
+      challengeIds: challengeId
+    }).toArray();
+    
+    return assignments.map(assignment => assignment.date).sort();
+  }
+
   static async assignDailyChallenge(date: string, challengeIds: string[]): Promise<DailyChallenge> {
     const collection = await this.getDailyChallengeCollection();
     

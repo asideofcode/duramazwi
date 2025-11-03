@@ -18,6 +18,8 @@ export default function ChallengeSelector({ availableChallenges, onSelect, onClo
   const [filterLabel, setFilterLabel] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [addedChallenges, setAddedChallenges] = useState<Set<string>>(new Set());
+  const [challengeUsage, setChallengeUsage] = useState<Map<string, string[]>>(new Map());
+  const [loadingUsage, setLoadingUsage] = useState<Set<string>>(new Set());
   const itemsPerPage = 10;
 
   // Get all unique labels
@@ -54,6 +56,49 @@ export default function ChallengeSelector({ availableChallenges, onSelect, onClo
       setCurrentPage(totalPages);
     }
   }, [totalPages, currentPage]);
+
+  // Auto-fetch usage data for challenges on current page
+  useEffect(() => {
+    paginatedChallenges.forEach(challenge => {
+      fetchChallengeUsage(challenge.id);
+    });
+  }, [paginatedChallenges.map(c => c.id).join(',')]);
+
+  // Fetch usage data for a challenge
+  const fetchChallengeUsage = async (challengeId: string) => {
+    if (challengeUsage.has(challengeId) || loadingUsage.has(challengeId)) {
+      return; // Already loaded or loading
+    }
+
+    setLoadingUsage(prev => new Set(prev).add(challengeId));
+
+    try {
+      const response = await fetch(`/api/admin/challenges/${challengeId}/usage`);
+      const result = await response.json();
+
+      if (result.success) {
+        setChallengeUsage(prev => new Map(prev).set(challengeId, result.data.usedInDates));
+      }
+    } catch (error) {
+      console.error('Error fetching challenge usage:', error);
+    } finally {
+      setLoadingUsage(prev => {
+        const next = new Set(prev);
+        next.delete(challengeId);
+        return next;
+      });
+    }
+  };
+
+  // Format date for display
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString + 'T00:00:00');
+    return date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric',
+      year: 'numeric'
+    });
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-[9999] overflow-y-auto" onClick={(e) => {
@@ -206,6 +251,36 @@ export default function ChallengeSelector({ availableChallenges, onSelect, onClo
                             ))}
                           </div>
                         )}
+                        
+                        {/* Usage Information */}
+                        <div className="mt-3">
+                          {loadingUsage.has(challenge.id) ? (
+                            <div className="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400">
+                              <div className="animate-spin h-3 w-3 border-2 border-gray-400 border-t-transparent rounded-full"></div>
+                              <span>Loading usage...</span>
+                            </div>
+                          ) : challengeUsage.has(challenge.id) && challengeUsage.get(challenge.id)?.length === 0 ? (
+                            <div className="text-xs text-green-600 dark:text-green-400">
+                              ✓ Not used in any daily challenges yet
+                            </div>
+                          ) : challengeUsage.has(challenge.id) && challengeUsage.get(challenge.id)!.length > 0 ? (
+                            <div className="text-xs">
+                              <div className="text-orange-600 dark:text-orange-400 font-medium mb-1">
+                                ⚠️ Used in {challengeUsage.get(challenge.id)?.length} daily challenge{challengeUsage.get(challenge.id)!.length > 1 ? 's' : ''}:
+                              </div>
+                              <div className="flex flex-wrap gap-1">
+                                {challengeUsage.get(challenge.id)?.map((date) => (
+                                  <span
+                                    key={date}
+                                    className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200"
+                                  >
+                                    {formatDate(date)}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          ) : null}
+                        </div>
                       </div>
                       <button
                         onClick={() => {
