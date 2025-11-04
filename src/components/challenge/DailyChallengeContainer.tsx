@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { DailyChallenge, ChallengeSession, ChallengeResult } from '@/types/challenge';
 import { isDateCompleted, saveChallengeCompletion, getCompletionStats, clearAllHistory } from '@/utils/challengeStorage';
+import { getUserId } from '@/utils/userTracking';
 import { useNavigationWarning } from '@/hooks/useNavigationWarning';
 import ChallengeProgress from './ChallengeProgress';
 import MultipleChoiceChallenge from './MultipleChoiceChallenge';
@@ -237,6 +238,26 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
         timeSpent: totalTimeSpent,
         challengeIds,
         correctChallengeIds
+      });
+      
+      // Track completion in database with geolocation data
+      fetch('/api/challenge/complete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          date: challenge.date,
+          totalScore: updatedSession.totalScore,
+          correctAnswers,
+          totalChallenges: updatedSession.results.length,
+          accuracy,
+          timeSpent: totalTimeSpent,
+          userId: getUserId(), // Include persistent user ID for tracking returning users
+        }),
+      }).catch(error => {
+        // Silent fail - don't interrupt user experience
+        console.error('Failed to track completion:', error);
       });
     }
   };
