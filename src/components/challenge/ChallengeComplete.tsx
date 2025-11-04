@@ -48,7 +48,7 @@ export default function ChallengeComplete({ session, onRestart, playCompletionSo
       if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
           files: [file],
-          title: 'My Shona Daily Challenge Result',
+          title: 'My Daily Shona Challenge Result',
           text: `I scored ${session.totalScore} points with ${accuracy}% accuracy! 🎉`,
         });
       } else {

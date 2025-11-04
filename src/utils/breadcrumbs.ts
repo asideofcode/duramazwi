@@ -84,7 +84,7 @@ export const createBreadcrumbs = {
   },
 
   /**
-   * Daily Challenge: Home > Daily Challenge
+   * Daily Shona Challenge: Home > Daily Shona Challenge
    */
   dailyChallenge: (): BreadcrumbStructuredData => ({
     "@type": "BreadcrumbList",
@@ -98,7 +98,7 @@ export const createBreadcrumbs = {
       {
         "@type": "ListItem",
         position: 2,
-        name: "Daily Challenge",
+        name: "Daily Shona Challenge",
         item: `${BASE_URL}/challenge/daily`
       }
     ]

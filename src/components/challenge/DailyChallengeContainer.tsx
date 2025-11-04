@@ -330,7 +330,7 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
               <div className="h-60 mx-auto flex items-center justify-center">
                 <ImageWithPlaceholder
                   src={heroImagePreload}
-                  alt="Daily Challenge"
+                  alt="Daily Shona Challenge"
                   className="h-60 w-auto"
                   fallbackIcon="🎯"
                 />

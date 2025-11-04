@@ -153,7 +153,7 @@ export default async function HomePage({ searchParams }: { searchParams: { q?: s
               title="Take the daily challenge"
               aria-label="Take the daily challenge"
             >
-              🏆 Daily Challenge
+              🏆 Daily Shona Challenge
             </Link>
           </div>
         </div>
@@ -198,7 +198,7 @@ function WelcomeContent() {
                 <span className="text-5xl">🏆</span>
                 <div>
                   <h2 className="text-3xl font-bold text-white mb-1">
-                    Daily Challenge
+                    Daily Shona Challenge
                   </h2>
                   <p className="text-purple-100 text-lg">
                     Test your Shona knowledge today!

@@ -315,7 +315,7 @@ export default function PoteBlogPost() {
               href="/challenge/daily"
               className="px-6 py-3 bg-gray-600 hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-white rounded-lg font-medium transition-colors"
             >
-              Take Daily Challenge
+              Take Daily Shona Challenge
             </Link>
           </div>
         </div>
