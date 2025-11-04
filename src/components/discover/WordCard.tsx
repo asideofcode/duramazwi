@@ -127,7 +127,7 @@ export default function WordCard({ word }: WordCardProps) {
   return (
     <div className="w-full max-w-2xl mx-auto px-4 py-8 h-full flex flex-col select-none">
       <div 
-        className="relative w-full h-[70%] perspective-1000"
+        className="relative w-full h-[80%] perspective-1000"
         style={{ perspective: '1000px' }}
       >
         <div
@@ -161,7 +161,7 @@ export default function WordCard({ word }: WordCardProps) {
                 )}
               </div>
               
-              <h1 className="text-6xl md:text-7xl font-bold text-white mb-6 break-word hyphens-auto" lang="shona">
+              <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 break-all hyphens-auto" lang="shona">
                 {displayWord}
               </h1>
               

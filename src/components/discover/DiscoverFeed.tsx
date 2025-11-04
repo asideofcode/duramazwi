@@ -1,25 +1,9 @@
 'use client';
 
-import { useState, useEffect, useRef, forwardRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { List, ListImperativeAPI } from 'react-window';
-// @ts-ignore - react-window-infinite-loader has incomplete TypeScript definitions  
-import { InfiniteLoader } from 'react-window-infinite-loader';
 import WordCard from './WordCard';
 import dataService from '@/services/dataService';
-
-// Custom outer element with snap scrolling
-const OuterElement = forwardRef<HTMLDivElement, any>((props, ref) => (
-  <div
-    ref={ref}
-    {...props}
-    style={{
-      ...(props.style || {}),
-      scrollSnapType: 'y mandatory',
-    }}
-    className="snap-y snap-mandatory"
-  />
-));
-OuterElement.displayName = 'OuterElement';
 
 // Type for row renderer props
 interface RowProps {
@@ -40,9 +24,7 @@ interface DictionaryEntry {
 export default function DiscoverFeed() {
   const [allWords, setAllWords] = useState<DictionaryEntry[]>([]);
   const [loading, setLoading] = useState(true);
-  const [loadedRowCount, setLoadedRowCount] = useState(10);
   const listRef = useRef<ListImperativeAPI>(null);
-  const isLoadingRef = useRef(false);
 
   // Load all words on mount
   useEffect(() => {
@@ -62,8 +44,7 @@ export default function DiscoverFeed() {
       const shuffled = [...entries].sort(() => Math.random() - 0.5);
       setAllWords(shuffled);
       
-      // Initialize
-      setLoadedRowCount(10);
+      // All data loaded
       setLoading(false);
     } catch (error) {
       console.error('Error loading words:', error);
@@ -71,53 +52,53 @@ export default function DiscoverFeed() {
     }
   }, []);
 
-  // Check if a row is loaded
-  const isRowLoaded = (index: number) => index < loadedRowCount;
+  // Track user touch state and scroll behavior
+  const isTouchingRef = useRef(false);
+  const lastVisibleIndexRef = useRef(0);
+  const scrollCountSinceTouchRef = useRef(0);
 
-  // Load more rows
-  const loadMoreRows = (startIndex: number, stopIndex: number): Promise<void> => {
-    // Prevent multiple simultaneous loads
-    if (isLoadingRef.current) {
-      console.log('⏸️ Already loading, skipping...');
-      return Promise.resolve();
-    }
-    
-    // Don't load if we've already loaded everything
-    if (loadedRowCount >= allWords.length) {
-      console.log('✅ All words loaded');
-      return Promise.resolve();
-    }
-    
-    console.log('🔄 Loading rows', startIndex, 'to', stopIndex, '| Currently loaded:', loadedRowCount, '/', allWords.length);
-    
-    isLoadingRef.current = true;
-    
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        setLoadedRowCount((prev) => {
-          const newCount = Math.min(prev + 10, allWords.length);
-          console.log('📊 Updated loaded count:', newCount);
-          return newCount;
-        });
-        isLoadingRef.current = false;
-        resolve();
-      }, 300);
-    });
-  };
+  // Attach touch and scroll listeners
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const listElement = listRef.current?.element;
+      if (!listElement) return;
+
+      const handleTouchStart = () => {
+        isTouchingRef.current = true;
+        scrollCountSinceTouchRef.current = 0;
+      };
+
+      const handleTouchEnd = () => {
+        isTouchingRef.current = false;
+        scrollCountSinceTouchRef.current = 0;
+      };
+
+      listElement.addEventListener('touchstart', handleTouchStart);
+      listElement.addEventListener('touchend', handleTouchEnd);
+      listElement.addEventListener('touchcancel', handleTouchEnd);
+      
+      return () => {
+        listElement.removeEventListener('touchstart', handleTouchStart);
+        listElement.removeEventListener('touchend', handleTouchEnd);
+        listElement.removeEventListener('touchcancel', handleTouchEnd);
+      };
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [allWords.length]);
 
   // Row renderer
   const Row = ({ index, style }: RowProps) => {
-    if (!isRowLoaded(index)) {
-      return (
-        <div style={{ ...style, scrollSnapAlign: 'start' }} className="flex justify-center px-4 py-8">
-          <div className="w-full max-w-2xl h-[60vh] bg-gray-200 dark:bg-gray-700 rounded-3xl animate-pulse" />
-        </div>
-      );
-    }
-
     const word = allWords[index];
     return (
-      <div style={{ ...style, scrollSnapAlign: 'start' }} className="flex justify-center">
+      <div 
+        style={{ 
+          ...style, 
+          scrollSnapAlign: 'start',
+          scrollSnapStop: 'always' // Prevent snap from continuing past this item
+        }} 
+        className="flex justify-center"
+      >
         <WordCard word={word} />
       </div>
     );
@@ -140,38 +121,41 @@ export default function DiscoverFeed() {
   const itemSize = height; // Each item takes full viewport height
 
   return (
-    <div 
-      className="w-full min-h-screen overflow-x-hidden"
-    >
-      {/* @ts-ignore */}
-      <InfiniteLoader
-        isRowLoaded={isRowLoaded}
-        loadMoreRows={loadMoreRows}
+    <div className="w-full min-h-screen overflow-x-hidden">
+      <List
+        listRef={listRef}
+        defaultHeight={height}
         rowCount={rowCount}
-        threshold={3}
-        minimumBatchSize={10}
-      >
-        {({ onRowsRendered: infiniteLoaderCallback }) => (
-          <List
-            listRef={listRef}
-            defaultHeight={height}
-            rowCount={rowCount}
-            rowHeight={itemSize}
-            rowComponent={Row}
-            rowProps={{} as any}
-            onRowsRendered={(visibleRows, allRows) => {
-              // Only trigger if we haven't loaded everything
-              if (loadedRowCount < allWords.length) {
-                infiniteLoaderCallback({
-                  startIndex: allRows.startIndex,
-                  stopIndex: allRows.stopIndex,
-                });
+        rowHeight={itemSize}
+        rowComponent={Row}
+        rowProps={{} as any}
+        onRowsRendered={(visibleRows) => {
+          const currentIndex = visibleRows.startIndex;
+          
+          // If not touching and index changed, increment counter
+          if (!isTouchingRef.current && currentIndex !== lastVisibleIndexRef.current) {
+            scrollCountSinceTouchRef.current++;
+            
+            // If we've scrolled through more than 2 cards without touch, disable snap to stop runaway
+            if (scrollCountSinceTouchRef.current > 2) {
+              const listElement = listRef.current?.element;
+              if (listElement) {
+                // Disable scroll-snap to stop momentum
+                listElement.style.scrollSnapType = 'none';
+                
+                // Re-enable after scroll settles
+                setTimeout(() => {
+                  listElement.style.scrollSnapType = 'y mandatory';
+                }, 100);
               }
-            }}
-            style={{ height, scrollSnapType: 'y mandatory' }}
-          />
-        )}
-      </InfiniteLoader>
+              scrollCountSinceTouchRef.current = 0;
+            }
+          }
+          
+          lastVisibleIndexRef.current = currentIndex;
+        }}
+        style={{ height, scrollSnapType: 'y mandatory' }}
+      />
 
       {/* Scroll hint */}
       <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 pointer-events-none opacity-50 transition-opacity">
