@@ -48,10 +48,10 @@ export async function GET(request: NextRequest) {
               </div>
               
               <div tw="flex text-5xl mb-3 text-white">
-                ✅ Completed my daily
+                ✅ Completed my
               </div>
               <div tw="flex text-7xl font-bold text-blue-400 mb-6">
-                Shona Challenge!
+                Daily Shona Challenge!
               </div>
               <div tw="flex text-4xl text-white bg-gray-700 bg-opacity-40 px-8 py-4 rounded-3xl border border-blue-400 border-opacity-30">
                 {new Date(date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
               {/* Hero on left */}
               <img 
                 src="https://shonadictionary.com/challenge-hero.png"
-                width="220"
+                // width="220"
                 height="320"
                 alt="Hero"
                 style={{ marginRight: '40px' }}
