@@ -240,25 +240,27 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
         correctChallengeIds
       });
       
-      // Track completion in database with geolocation data
-      fetch('/api/challenge/complete', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          date: challenge.date,
-          totalScore: updatedSession.totalScore,
-          correctAnswers,
-          totalChallenges: updatedSession.results.length,
-          accuracy,
-          timeSpent: totalTimeSpent,
-          userId: getUserId(), // Include persistent user ID for tracking returning users
-        }),
-      }).catch(error => {
-        // Silent fail - don't interrupt user experience
-        console.error('Failed to track completion:', error);
-      });
+      // Track completion in database with geolocation data (production only)
+      if (process.env.NODE_ENV === 'production') {
+        fetch('/api/challenge/complete', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            date: challenge.date,
+            totalScore: updatedSession.totalScore,
+            correctAnswers,
+            totalChallenges: updatedSession.results.length,
+            accuracy,
+            timeSpent: totalTimeSpent,
+            userId: getUserId(), // Include persistent user ID for tracking returning users
+          }),
+        }).catch(error => {
+          // Silent fail - don't interrupt user experience
+          console.error('Failed to track completion:', error);
+        });
+      }
     }
   };
 

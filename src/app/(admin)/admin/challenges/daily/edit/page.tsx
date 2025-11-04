@@ -8,6 +8,7 @@ import ChallengeSelector from '@/components/admin/ChallengeSelector';
 import DailyChallengeSummary from '@/components/admin/DailyChallengeSummary';
 import ChallengeListItem from '@/components/admin/ChallengeListItem';
 import ChallengePreviewModal from '@/components/admin/ChallengePreviewModal';
+import ChallengeCompletionsList from '@/components/admin/ChallengeCompletionsList';
 
 function DailyChallengeEditor() {
   const router = useRouter();
@@ -26,6 +27,15 @@ function DailyChallengeEditor() {
   const [success, setSuccess] = useState<string | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  
+  // Check if the selected date is in the past (before today)
+  const isReadonly = (() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const selected = new Date(selectedDate);
+    selected.setHours(0, 0, 0, 0);
+    return selected < today;
+  })();
 
   useEffect(() => {
     fetchDailyChallenge();
@@ -389,6 +399,11 @@ function DailyChallengeEditor() {
           <div className="text-lg font-medium text-gray-900 dark:text-white">
             {formatDate(selectedDate)}
           </div>
+          {isReadonly && (
+            <span className="px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 text-sm font-medium rounded-full">
+              Read-only (Past Date)
+            </span>
+          )}
         </div>
       </div>
 
@@ -401,12 +416,14 @@ function DailyChallengeEditor() {
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
             Challenges for this Day
           </h2>
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500"
-          >
-            + Add Challenge
-          </button>
+          {!isReadonly && (
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500"
+            >
+              + Add Challenge
+            </button>
+          )}
         </div>
 
         {!dailyChallenge || !dailyChallenge.challenges || dailyChallenge.challenges.length === 0 ? (
@@ -431,6 +448,7 @@ function DailyChallengeEditor() {
                 onDragEnd={handleDragEnd}
                 isDragging={draggedIndex === index}
                 isDragOver={dragOverIndex === index}
+                isReadonly={isReadonly}
               />
             ))}
           </div>
@@ -447,6 +465,9 @@ function DailyChallengeEditor() {
           saved={saved}
         />
       )}
+
+      {/* Challenge Completions List */}
+      <ChallengeCompletionsList date={selectedDate} />
 
       {/* Preview Modal */}
       {previewIndex !== null && dailyChallenge && dailyChallenge.challenges[previewIndex] && (

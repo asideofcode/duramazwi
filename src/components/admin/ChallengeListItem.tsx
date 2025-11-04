@@ -15,6 +15,7 @@ interface ChallengeListItemProps {
   onDragEnd?: () => void;
   isDragging?: boolean;
   isDragOver?: boolean;
+  isReadonly?: boolean;
 }
 
 export default function ChallengeListItem({
@@ -30,21 +31,22 @@ export default function ChallengeListItem({
   onDrop,
   onDragEnd,
   isDragging = false,
-  isDragOver = false
+  isDragOver = false,
+  isReadonly = false
 }: ChallengeListItemProps) {
   return (
     <div 
-      draggable={!!onDragStart}
-      onDragStart={() => onDragStart?.(index)}
-      onDragOver={(e) => onDragOver?.(e, index)}
-      onDrop={() => onDrop?.(index)}
+      draggable={!isReadonly && !!onDragStart}
+      onDragStart={() => !isReadonly && onDragStart?.(index)}
+      onDragOver={(e) => !isReadonly && onDragOver?.(e, index)}
+      onDrop={() => !isReadonly && onDrop?.(index)}
       onDragEnd={onDragEnd}
       className={`border border-gray-200 dark:border-gray-600 rounded-lg p-4 transition-all ${
         isDragging ? 'opacity-50 scale-95' : ''
       } ${
         isDragOver ? 'border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20' : 'hover:border-blue-500 dark:hover:border-blue-400'
       } ${
-        onDragStart ? 'cursor-move' : ''
+        !isReadonly && onDragStart ? 'cursor-move' : ''
       }`}>
       <div className="flex items-start space-x-4">
         {/* Drag handle and reorder buttons on the left - vertically stacked */}
@@ -52,13 +54,13 @@ export default function ChallengeListItem({
           <button
             type="button"
             onClick={onMoveUp}
-            disabled={index === 0}
+            disabled={isReadonly || index === 0}
             className={`transition-colors ${
-              index === 0 
+              isReadonly || index === 0 
                 ? 'opacity-30 cursor-not-allowed' 
                 : 'hover:text-gray-600 dark:hover:text-gray-300'
             }`}
-            title="Move up"
+            title={isReadonly ? 'Read-only' : 'Move up'}
           >
             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 15l7-7 7 7" />
@@ -70,13 +72,13 @@ export default function ChallengeListItem({
           <button
             type="button"
             onClick={onMoveDown}
-            disabled={index === totalChallenges - 1}
+            disabled={isReadonly || index === totalChallenges - 1}
             className={`transition-colors ${
-              index === totalChallenges - 1 
+              isReadonly || index === totalChallenges - 1 
                 ? 'opacity-30 cursor-not-allowed' 
                 : 'hover:text-gray-600 dark:hover:text-gray-300'
             }`}
-            title="Move down"
+            title={isReadonly ? 'Read-only' : 'Move down'}
           >
             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
@@ -125,20 +127,24 @@ export default function ChallengeListItem({
           >
             Preview
           </button>
-          <Link
-            href={`/admin/challenges/${challenge.id}/edit`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            Edit
-          </Link>
-          <button
-            onClick={onRemove}
-            className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
-          >
-            Remove
-          </button>
+          {!isReadonly && (
+            <>
+              <Link
+                href={`/admin/challenges/${challenge.id}/edit`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                Edit
+              </Link>
+              <button
+                onClick={onRemove}
+                className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
+              >
+                Remove
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

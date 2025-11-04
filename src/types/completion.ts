@@ -16,7 +16,6 @@ export interface ChallengeCompletionEvent {
   
   // Request metadata
   userAgent?: string;
-  ip?: string;
   timestamp: number;
   
   // Optional user identifier (if you add auth later)

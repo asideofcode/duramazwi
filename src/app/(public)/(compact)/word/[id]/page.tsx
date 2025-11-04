@@ -46,8 +46,13 @@ const formatWordForMetadata = (word: string, meanings: Meaning[]) => {
 //   weight: "400",
 // });
 
-// TODO: use generateStaticParams and maybe make this static somehow ?
-// See https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes#generating-static-params
+// Generate static params for all words at build time
+export async function generateStaticParams() {
+  const allWords = dataService.getAllWords();
+  return allWords.map((word) => ({
+    id: word,
+  }));
+}
 
 export async function generateMetadata({
   params,

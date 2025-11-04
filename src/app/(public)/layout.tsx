@@ -9,10 +9,10 @@ export default function PublicLayout({
 }) {
   return (
     <SearchProvider>
-      <Appbar />
-      <main className="max-w-4xl mx-auto px-4 pb-16 min-h-screen">
+      <div className="flex flex-col min-h-screen">
+        <Appbar />
         {children}
-      </main>
+      </div>
     </SearchProvider>
   );
 }

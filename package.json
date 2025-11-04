@@ -39,6 +39,8 @@
     "proper-lockfile": "^4.1.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-window": "^2.2.2",
+    "react-window-infinite-loader": "^2.0.0",
     "uuid": "^13.0.0",
     "zod": "^3.25.76"
   },
@@ -49,6 +51,7 @@
     "@types/proper-lockfile": "^4.1.4",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
+    "@types/react-window": "^1.8.8",
     "eslint": "^9",
     "eslint-config-next": "15.1.4",
     "postcss": "^8",

@@ -13,11 +13,8 @@ export async function POST(request: NextRequest) {
     // Get geolocation data from Vercel
     const geo = geolocation(request);
     
-    // Get user agent and IP
+    // Get user agent (no IP for privacy)
     const userAgent = request.headers.get('user-agent') || undefined;
-    const ip = request.headers.get('x-forwarded-for') || 
-               request.headers.get('x-real-ip') || 
-               undefined;
     
     // Build completion event
     const completionEvent: ChallengeCompletionEvent = {
@@ -38,7 +35,6 @@ export async function POST(request: NextRequest) {
       
       // Request metadata
       userAgent,
-      ip,
       timestamp: Date.now(),
       
       // Optional user ID (for future auth)
