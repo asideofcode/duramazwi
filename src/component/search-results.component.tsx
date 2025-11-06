@@ -38,6 +38,18 @@ export default function SearchResults({ query }: SearchResultsProps) {
           result_status: searchResults.length > 0 ? "results_found" : "no_results",
           result_count: searchResults.length,
         });
+
+        // Track not found searches in database (production only)
+        if (searchResults.length === 0) {
+          fetch('/api/track-search', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              query,
+              resultCount: searchResults.length
+            })
+          }).catch(err => console.error('Failed to track search:', err));
+        }
       } catch (err) {
         setError("An error occurred while searching. Please try again.");
         console.error("Search error:", err);

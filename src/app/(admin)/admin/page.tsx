@@ -4,6 +4,7 @@ import Link from "next/link";
 import SvgIcon from "@/component/icons/svg-icon";
 import { useAdminEntries } from "@/hooks/useAdminEntries";
 import { StatsCardSkeleton } from "@/components/admin/LoadingPlaceholders";
+import RecentActivity from "@/components/admin/RecentActivity";
 
 export default function AdminDashboard() {
   const { stats, loading, error, fetchStats } = useAdminEntries({ autoFetch: true });
@@ -135,7 +136,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Action Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
           <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
             Dictionary Management
@@ -156,6 +157,24 @@ export default function AdminDashboard() {
 
         <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
           <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+            Search Analytics
+          </h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            View searches that returned no results
+          </p>
+          <Link
+            href="/admin/search-not-found"
+            className="inline-flex items-center space-x-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors"
+            title="View not found searches"
+            aria-label="View not found searches"
+          >
+            <SvgIcon className="h-4 w-4" variant="light" icon="Search" />
+            <span>View Searches</span>
+          </Link>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
             Content Analytics
           </h3>
           <p className="text-gray-600 dark:text-gray-400 mb-4">
@@ -171,22 +190,8 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Recent Activity Placeholder */}
-      <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-          Recent Activity
-        </h3>
-        <div className="text-center pb-16">
-          <SvgIcon
-            className="h-12 w-12 text-gray-400 mx-auto mb-4"
-            variant="default"
-            icon="Book"
-          />
-          <p className="text-gray-500 dark:text-gray-400">
-            Activity tracking will be implemented soon
-          </p>
-        </div>
-      </div>
+      {/* Recent Activity */}
+      <RecentActivity />
     </div>
   );
 }

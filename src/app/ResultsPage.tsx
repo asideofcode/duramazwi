@@ -116,6 +116,16 @@ function SearchResults({ searchQuery, onError, router }: any) {
             result_count: 0,
           });
 
+          // Track not found searches in database (production only)
+          fetch('/api/track-search', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              query,
+              resultCount: 0
+            })
+          }).catch(err => console.error('Failed to track search:', err));
+
           // Set empty results to show the "Tineurombo" message in SearchResults component
           setSearchResults([]);
           setStatus("success");

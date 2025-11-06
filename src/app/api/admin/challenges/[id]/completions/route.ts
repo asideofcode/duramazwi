@@ -17,7 +17,7 @@ export async function GET(
     
     // Build sort object
     const sortObj: Record<string, 1 | -1> = {};
-    if (sortBy === 'userId' || sortBy === 'country' || sortBy === 'timestamp') {
+    if (sortBy === 'userId' || sortBy === 'country' || sortBy === 'timestamp' || sortBy === 'totalScore' || sortBy === 'accuracy') {
       sortObj[sortBy] = sortOrder;
     } else {
       sortObj.timestamp = -1; // Default sort

@@ -21,7 +21,7 @@ export default function ChallengeCompletionsList({ date }: ChallengeCompletionsL
   const [data, setData] = useState<CompletionsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [sortBy, setSortBy] = useState<'timestamp' | 'userId' | 'country'>('timestamp');
+  const [sortBy, setSortBy] = useState<'timestamp' | 'userId' | 'country' | 'totalScore' | 'accuracy'>('timestamp');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const limit = 10;
 
@@ -45,7 +45,7 @@ export default function ChallengeCompletionsList({ date }: ChallengeCompletionsL
     }
   };
 
-  const handleSort = (column: 'timestamp' | 'userId' | 'country') => {
+  const handleSort = (column: 'timestamp' | 'userId' | 'country' | 'totalScore' | 'accuracy') => {
     if (sortBy === column) {
       // Toggle sort order
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -57,7 +57,7 @@ export default function ChallengeCompletionsList({ date }: ChallengeCompletionsL
     setPage(1); // Reset to first page when sorting changes
   };
 
-  const SortIcon = ({ column }: { column: 'timestamp' | 'userId' | 'country' }) => {
+  const SortIcon = ({ column }: { column: 'timestamp' | 'userId' | 'country' | 'totalScore' | 'accuracy' }) => {
     if (sortBy !== column) {
       return (
         <svg className="w-4 h-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -127,11 +127,23 @@ export default function ChallengeCompletionsList({ date }: ChallengeCompletionsL
                   <SortIcon column="timestamp" />
                 </div>
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Score
+              <th 
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
+                onClick={() => handleSort('totalScore')}
+              >
+                <div className="flex items-center gap-1">
+                  Score
+                  <SortIcon column="totalScore" />
+                </div>
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Accuracy
+              <th 
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
+                onClick={() => handleSort('accuracy')}
+              >
+                <div className="flex items-center gap-1">
+                  Accuracy
+                  <SortIcon column="accuracy" />
+                </div>
               </th>
               <th 
                 className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
