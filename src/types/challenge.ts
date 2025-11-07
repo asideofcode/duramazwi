@@ -18,6 +18,7 @@ export interface DailyChallenge {
   challenges: Challenge[];
   totalPoints: number;
   estimatedTime: number; // minutes
+  status: 'draft' | 'published'; // Only published challenges are visible to users
 }
 
 export interface ChallengeResult {

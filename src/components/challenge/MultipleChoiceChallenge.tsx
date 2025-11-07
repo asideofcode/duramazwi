@@ -8,7 +8,7 @@ import ChallengeHero, { CharacterVariation, randomiseCharacter } from './Challen
 interface MultipleChoiceChallengeProps {
   challenge: Challenge;
   onComplete: (userAnswer: string, isCorrect: boolean) => void;
-  onAnswerChecked?: () => void; // Called when answer is checked (before continue)
+  onAnswerChecked?: (isCorrect: boolean) => void; // Called when answer is checked (before continue)
 }
 
 export default function MultipleChoiceChallenge({ challenge, onComplete, onAnswerChecked }: MultipleChoiceChallengeProps) {
@@ -47,7 +47,7 @@ export default function MultipleChoiceChallenge({ challenge, onComplete, onAnswe
     setShowResult(true);
     
     // Notify parent that answer has been checked
-    onAnswerChecked?.();
+    onAnswerChecked?.(correct);
     
     // Play sound effect with slight delay for better UX
     setTimeout(() => {

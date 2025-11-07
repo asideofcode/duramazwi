@@ -8,7 +8,7 @@ import ChallengeHero, { CharacterVariation, randomiseCharacter } from './Challen
 interface TranslationChallengeProps {
   challenge: Challenge;
   onComplete: (userAnswer: string[], isCorrect: boolean) => void;
-  onAnswerChecked?: () => void;
+  onAnswerChecked?: (isCorrect: boolean) => void;
 }
 
 export default function TranslationChallenge({ challenge, onComplete, onAnswerChecked }: TranslationChallengeProps) {
@@ -87,7 +87,7 @@ export default function TranslationChallenge({ challenge, onComplete, onAnswerCh
     setShowResult(true);
     
     // Notify parent that answer has been checked
-    onAnswerChecked?.();
+    onAnswerChecked?.(correct);
     
     // Play sound effect with slight delay for better UX
     setTimeout(() => {

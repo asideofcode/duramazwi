@@ -94,7 +94,8 @@ export class ChallengeService {
   // Daily Challenge operations
   static async getDailyChallenge(date: string): Promise<DailyChallenge | null> {
     const collection = await this.getDailyChallengeCollection();
-    const assignment = await collection.findOne({ date });
+    // Only return published challenges for public users
+    const assignment = await collection.findOne({ date, status: 'published' });
 
     if (!assignment || !assignment.challengeIds || assignment.challengeIds.length === 0) {
       return null;
@@ -121,7 +122,8 @@ export class ChallengeService {
       date,
       challenges: challengeObjects,
       totalPoints,
-      estimatedTime
+      estimatedTime,
+      status: assignment.status || 'published'
     };
   }
 
@@ -163,7 +165,8 @@ export class ChallengeService {
         date: assignment.date,
         challenges: challengeObjects,
         totalPoints,
-        estimatedTime
+        estimatedTime,
+        status: assignment.status || 'draft'
       });
     }
 
@@ -180,7 +183,7 @@ export class ChallengeService {
     return assignments.map(assignment => assignment.date).sort();
   }
 
-  static async assignDailyChallenge(date: string, challengeIds: string[]): Promise<DailyChallenge> {
+  static async assignDailyChallenge(date: string, challengeIds: string[], status: 'draft' | 'published' = 'draft'): Promise<DailyChallenge> {
     const collection = await this.getDailyChallengeCollection();
     
     // Validate that all challenge IDs exist
@@ -199,6 +202,7 @@ export class ChallengeService {
       { 
         date, 
         challengeIds,
+        status,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -228,7 +232,18 @@ export class ChallengeService {
       date,
       challenges: challengeObjects,
       totalPoints,
-      estimatedTime
+      estimatedTime,
+      status
     };
+  }
+
+  // Update the status of a daily challenge
+  static async updateDailyChallengeStatus(date: string, status: 'draft' | 'published'): Promise<boolean> {
+    const collection = await this.getDailyChallengeCollection();
+    const result = await collection.updateOne(
+      { date },
+      { $set: { status, updatedAt: new Date() } }
+    );
+    return result.modifiedCount > 0;
   }
 }

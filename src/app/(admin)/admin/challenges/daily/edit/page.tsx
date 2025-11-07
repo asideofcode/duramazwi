@@ -75,7 +75,8 @@ function DailyChallengeEditor() {
               date: selectedDate,
               challenges: [],
               totalPoints: 0,
-              estimatedTime: 0
+              estimatedTime: 0,
+              status: 'draft'
             });
           }
         } else {
@@ -96,7 +97,8 @@ function DailyChallengeEditor() {
           date: selectedDate,
           challenges: [],
           totalPoints: 0,
-          estimatedTime: 0
+          estimatedTime: 0,
+          status: 'draft'
         });
       }
     } catch (error) {
@@ -107,6 +109,7 @@ function DailyChallengeEditor() {
         date: selectedDate,
         challenges: [],
         totalPoints: 0,
+        status: 'draft',
         estimatedTime: 0
       });
     } finally {
@@ -207,10 +210,11 @@ function DailyChallengeEditor() {
       setSaving(true);
       setError(null);
       
-      // API expects { date, challengeIds } not full challenge objects
+      // API expects { date, challengeIds, status } not full challenge objects
       const payload = {
         date: updatedDailyChallenge.date,
-        challengeIds: updatedDailyChallenge.challenges.map(c => c.id || c._id)
+        challengeIds: updatedDailyChallenge.challenges.map(c => c.id || c._id),
+        status: updatedDailyChallenge.status || 'draft'
       };
       
       console.log('Saving daily challenge:', payload);
@@ -350,16 +354,17 @@ function DailyChallengeEditor() {
             ← Back to Daily Challenges
           </Link>
           <Link
-            href={`/challenge/daily?date=${selectedDate}`}
+            href={`/challenge/daily?date=${selectedDate}${dailyChallenge?.status === 'draft' ? '&preview=true' : ''}`}
             target="_blank"
             rel="noopener noreferrer"
             className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors flex items-center space-x-2"
+            title={dailyChallenge?.status === 'draft' ? 'Preview mode - progress will not be saved (Development only)' : 'View live challenge'}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
             </svg>
-            <span>View Live</span>
+            <span>{dailyChallenge?.status === 'draft' ? 'Preview' : 'View Live'}</span>
           </Link>
         </div>
         
@@ -384,26 +389,57 @@ function DailyChallengeEditor() {
         </div>
       )}
 
-      {/* Date Selector */}
+      {/* Date and Status Selector */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Select Date
-        </label>
-        <div className="flex items-center space-x-4">
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => handleDateChange(e.target.value)}
-            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-          />
-          <div className="text-lg font-medium text-gray-900 dark:text-white">
-            {formatDate(selectedDate)}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Date Selector */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Select Date
+            </label>
+            <div className="flex items-center space-x-4">
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => handleDateChange(e.target.value)}
+                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              />
+              <div className="text-lg font-medium text-gray-900 dark:text-white">
+                {formatDate(selectedDate)}
+              </div>
+              {isReadonly && (
+                <span className="px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 text-sm font-medium rounded-full">
+                  Read-only (Past Date)
+                </span>
+              )}
+            </div>
           </div>
-          {isReadonly && (
-            <span className="px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 text-sm font-medium rounded-full">
-              Read-only (Past Date)
-            </span>
-          )}
+
+          {/* Status Selector */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Status
+            </label>
+            <select
+              value={dailyChallenge?.status || 'draft'}
+              onChange={(e) => {
+                if (dailyChallenge && !isReadonly) {
+                  const updated = { ...dailyChallenge, status: e.target.value as 'draft' | 'published' };
+                  saveDailyChallenge(updated);
+                }
+              }}
+              disabled={isReadonly}
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <option value="draft">📝 Draft (Not visible to users)</option>
+              <option value="published">✅ Published (Visible to users)</option>
+            </select>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              {dailyChallenge?.status === 'published' 
+                ? 'This challenge is live and visible to users' 
+                : 'This challenge is hidden from users'}
+            </p>
+          </div>
         </div>
       </div>
 

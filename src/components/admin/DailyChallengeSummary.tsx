@@ -6,7 +6,7 @@ interface DailyChallengeSummaryProps {
 
 export default function DailyChallengeSummary({ dailyChallenge }: DailyChallengeSummaryProps) {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
       <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
         Summary
       </h2>

@@ -212,6 +212,13 @@ export default function DailyChallengesOverviewPage() {
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(status)}`}>
                           {status === 'today' ? '📅 Today' : status === 'upcoming' ? '🔜 Upcoming' : '✅ Past'}
                         </span>
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          dailyChallenge.status === 'published' 
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                            : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                        }`}>
+                          {dailyChallenge.status === 'published' ? '✅ Published' : '📝 Draft'}
+                        </span>
                       </div>
                       
                       <div className="flex items-center space-x-6 text-sm text-gray-600 dark:text-gray-400">

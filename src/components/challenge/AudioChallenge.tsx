@@ -9,7 +9,7 @@ import AudioPlayerWithProgress from '@/components/AudioPlayerWithProgress';
 interface AudioChallengeProps {
   challenge: Challenge;
   onComplete: (userAnswer: string, isCorrect: boolean) => void;
-  onAnswerChecked?: () => void;
+  onAnswerChecked?: (isCorrect: boolean) => void;
 }
 
 export default function AudioChallenge({ challenge, onComplete, onAnswerChecked }: AudioChallengeProps) {
@@ -47,7 +47,7 @@ export default function AudioChallenge({ challenge, onComplete, onAnswerChecked 
     setShowResult(true);
     
     // Notify parent that answer has been checked
-    onAnswerChecked?.();
+    onAnswerChecked?.(correct);
     
     // Play sound effect with slight delay for better UX
     setTimeout(() => {

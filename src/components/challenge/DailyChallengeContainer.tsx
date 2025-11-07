@@ -19,9 +19,10 @@ import ShareChallenge from '@/components/ShareChallenge';
 
 interface DailyChallengeContainerProps {
   challenge: DailyChallenge;
+  isPreview?: boolean; // Preview mode - don't save to localStorage
 }
 
-export default function DailyChallengeContainer({ challenge }: DailyChallengeContainerProps) {
+export default function DailyChallengeContainer({ challenge, isPreview = false }: DailyChallengeContainerProps) {
   const [hasStarted, setHasStarted] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
   const [session, setSession] = useState<ChallengeSession>({
@@ -41,6 +42,7 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
   const [soundEffectsReady, setSoundEffectsReady] = useState(false);
   const [justCompleted, setJustCompleted] = useState(false);
   const [hasAnswered, setHasAnswered] = useState(false); // Track if current challenge has been answered
+  const [currentAnswerCorrect, setCurrentAnswerCorrect] = useState<boolean | null>(null); // Track if current answer is correct
   
   // Preload hero image
   const heroImagePreload = useImagePreload('/challenge-hero.png');
@@ -78,6 +80,12 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
   // Check if challenge is already completed on mount
   useEffect(() => {
     const initializeChallenge = async () => {
+      // Skip localStorage check in preview mode
+      if (isPreview) {
+        setIsInitialized(true);
+        return;
+      }
+      
       const stats = getCompletionStats(challenge.date);
       if (stats) {
         // Reconstruct session from stats using actual challenge IDs
@@ -191,6 +199,7 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
 
     setSession(updatedSession);
     setHasAnswered(false); // Reset for next challenge
+    setCurrentAnswerCorrect(null); // Reset current answer correctness
     
     // Track individual challenge completion
     globalThis.gtag?.('event', 'challenge_completed', {
@@ -212,33 +221,37 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
       const correctAnswers = updatedSession.results.filter(r => r.isCorrect).length;
       const accuracy = Math.round((correctAnswers / updatedSession.results.length) * 100);
       
-      // Track daily challenge completion in analytics
-      globalThis.gtag?.('event', 'daily_challenge_completed', {
-        date: challenge.date,
-        total_challenges: updatedSession.results.length,
-        correct_answers: correctAnswers,
-        accuracy: accuracy,
-        total_score: updatedSession.totalScore,
-        total_time_spent: totalTimeSpent
-      });
+      // Track daily challenge completion in analytics (skip in preview mode)
+      if (!isPreview) {
+        globalThis.gtag?.('event', 'daily_challenge_completed', {
+          date: challenge.date,
+          total_challenges: updatedSession.results.length,
+          correct_answers: correctAnswers,
+          accuracy: accuracy,
+          total_score: updatedSession.totalScore,
+          total_time_spent: totalTimeSpent
+        });
+      }
       
       // Save completion stats to localStorage (only when fully complete)
-      const challengeIds = updatedSession.challenges.map(c => c.id);
-      const correctChallengeIds = updatedSession.results
-        .filter(r => r.isCorrect)
-        .map(r => r.challengeId);
-      
-      saveChallengeCompletion({
-        date: challenge.date,
-        completedAt: Date.now(),
-        totalScore: updatedSession.totalScore,
-        correctAnswers,
-        totalChallenges: updatedSession.results.length,
-        accuracy,
-        timeSpent: totalTimeSpent,
-        challengeIds,
-        correctChallengeIds
-      });
+      if (!isPreview) {
+        const challengeIds = updatedSession.challenges.map(c => c.id);
+        const correctChallengeIds = updatedSession.results
+          .filter(r => r.isCorrect)
+          .map(r => r.challengeId);
+        
+        saveChallengeCompletion({
+          date: challenge.date,
+          completedAt: Date.now(),
+          totalScore: updatedSession.totalScore,
+          correctAnswers,
+          totalChallenges: updatedSession.results.length,
+          accuracy,
+          timeSpent: totalTimeSpent,
+          challengeIds,
+          correctChallengeIds
+        });
+      }
       
       // Track completion in database with geolocation data (production only)
       if (process.env.NODE_ENV === 'production') {
@@ -404,6 +417,30 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
     return (
       <div className="py-8">
         {renderHeader()}
+        
+        {/* Preview Mode Navigation on Completion Screen */}
+        {isPreview && (
+          <div className="mb-6 flex justify-center gap-4">
+            <button
+              onClick={() => {
+                // Go back from completion screen
+                setSession(prev => ({
+                  ...prev,
+                  isComplete: false,
+                  currentChallengeIndex: prev.challenges.length - 1
+                }));
+                setJustCompleted(false);
+              }}
+              className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors flex items-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Back to Challenges
+            </button>
+          </div>
+        )}
+        
         <ChallengeComplete 
           session={session}
           onRestart={handleRestart}
@@ -421,7 +458,10 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
             key={currentChallenge.id}
             challenge={currentChallenge}
             onComplete={handleChallengeComplete}
-            onAnswerChecked={() => setHasAnswered(true)}
+            onAnswerChecked={(isCorrect) => {
+              setHasAnswered(true);
+              setCurrentAnswerCorrect(isCorrect);
+            }}
           />
         );
       case 'audio_recognition':
@@ -430,7 +470,10 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
             key={currentChallenge.id}
             challenge={currentChallenge}
             onComplete={handleChallengeComplete}
-            onAnswerChecked={() => setHasAnswered(true)}
+            onAnswerChecked={(isCorrect) => {
+              setHasAnswered(true);
+              setCurrentAnswerCorrect(isCorrect);
+            }}
           />
         );
       case 'translation_builder':
@@ -439,7 +482,10 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
             key={currentChallenge.id}
             challenge={currentChallenge}
             onComplete={handleChallengeComplete}
-            onAnswerChecked={() => setHasAnswered(true)}
+            onAnswerChecked={(isCorrect) => {
+              setHasAnswered(true);
+              setCurrentAnswerCorrect(isCorrect);
+            }}
           />
         );
       default:
@@ -451,12 +497,75 @@ export default function DailyChallengeContainer({ challenge }: DailyChallengeCon
     <div className="py-8">
       {renderHeader()}
 
+      {/* Preview Mode Navigation */}
+      {isPreview && (
+        <div className="mb-6 flex justify-center gap-4">
+          <button
+            onClick={() => {
+              if (session.isComplete) {
+                // Go back from completion screen
+                setSession(prev => ({
+                  ...prev,
+                  isComplete: false,
+                  currentChallengeIndex: prev.challenges.length - 1
+                }));
+                setJustCompleted(false);
+              } else if (session.currentChallengeIndex > 0) {
+                setSession(prev => ({
+                  ...prev,
+                  currentChallengeIndex: prev.currentChallengeIndex - 1
+                }));
+                setHasAnswered(false);
+                setCurrentAnswerCorrect(null);
+              }
+            }}
+            disabled={!session.isComplete && session.currentChallengeIndex === 0}
+            className="px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-md transition-colors flex items-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            {session.isComplete ? 'Back to Challenges' : 'Previous'}
+          </button>
+          
+          <button
+            onClick={() => {
+              if (session.currentChallengeIndex < session.challenges.length - 1) {
+                setSession(prev => ({
+                  ...prev,
+                  currentChallengeIndex: prev.currentChallengeIndex + 1
+                }));
+                setHasAnswered(false);
+                setCurrentAnswerCorrect(null);
+              } else if (session.currentChallengeIndex === session.challenges.length - 1) {
+                // Jump to completion screen from last challenge
+                setSession(prev => ({
+                  ...prev,
+                  isComplete: true,
+                  endTime: Date.now()
+                }));
+                setJustCompleted(true);
+              }
+            }}
+            disabled={session.isComplete}
+            className="px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-md transition-colors flex items-center gap-2"
+          >
+            {session.currentChallengeIndex === session.challenges.length - 1 ? 'View Results' : 'Next'}
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      )}
+
       {/* Progress */}
       <ChallengeProgress
         current={session.currentChallengeIndex + 1}
         completed={hasAnswered ? session.currentChallengeIndex + 1 : session.currentChallengeIndex}
         total={session.challenges.length}
         score={session.totalScore}
+        results={session.results}
+        currentAnswerCorrect={currentAnswerCorrect}
       />
 
       {/* Challenge */}

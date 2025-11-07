@@ -61,13 +61,19 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-async function getTodaysChallenge(dateOverride?: string, timezone?: string): Promise<DailyChallenge | null> {
+async function getTodaysChallenge(dateOverride?: string, timezone?: string, isPreview?: boolean): Promise<DailyChallenge | null> {
   try {
     const db = await getDatabase();
     const targetDate = dateOverride || getTodayInTimezone(timezone || 'UTC');
     
     // Get the daily challenge from the daily_challenges collection
-    const dailyChallenge = await db.collection('daily_challenges').findOne({ date: targetDate });
+    // In preview mode (development only), show draft challenges too
+    const query: any = { date: targetDate };
+    if (!isPreview) {
+      query.status = 'published';
+    }
+    
+    const dailyChallenge = await db.collection('daily_challenges').findOne(query);
     
     if (!dailyChallenge) {
       return null;
@@ -110,7 +116,8 @@ async function getTodaysChallenge(dateOverride?: string, timezone?: string): Pro
       date: dailyChallenge.date,
       challenges: shuffledChallenges,
       totalPoints: dailyChallenge.totalPoints,
-      estimatedTime: dailyChallenge.estimatedTime
+      estimatedTime: dailyChallenge.estimatedTime,
+      status: dailyChallenge.status || 'published' // Default to published for backward compatibility
     };
   } catch (error) {
     console.error('Failed to get daily challenge:', error);
@@ -119,7 +126,7 @@ async function getTodaysChallenge(dateOverride?: string, timezone?: string): Pro
 }
 
 interface DailyChallengePageProps {
-  searchParams: Promise<{ date?: string }>;
+  searchParams: Promise<{ date?: string; preview?: string }>;
 }
 
 export default async function DailyChallengePage({ searchParams }: DailyChallengePageProps) {
@@ -139,8 +146,11 @@ export default async function DailyChallengePage({ searchParams }: DailyChalleng
   const dateOverride = params.date && /^\d{4}-\d{2}-\d{2}$/.test(params.date) 
     ? params.date 
     : undefined;
+  
+  // Preview mode - only works in development
+  const isPreview = process.env.NODE_ENV === 'development' && params.preview === 'true';
     
-  const todaysChallenge = await getTodaysChallenge(dateOverride, clientTimezone);
+  const todaysChallenge = await getTodaysChallenge(dateOverride, clientTimezone, isPreview);
 
   if (!todaysChallenge) {
     return (
@@ -239,6 +249,21 @@ export default async function DailyChallengePage({ searchParams }: DailyChalleng
         </div>
       </header>
 
+      {isPreview && (
+        <div className="bg-purple-50 dark:bg-purple-900/20 border-b border-purple-200 dark:border-purple-800 mb-6">
+          <div className="container mx-auto px-4 py-3 max-w-2xl">
+            <div className="flex items-center justify-center space-x-2 text-purple-800 dark:text-purple-200">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
+              </svg>
+              <span className="text-sm font-medium">
+                👁️ Preview Mode - Progress will not be saved (Development only)
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {isViewingPastChallenge && (
         <div className="bg-amber-50 dark:bg-amber-900/20 border-b border-amber-200 dark:border-amber-800 mb-6">
           <div className="container mx-auto px-4 py-3 max-w-2xl">
@@ -259,7 +284,7 @@ export default async function DailyChallengePage({ searchParams }: DailyChalleng
         </div>
       )}
       
-      <DailyChallengeContainer challenge={todaysChallenge} />
+      <DailyChallengeContainer challenge={todaysChallenge} isPreview={isPreview} />
     </div>
   );
 }
