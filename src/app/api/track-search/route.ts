@@ -12,13 +12,8 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { query, resultCount } = body;
 
-    // Only track searches with no results
-    if (resultCount > 0) {
-      return NextResponse.json({ success: true, message: 'Only tracking not found queries' });
-    }
-
     const db = await getDatabase();
-    const collection = db.collection('search_not_found');
+    const collection = db.collection('search');
 
     // Get geolocation and request metadata from Vercel headers
     const headersList = await headers();
@@ -29,9 +24,11 @@ export async function POST(request: NextRequest) {
     const longitude = headersList.get('x-vercel-ip-longitude');
     const userAgent = headersList.get('user-agent');
 
-    // Create search event
+    // Create search event with status field
     const searchEvent = {
       query: query.trim(),
+      resultCount,
+      status: resultCount > 0 ? 'found' : 'not_found',
       timestamp: Date.now(),
       city: city || undefined,
       country: country || undefined,

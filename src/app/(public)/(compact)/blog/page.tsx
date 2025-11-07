@@ -5,10 +5,18 @@ export const dynamic = 'force-dynamic';
 
 const blogPosts = [
   {
+    slug: 'learning-shona-through-music-jah-prayzah',
+    title: 'Learning Shona Through Music: "Mdhara Vachauya"',
+    description: 'Explore the beautiful Shona language through "Mdhara Vachauya" by Jah Prayzah, Zimbabwe\'s musical icon',
+    date: '2025-11-06',
+    readTime: '6 min read',
+    category: 'Music & Language',
+  },
+  {
     slug: 'learning-shona-through-music-pote',
     title: 'Learning Shona Through Music: "Pote"',
     description: 'Explore the beautiful Shona language through the lyrics of "Pote" by Learn Shona ft. Shona Prince & Tamy Moyo',
-    date: '2025-01-28',
+    date: '2025-10-28',
     readTime: '5 min read',
     category: 'Music & Language',
   },

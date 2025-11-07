@@ -5,6 +5,8 @@ import SvgIcon from '@/component/icons/svg-icon';
 
 interface SearchEvent {
   query: string;
+  resultCount: number;
+  status: 'found' | 'not_found';
   timestamp: number;
   city?: string;
   country?: string;
@@ -15,12 +17,14 @@ interface TopSearch {
   _id: string;
   count: number;
   lastSearched: number;
-  locations: Array<{ city?: string; country?: string } | null>;
+  locations?: Array<{ city?: string; country?: string } | null>;
+  avgResults?: number;
 }
 
 interface SearchData {
   searches: SearchEvent[];
-  topSearches: TopSearch[];
+  topNotFoundSearches: TopSearch[];
+  topFoundSearches: TopSearch[];
   pagination: {
     page: number;
     limit: number;
@@ -68,11 +72,11 @@ export default function SearchNotFoundList() {
     );
   }
 
-  if (!data || (data.searches.length === 0 && data.topSearches.length === 0)) {
+  if (!data || (data.searches.length === 0 && data.topNotFoundSearches.length === 0 && data.topFoundSearches.length === 0)) {
     return (
       <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
         <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-          Not Found Searches
+          All Searches
         </h3>
         <div className="text-center pb-16">
           <SvgIcon
@@ -81,7 +85,7 @@ export default function SearchNotFoundList() {
             icon="Search"
           />
           <p className="text-gray-500 dark:text-gray-400">
-            No "not found" searches yet
+            No searches yet
           </p>
           <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">
             Only tracked in production
@@ -93,8 +97,8 @@ export default function SearchNotFoundList() {
 
   return (
     <div className="space-y-6">
-      {/* Top Searches */}
-      {data.topSearches.length > 0 && (
+      {/* Top Not Found Searches */}
+      {data.topNotFoundSearches.length > 0 && (
         <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -110,7 +114,7 @@ export default function SearchNotFoundList() {
 
           {showTopSearches && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {data.topSearches.map((search, index) => (
+              {data.topNotFoundSearches.map((search, index) => (
                 <div
                   key={index}
                   className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
@@ -137,11 +141,46 @@ export default function SearchNotFoundList() {
         </div>
       )}
 
-      {/* Recent Searches */}
+      {/* Top Found Searches */}
+      {data.topFoundSearches.length > 0 && (
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+              Most Searched (Found)
+            </h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {data.topFoundSearches.map((search, index) => (
+              <div
+                key={index}
+                className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg font-semibold text-gray-900 dark:text-white truncate">
+                        "{search._id}"
+                      </span>
+                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                        {search.count}x
+                      </span>
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Last: {new Date(search.lastSearched).toLocaleDateString()} • Avg: {search.avgResults?.toFixed(1)} results
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* All Recent Searches */}
       <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-            Recent Not Found Searches
+            All Recent Searches
           </h3>
           <span className="text-sm text-gray-500 dark:text-gray-400">
             {data.pagination.total} total
@@ -157,7 +196,7 @@ export default function SearchNotFoundList() {
               <div className="flex items-center space-x-3 flex-1 min-w-0">
                 <div className="flex-shrink-0">
                   <SvgIcon
-                    className="h-4 w-4 text-red-600 dark:text-red-400"
+                    className={`h-4 w-4 ${search.status === 'found' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}
                     variant="default"
                     icon="Search"
                   />
@@ -166,6 +205,13 @@ export default function SearchNotFoundList() {
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-sm font-medium text-gray-900 dark:text-white truncate">
                       "{search.query}"
+                    </span>
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                      search.status === 'found' 
+                        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                        : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                    }`}>
+                      {search.status === 'found' ? `${search.resultCount} results` : 'Not found'}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 mt-1 text-xs text-gray-500 dark:text-gray-400">

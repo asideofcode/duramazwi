@@ -9,10 +9,10 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit;
     
     const db = await getDatabase();
-    const collection = db.collection('search_not_found');
+    const collection = db.collection('search');
     
     // Get searches with aggregation to count frequency
-    const [searches, total, topSearches] = await Promise.all([
+    const [searches, total, topNotFoundSearches, topFoundSearches] = await Promise.all([
       collection
         .find({})
         .sort({ timestamp: -1 })
@@ -20,7 +20,9 @@ export async function GET(request: NextRequest) {
         .limit(limit)
         .toArray(),
       collection.countDocuments({}),
+      // Top searches that were NOT found
       collection.aggregate([
+        { $match: { status: 'not_found' } },
         {
           $group: {
             _id: '$query',
@@ -39,6 +41,20 @@ export async function GET(request: NextRequest) {
         },
         { $sort: { count: -1 } },
         { $limit: 10 }
+      ]).toArray(),
+      // Top searches that WERE found
+      collection.aggregate([
+        { $match: { status: 'found' } },
+        {
+          $group: {
+            _id: '$query',
+            count: { $sum: 1 },
+            lastSearched: { $max: '$timestamp' },
+            avgResults: { $avg: '$resultCount' }
+          }
+        },
+        { $sort: { count: -1 } },
+        { $limit: 10 }
       ]).toArray()
     ]);
     
@@ -46,7 +62,8 @@ export async function GET(request: NextRequest) {
       success: true,
       data: {
         searches,
-        topSearches,
+        topNotFoundSearches,
+        topFoundSearches,
         pagination: {
           page,
           limit,

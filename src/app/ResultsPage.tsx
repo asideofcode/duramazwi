@@ -109,22 +109,22 @@ function SearchResults({ searchQuery, onError, router }: any) {
       setTimeout(() => {
         const matchedData = dataService.search(query);
 
+        // Track all searches in database (production only)
+        fetch('/api/track-search', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query,
+            resultCount: matchedData.length
+          })
+        }).catch(err => console.error('Failed to track search:', err));
+
         if (matchedData.length === 0) {
           globalThis.gtag?.("event", "search_performed", {
             search_term: query,
             result_status: "no_results",
             result_count: 0,
           });
-
-          // Track not found searches in database (production only)
-          fetch('/api/track-search', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              query,
-              resultCount: 0
-            })
-          }).catch(err => console.error('Failed to track search:', err));
 
           // Set empty results to show the "Tineurombo" message in SearchResults component
           setSearchResults([]);

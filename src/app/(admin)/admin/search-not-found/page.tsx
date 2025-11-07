@@ -12,10 +12,10 @@ export default function SearchNotFoundPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              Not Found Searches
+              Search Analytics
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
-              Track searches that returned no results to identify missing words
+              Track all user searches to understand usage patterns and identify missing words
             </p>
           </div>
           <Link
@@ -41,7 +41,7 @@ export default function SearchNotFoundPage() {
               About Search Tracking
             </h3>
             <p className="text-sm text-blue-800 dark:text-blue-200">
-              This feature tracks searches that return no results. It only works in production to avoid tracking development searches. Use this data to identify missing words and improve the dictionary.
+              This feature tracks all user searches (both successful and unsuccessful) with geolocation data. It only works in production to avoid tracking development searches. Use this data to identify missing words, understand usage patterns, and improve the dictionary.
             </p>
           </div>
         </div>
