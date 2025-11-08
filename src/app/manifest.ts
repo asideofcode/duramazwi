@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next'
- 
+
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'Shona Dictionary - Duramazwi',
@@ -10,21 +10,33 @@ export default function manifest(): MetadataRoute.Manifest {
     background_color: '#ffffff',
     theme_color: '#2563eb',
     icons: [
+      // {
+      //   src: '/favicon.ico',
+      //   sizes: 'any',
+      //   type: 'image/x-icon',
+      // },
+      // {
+      //   src: '/icon',
+      //   sizes: '192x192',
+      //   type: 'image/png',
+      // },
+      // {
+      //   src: '/apple-icon',
+      //   sizes: '180x180',
+      //   type: 'image/png',
+      // },
       {
-        src: '/favicon.ico',
-        sizes: 'any',
-        type: 'image/x-icon',
+        "src": "/web-app-manifest-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "maskable"
       },
       {
-        src: '/icon',
-        sizes: '192x192',
-        type: 'image/png',
-      },
-      {
-        src: '/apple-icon',
-        sizes: '180x180',
-        type: 'image/png',
-      },
+        "src": "/web-app-manifest-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "maskable"
+      }
     ],
   }
 }

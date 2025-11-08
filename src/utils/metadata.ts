@@ -8,6 +8,12 @@ const createBaseMetadata = (): Metadata => {
     keywords:
       "Shona dictionary, Shona words, Shona language, Shona definitions, meanings, learn Shona, Shona-English dictionary, Shona translation, Shona pronunciation",
     google: "notranslate",
+    applicationName: "Shona Dictionary",
+    appleWebApp: {
+      capable: true,
+      title: "Shona Dictionary",
+      statusBarStyle: "default" as const,
+    },
     alternates: {
       canonical: "https://shonadictionary.com"
     },
