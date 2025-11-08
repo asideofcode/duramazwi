@@ -77,7 +77,7 @@ const lyricsBlocks: LyricBlock[] = [
       { shona: 'Ndakunzwa kunge ndiri Romeo', english: 'Got me feeling like Romeo', displayOrder: 'english-first' },
       { shona: 'Iwewe uri Juliet wangu', english: "And you're my juliet,", displayOrder: 'english-first' },
       { shona: 'Nguva dzose, ndoda kuziva', english: 'Every minute, every second, I wanna know', displayOrder: 'english-first' },
-      { shona: 'Kuti uripi', english: 'Kuti (that) where you at', links: [{ word: 'Kuti', url: '/word/ti' }] },
+      { shona: 'Kuti uripi', english: 'Kuti (that) where you at', links: [{ word: 'Kuti', url: '/word/ti' }],  displayOrder: 'english-first' },
       { shona: 'Akangoti Pote', english: 'When she leaves my side', links: [{ word: 'ti', url: '/word/ti' }, { word: 'pote', url: '/word/ti%20pote' }] },
       { shona: 'Hana yotorova', english: 'My heart skips a beat', links: [{ word: 'Hana', url: '/word/hana' }, { word: 'rova', url: '/word/rova' }] },
       { shona: 'Akangoti Simu', english: 'If she just stands up', links: [{ word: 'ti', url: '/word/ti' }, { word: 'Simu', url: '/word/simuka' }] },
