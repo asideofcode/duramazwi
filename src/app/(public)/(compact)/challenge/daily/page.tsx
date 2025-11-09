@@ -5,6 +5,7 @@ import SoundControls from '@/components/SoundControls';
 import SearchBar from "@/component/search-bar.component";
 import { createBreadcrumbs } from "@/utils/breadcrumbs";
 import BreadcrumbStructuredData from "@/components/BreadcrumbStructuredData";
+import CollapsibleEmailSignup from '@/components/challenge/CollapsibleEmailSignup';
 import { getDatabase } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { getTodayInTimezone, isToday } from '@/utils/timezone';
@@ -177,6 +178,12 @@ export default async function DailyChallengePage({ searchParams }: DailyChalleng
             We're preparing an exciting new daily challenge just for you!
           </p>
 
+
+          {/* Email Notification Signup */}
+          <div className="my-8">
+            <CollapsibleEmailSignup />
+          </div>
+
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-xl mb-8 border border-gray-200 dark:border-gray-700">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
               What to Expect:
@@ -196,6 +203,7 @@ export default async function DailyChallengePage({ searchParams }: DailyChalleng
               </div>
             </div>
           </div>
+
 
           {/* Countdown or motivational message */}
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg p-4 mb-6">

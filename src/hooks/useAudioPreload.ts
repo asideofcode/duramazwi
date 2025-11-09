@@ -1,6 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
+import { json } from 'stream/consumers';
 
 export type AudioLoadState = 'loading' | 'loaded' | 'error';
+
+const safeLog = (...rest) => {
+  if (process.env.NODE_ENV != 'production') {
+    console.log(...rest)
+  }
+}
 
 export interface AudioPreloadResult {
   src: string;
@@ -22,36 +29,52 @@ export function useAudioPreload(src: string): AudioPreloadResult {
 
   useEffect(() => {
     if (!src) {
+      safeLog('🚨 Audio Error: No src provided');
       setLoadState('error');
       return;
     }
 
+    safeLog(`🎵 Loading audio: ${src}`);
     setLoadState('loading');
 
     const audio = new Audio();
     audioRef.current = audio;
     
     const handleLoadedMetadata = () => {
+      safeLog(`✅ Metadata loaded! Duration: ${audio.duration}s`);
       setLoadState('loaded');
       // Only set duration if it's valid
       if (audio.duration && !isNaN(audio.duration) && isFinite(audio.duration)) {
         setDuration(audio.duration);
+      } else {
+        safeLog(`⚠️ Invalid duration: ${audio.duration}`);
       }
     };
 
     const handleCanPlay = () => {
+      safeLog(`▶️ Can play! Duration: ${audio.duration}s`);
       if (audio.duration && !isNaN(audio.duration) && isFinite(audio.duration)) {
         setDuration(audio.duration);
       }
     };
 
     const handleDurationChange = () => {
+      safeLog(`⏱️ Duration changed: ${audio.duration}s`);
       if (audio.duration && !isNaN(audio.duration) && isFinite(audio.duration)) {
         setDuration(audio.duration);
       }
     };
 
-    const handleError = () => {
+    const handleError = (e) => {
+      const error = e.currentTarget.error;
+      const errorDetails = {
+        code: error?.code,
+        message: error?.message,
+        src: src,
+        networkState: audio.networkState,
+        readyState: audio.readyState
+      };
+      safeLog(`❌ Audio Error:\n${JSON.stringify(errorDetails, null, 2)}`);
       setLoadState('error');
     };
 
