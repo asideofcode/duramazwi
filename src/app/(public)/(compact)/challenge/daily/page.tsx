@@ -154,29 +154,96 @@ export default async function DailyChallengePage({ searchParams }: DailyChalleng
   const todaysChallenge = await getTodaysChallenge(dateOverride, clientTimezone, isPreview);
 
   if (!todaysChallenge) {
+    // Calculate yesterday's date for the rewind button
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayString = yesterday.toISOString().split('T')[0];
+    const targetDate = dateOverride || getTodayInTimezone(clientTimezone);
+    const isViewingToday = !dateOverride || isToday(targetDate, clientTimezone);
+
     return (
-      <div className="min-h-screen dark:from-gray-900 dark:via-purple-900 dark:to-indigo-900 flex items-center justify-center">
-        <div className="text-center p-8 max-w-2xl mx-auto">
-          {/* Animated Icon */}
-          <div className="mb-8 relative">
-            <div className="w-32 h-32 mx-auto bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-2xl animate-pulse">
-              <svg className="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-              </svg>
+      <div className="min-h-screen">
+        <BreadcrumbStructuredData breadcrumbs={createBreadcrumbs.dailyChallenge()} />
+        
+        {/* Search Bar */}
+        <header>
+          <div id="search-bar">
+            <SearchBar />
+          </div>
+        </header>
+
+        {/* Header with date and navigation */}
+        <div className="py-8">
+          <div className="mb-8">
+            <div className="flex items-start justify-between mb-2">
+              <div className="flex-1">
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                  Daily Shona Challenge
+                </h1>
+                <div className="flex items-center gap-2 mt-1 flex-wrap">
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {new Date(targetDate).toLocaleDateString('en-US', { 
+                      weekday: 'long', 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
+                  </p>
+                  {isViewingToday && (
+                    <a
+                      href={`/challenge/daily?date=${yesterdayString}`}
+                      className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-md transition-colors"
+                      title="View yesterday's challenge"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0019 16V8a1 1 0 00-1.6-.8l-5.333 4zM4.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0011 16V8a1 1 0 00-1.6-.8l-5.334 4z" />
+                      </svg>
+                      <span>Yesterday</span>
+                    </a>
+                  )}
+                  {!isViewingToday && (
+                    <a
+                      href="/challenge/daily"
+                      className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-md transition-colors"
+                      title="View today's challenge"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
+                      <span>Today</span>
+                    </a>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <SoundControls compact={true} showLabel={false} />
+              </div>
             </div>
-            {/* Floating sparkles */}
-            <div className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full animate-bounce delay-100"></div>
-            <div className="absolute -bottom-2 -left-2 w-4 h-4 bg-pink-400 rounded-full animate-bounce delay-300"></div>
-            <div className="absolute top-4 -left-4 w-3 h-3 bg-green-400 rounded-full animate-bounce delay-500"></div>
           </div>
 
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            A fun challenge is on its way! ✨
-          </h1>
+          {/* No Challenge Content */}
+          <div className="rounded-lg p-8 text-center">
+            {/* Animated Icon */}
+            <div className="mb-8 relative text-center">
+              <div className="w-32 h-32 mx-auto bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-2xl animate-pulse">
+                <svg className="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                </svg>
+              </div>
+              {/* Floating sparkles */}
+              <div className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full animate-bounce delay-100"></div>
+              <div className="absolute -bottom-2 -left-2 w-4 h-4 bg-pink-400 rounded-full animate-bounce delay-300"></div>
+              <div className="absolute top-4 -left-4 w-3 h-3 bg-green-400 rounded-full animate-bounce delay-500"></div>
+            </div>
+
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent text-center">
+              A fun challenge is on its way! ✨
+            </h2>
           
-          <p className="text-xl text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
-            We're preparing an exciting new daily challenge just for you!
-          </p>
+            <p className="text-xl text-gray-700 dark:text-gray-300 mb-6 leading-relaxed text-center">
+              We're preparing an exciting new daily challenge just for you!
+            </p>
 
 
           {/* Email Notification Signup */}
@@ -232,14 +299,15 @@ export default async function DailyChallengePage({ searchParams }: DailyChalleng
           <div className="mt-8 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
             <p className="text-sm text-yellow-800 dark:text-yellow-200">
               <strong>Did you know?</strong> Shona is spoken by over 10 million people! 
-              Tomorrow's challenge will help you join this amazing community of speakers. 🌍
+              The challenge will help you join this amazing community of speakers. 🌍
             </p>
           </div>
 
           {/* Subtle call to action */}
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-6">
-            Check back tomorrow for your daily dose of Shona learning! 🚀
+            Check back soon for your daily dose of Shona learning! 🚀
           </p>
+          </div>
         </div>
       </div>
     );
