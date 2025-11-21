@@ -6,6 +6,7 @@ import SearchBar from "@/component/search-bar.component";
 import { createBreadcrumbs } from "@/utils/breadcrumbs";
 import BreadcrumbStructuredData from "@/components/BreadcrumbStructuredData";
 import CollapsibleEmailSignup from '@/components/challenge/CollapsibleEmailSignup';
+import DailyChallengeHeader from '@/components/challenge/DailyChallengeHeader';
 import { getDatabase } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { getTodayInTimezone, isToday } from '@/utils/timezone';
@@ -154,13 +155,7 @@ export default async function DailyChallengePage({ searchParams }: DailyChalleng
   const todaysChallenge = await getTodaysChallenge(dateOverride, clientTimezone, isPreview);
 
   if (!todaysChallenge) {
-    // Calculate yesterday's date for the rewind button
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayString = yesterday.toISOString().split('T')[0];
     const targetDate = dateOverride || getTodayInTimezone(clientTimezone);
-    const isViewingToday = !dateOverride || isToday(targetDate, clientTimezone);
 
     return (
       <div className="min-h-screen">
@@ -175,52 +170,7 @@ export default async function DailyChallengePage({ searchParams }: DailyChalleng
 
         {/* Header with date and navigation */}
         <div className="py-8">
-          <div className="mb-8">
-            <div className="flex items-start justify-between mb-2">
-              <div className="flex-1">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  Daily Shona Challenge
-                </h1>
-                <div className="flex items-center gap-2 mt-1 flex-wrap">
-                  <p className="text-gray-600 dark:text-gray-400">
-                    {new Date(targetDate).toLocaleDateString('en-US', { 
-                      weekday: 'long', 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric' 
-                    })}
-                  </p>
-                  {isViewingToday && (
-                    <a
-                      href={`/challenge/daily?date=${yesterdayString}`}
-                      className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-md transition-colors"
-                      title="View yesterday's challenge"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0019 16V8a1 1 0 00-1.6-.8l-5.333 4zM4.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0011 16V8a1 1 0 00-1.6-.8l-5.334 4z" />
-                      </svg>
-                      <span>Yesterday</span>
-                    </a>
-                  )}
-                  {!isViewingToday && (
-                    <a
-                      href="/challenge/daily"
-                      className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-md transition-colors"
-                      title="View today's challenge"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                      </svg>
-                      <span>Today</span>
-                    </a>
-                  )}
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <SoundControls compact={true} showLabel={false} />
-              </div>
-            </div>
-          </div>
+          <DailyChallengeHeader date={targetDate} />
 
           {/* No Challenge Content */}
           <div className="rounded-lg p-8 text-center">
@@ -288,6 +238,7 @@ export default async function DailyChallengePage({ searchParams }: DailyChalleng
               🔍 Explore Dictionary
             </Link>
             <Link
+              scroll={false}
               href="/random"
               className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
@@ -334,26 +285,6 @@ export default async function DailyChallengePage({ searchParams }: DailyChalleng
               </svg>
               <span className="text-sm font-medium">
                 👁️ Preview Mode - Progress will not be saved (Development only)
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {isViewingPastChallenge && (
-        <div className="bg-amber-50 dark:bg-amber-900/20 border-b border-amber-200 dark:border-amber-800 mb-6">
-          <div className="container mx-auto px-4 py-3 max-w-2xl">
-            <div className="flex items-center justify-center space-x-2 text-amber-800 dark:text-amber-200">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-              </svg>
-              <span className="text-sm font-medium">
-                📅 Viewing challenge from {new Date(dateOverride).toLocaleDateString('en-US', { 
-                  weekday: 'long', 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
-                })}
               </span>
             </div>
           </div>
