@@ -8,6 +8,8 @@ export default function ChallengesAdminPage() {
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'multiple_choice' | 'audio_recognition' | 'translation_builder'>('all');
+  const [challengeUsage, setChallengeUsage] = useState<Map<string, string[]>>(new Map());
+  const [loadingUsage, setLoadingUsage] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     fetchChallenges();
@@ -36,6 +38,42 @@ export default function ChallengesAdminPage() {
     }
   };
 
+  // Fetch usage data for a challenge
+  const fetchChallengeUsage = async (challengeId: string) => {
+    if (challengeUsage.has(challengeId) || loadingUsage.has(challengeId)) {
+      return; // Already loaded or loading
+    }
+
+    setLoadingUsage(prev => new Set(prev).add(challengeId));
+
+    try {
+      const response = await fetch(`/api/admin/challenges/${challengeId}/usage`);
+      const result = await response.json();
+
+      if (result.success) {
+        setChallengeUsage(prev => new Map(prev).set(challengeId, result.data.usedInDates));
+      }
+    } catch (error) {
+      console.error('Error fetching challenge usage:', error);
+    } finally {
+      setLoadingUsage(prev => {
+        const next = new Set(prev);
+        next.delete(challengeId);
+        return next;
+      });
+    }
+  };
+
+  // Format date for display
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString + 'T00:00:00');
+    return date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric',
+      year: 'numeric'
+    });
+  };
+
   const handleDelete = async (challengeId: string) => {
     if (!confirm('Are you sure you want to delete this challenge?')) {
       return;
@@ -62,6 +100,13 @@ export default function ChallengesAdminPage() {
   const filteredChallenges = challenges.filter(challenge => 
     filter === 'all' || challenge.type === filter
   );
+
+  // Fetch usage data for visible challenges
+  useEffect(() => {
+    filteredChallenges.forEach(challenge => {
+      fetchChallengeUsage(challenge.id);
+    });
+  }, [filteredChallenges.map(c => c.id).join(',')]);
 
   const getChallengeTypeLabel = (type: string) => {
     switch (type) {
@@ -218,6 +263,35 @@ export default function ChallengesAdminPage() {
                         {challenge.explanation}
                       </div>
                     )}
+                    {/* Usage Information */}
+                    <div className="mt-2">
+                      {loadingUsage.has(challenge.id) ? (
+                        <div className="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400">
+                          <div className="animate-spin h-3 w-3 border-2 border-gray-400 border-t-transparent rounded-full"></div>
+                          <span>Loading usage...</span>
+                        </div>
+                      ) : challengeUsage.has(challenge.id) && challengeUsage.get(challenge.id)?.length === 0 ? (
+                        <div className="text-xs text-green-600 dark:text-green-400">
+                          ✓ Not used in any daily challenges yet
+                        </div>
+                      ) : challengeUsage.has(challenge.id) && challengeUsage.get(challenge.id)!.length > 0 ? (
+                        <div className="text-xs">
+                          <div className="text-orange-600 dark:text-orange-400 font-medium mb-1">
+                            ⚠️ Used in {challengeUsage.get(challenge.id)?.length} daily challenge{challengeUsage.get(challenge.id)!.length > 1 ? 's' : ''}:
+                          </div>
+                          <div className="flex flex-wrap gap-1">
+                            {challengeUsage.get(challenge.id)?.map((date) => (
+                              <span
+                                key={date}
+                                className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200"
+                              >
+                                {formatDate(date)}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      ) : null}
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">

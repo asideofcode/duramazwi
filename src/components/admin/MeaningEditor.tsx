@@ -48,14 +48,14 @@ export default function MeaningEditor({ meanings, onChange, word, entryId }: Mea
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
           Meanings & Definitions
         </h3>
         <button
           type="button"
           onClick={addMeaning}
-          className="inline-flex items-center space-x-2 px-4 py-2 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-md transition-colors font-medium"
+          className="inline-flex items-center justify-center space-x-2 px-4 py-2 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-md transition-colors font-medium w-full sm:w-auto"
         >
           <SvgIcon className="h-4 w-4" variant="default" icon="Plus" />
           <span>Add Meaning</span>
@@ -64,8 +64,8 @@ export default function MeaningEditor({ meanings, onChange, word, entryId }: Mea
 
       <div className="space-y-6">
         {meanings.map((meaning, index) => (
-          <div key={index} className="border-2 border-gray-200 dark:border-gray-700 rounded-xl p-6 bg-gray-50 dark:bg-gray-900/50">
-            <div className="flex items-start justify-between mb-4">
+          <div key={index} className="border-2 border-gray-200 dark:border-gray-700 rounded-xl p-4 sm:p-6 bg-gray-50 dark:bg-gray-900/50">
+            <div className="flex items-start justify-between mb-4 gap-2">
               <h4 className="text-base font-semibold text-gray-800 dark:text-gray-200">
                 Meaning {index + 1}
               </h4>
@@ -73,11 +73,11 @@ export default function MeaningEditor({ meanings, onChange, word, entryId }: Mea
                 <button
                   type="button"
                   onClick={() => removeMeaning(index)}
-                  className="inline-flex items-center space-x-1 px-3 py-1 text-red-600 hover:text-red-800 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors text-sm font-medium"
+                  className="inline-flex items-center space-x-1 px-2 sm:px-3 py-1 text-red-600 hover:text-red-800 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors text-sm font-medium flex-shrink-0"
                   title="Remove meaning"
                 >
                   <span className="text-sm font-bold">×</span>
-                  <span>Remove</span>
+                  <span className="hidden sm:inline">Remove</span>
                 </button>
               )}
             </div>

@@ -3,12 +3,15 @@ import { existsSync } from 'fs';
 import path from 'path';
 import dataService from './dataService';
 import { DictionaryEntry } from '@/components/dictionary-entry-clean';
+import { getDatabase } from '@/lib/mongodb';
 
 // Types for admin operations
 export interface AdminDictionaryEntry extends DictionaryEntry {
   _id?: string;
   createdAt?: string;
   updatedAt?: string;
+  lastReviewed?: string;
+  needsReview?: boolean;
   status?: 'published' | 'draft' | 'archived';
 }
 
@@ -41,13 +44,16 @@ class AdminDataService {
       const fileContent = await readFile(this.dataPath, 'utf-8');
       const rawData = JSON.parse(fileContent);
       
-      // Transform data to include admin fields
-      this.data = rawData.map((entry: DictionaryEntry, index: number) => ({
+      // Transform data to include admin fields, preserving existing metadata
+      this.data = rawData.map((entry: AdminDictionaryEntry, index: number) => ({
         ...entry,
+        // Preserve existing metadata or set defaults
         _id: entry._id || `entry_${index}_${Date.now()}`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        status: 'published' as const
+        createdAt: entry.createdAt || new Date().toISOString(),
+        updatedAt: entry.updatedAt || new Date().toISOString(),
+        lastReviewed: entry.lastReviewed || undefined,
+        needsReview: entry.needsReview || false,
+        status: entry.status || 'published' as const
       }));
       
       this.isLoaded = true;
@@ -63,14 +69,74 @@ class AdminDataService {
    */
   private async saveData(): Promise<void> {
     try {
-      // Remove admin-specific fields before saving to maintain compatibility
-      const cleanData = this.data.map(({ _id, createdAt, updatedAt, status, ...entry }) => entry);
+      // Keep all metadata fields in the JSON file for persistence
+      // This includes: _id, createdAt, updatedAt, lastReviewed, needsReview, status
+      const dataToSave = this.data.map(entry => ({
+        ...entry,
+        // Ensure metadata fields are present
+        _id: entry._id,
+        createdAt: entry.createdAt,
+        updatedAt: entry.updatedAt,
+        lastReviewed: entry.lastReviewed,
+        needsReview: entry.needsReview,
+        status: entry.status
+      }));
       
-      await writeFile(this.dataPath, JSON.stringify(cleanData, null, 2), 'utf-8');
-      console.log(`💾 Saved ${this.data.length} entries to data.json`);
+      await writeFile(this.dataPath, JSON.stringify(dataToSave, null, 2), 'utf-8');
+      console.log(`💾 Saved ${this.data.length} entries to data.json with metadata`);
     } catch (error) {
       console.error('❌ Error saving data:', error);
       throw new Error('Failed to save dictionary data');
+    }
+  }
+
+  /**
+   * Sync a single entry to MongoDB database
+   */
+  private async syncEntryToDatabase(entry: AdminDictionaryEntry): Promise<void> {
+    try {
+      const db = await getDatabase();
+      const collection = db.collection('words_new_schema');
+      
+      // Upsert the single entry to MongoDB
+      await collection.updateOne(
+        { word: entry.word },
+        { 
+          $set: {
+            word: entry.word,
+            meanings: entry.meanings,
+            createdAt: entry.createdAt,
+            updatedAt: entry.updatedAt,
+            lastReviewed: entry.lastReviewed,
+            needsReview: entry.needsReview,
+            status: entry.status
+          }
+        },
+        { upsert: true }
+      );
+      
+      console.log(`🗄️  Synced entry "${entry.word}" to MongoDB`);
+    } catch (error) {
+      // Log error but don't throw - we don't want to fail the save if DB sync fails
+      console.error(`⚠️  Warning: Failed to sync entry "${entry.word}" to MongoDB:`, error);
+    }
+  }
+
+  /**
+   * Delete a single entry from MongoDB database
+   */
+  private async deleteEntryFromDatabase(word: string): Promise<void> {
+    try {
+      const db = await getDatabase();
+      const collection = db.collection('words_new_schema');
+      
+      // Delete the entry from MongoDB
+      await collection.deleteOne({ word });
+      
+      console.log(`🗑️  Deleted entry "${word}" from MongoDB`);
+    } catch (error) {
+      // Log error but don't throw - we don't want to fail the delete if DB sync fails
+      console.error(`⚠️  Warning: Failed to delete entry "${word}" from MongoDB:`, error);
     }
   }
 
@@ -218,6 +284,9 @@ class AdminDataService {
       this.data.push(newEntry);
       await this.saveData();
       
+      // Sync the new entry to MongoDB
+      await this.syncEntryToDatabase(newEntry);
+      
       return {
         success: true,
         message: 'Entry created successfully',
@@ -270,6 +339,9 @@ class AdminDataService {
       this.data[entryIndex] = updatedEntry;
       await this.saveData();
       
+      // Sync the updated entry to MongoDB
+      await this.syncEntryToDatabase(updatedEntry);
+      
       return {
         success: true,
         message: 'Entry updated successfully',
@@ -311,6 +383,9 @@ class AdminDataService {
       const deletedEntry = this.data[entryIndex];
       this.data.splice(entryIndex, 1);
       await this.saveData();
+      
+      // Delete from MongoDB
+      await this.deleteEntryFromDatabase(deletedEntry.word);
       
       return {
         success: true,

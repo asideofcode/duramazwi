@@ -67,17 +67,17 @@ export default function ExampleEditor({ examples, onChange, word, definition, pa
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
         <h5 className="text-sm font-medium text-gray-700 dark:text-gray-300">
           Examples
         </h5>
-        <div className="flex items-center space-x-2">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
           {word && definition && (
             <button
               type="button"
               onClick={generateExamples}
               disabled={isGenerating}
-              className="inline-flex items-center space-x-1 px-3 py-1 text-sm bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center justify-center space-x-1 px-3 py-1 text-sm bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               title="Generate AI examples"
             >
               <span className="text-sm">✨</span>
@@ -87,7 +87,7 @@ export default function ExampleEditor({ examples, onChange, word, definition, pa
           <button
             type="button"
             onClick={addExample}
-            className="inline-flex items-center space-x-1 px-3 py-1 text-sm bg-green-100 hover:bg-green-200 text-green-700 rounded-md transition-colors"
+            className="inline-flex items-center justify-center space-x-1 px-3 py-1 text-sm bg-green-100 hover:bg-green-200 text-green-700 rounded-md transition-colors"
           >
             <SvgIcon className="h-4 w-4" variant="default" icon="Plus" />
             <span>Add Example</span>
@@ -102,7 +102,7 @@ export default function ExampleEditor({ examples, onChange, word, definition, pa
       ) : (
         <div className="space-y-3">
           {examples.map((example, index) => (
-            <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-3 p-3 border border-gray-200 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-800">
+            <div key={index} className="flex flex-col gap-3 p-3 border border-gray-200 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-800">
               <div>
                 <div className="flex items-center justify-between mb-1">
                   <label className="block text-xs font-medium text-gray-600 dark:text-gray-400">

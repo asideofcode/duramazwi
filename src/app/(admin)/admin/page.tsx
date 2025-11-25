@@ -5,6 +5,7 @@ import SvgIcon from "@/component/icons/svg-icon";
 import { useAdminEntries } from "@/hooks/useAdminEntries";
 import { StatsCardSkeleton } from "@/components/admin/LoadingPlaceholders";
 import RecentActivity from "@/components/admin/RecentActivity";
+import ChallengeCompletionChart from "@/components/admin/ChallengeCompletionChart";
 
 export default function AdminDashboard() {
   const { stats, loading, error, fetchStats } = useAdminEntries({ autoFetch: true });
@@ -189,6 +190,9 @@ export default function AdminDashboard() {
           </button>
         </div>
       </div>
+
+      {/* Challenge Completion Chart */}
+      <ChallengeCompletionChart />
 
       {/* Recent Activity */}
       <RecentActivity />

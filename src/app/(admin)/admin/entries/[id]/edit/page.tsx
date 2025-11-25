@@ -10,6 +10,7 @@ import WordInput from '@/components/admin/WordInput';
 import StatusSelector from '@/components/admin/StatusSelector';
 import MeaningEditor from '@/components/admin/MeaningEditor';
 import AudioManager from '@/components/admin/AudioManager';
+import EntryMetadata from '@/components/admin/EntryMetadata';
 
 interface EditEntryPageProps {
   params: Promise<{ id: string }>;
@@ -82,6 +83,15 @@ export default function EditEntryPage({ params }: EditEntryPageProps) {
     
     // Always just show the base word for the header
     return entry.word;
+  };
+
+  const handleMarkAsReviewed = () => {
+    const now = new Date().toISOString();
+    setFormData({ 
+      ...formData, 
+      needsReview: false,
+      lastReviewed: now
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -174,7 +184,7 @@ export default function EditEntryPage({ params }: EditEntryPageProps) {
   }
 
   return (
-    <div className="space-y-8 p-6">
+    <div className="space-y-4 sm:space-y-8 p-3 sm:p-6">
       {/* Page Header */}
       <div className="space-y-4">
         <Link
@@ -186,22 +196,22 @@ export default function EditEntryPage({ params }: EditEntryPageProps) {
         </Link>
         
         <div>
-          <div className="flex items-center space-x-4 mb-2">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+          <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 mb-2">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white break-words">
               Edit Entry: {formatWordDisplay(entry)}
             </h1>
             {entry?.word && (
               <Link
                 href={`/word/${encodeURIComponent(entry.word)}`}
                 target="_blank"
-                className="inline-flex items-center space-x-2 px-3 py-2 bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800 text-blue-700 dark:text-blue-300 rounded-md transition-colors text-sm"
+                className="inline-flex items-center justify-center space-x-2 px-3 py-2 bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800 text-blue-700 dark:text-blue-300 rounded-md transition-colors text-sm w-full sm:w-auto"
               >
                 <SvgIcon className="h-4 w-4" variant="default" icon="Search" />
                 <span>View Public Entry</span>
               </Link>
             )}
           </div>
-          <p className="text-lg text-gray-600 dark:text-gray-400">
+          <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400">
             Modify the dictionary entry details
           </p>
         </div>
@@ -215,7 +225,7 @@ export default function EditEntryPage({ params }: EditEntryPageProps) {
           </h2>
         </div>
         
-        <form onSubmit={handleSubmit} className="p-8 space-y-8">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8">
           {error && (
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
               <p className="text-red-800 dark:text-red-200">{error}</p>
@@ -242,23 +252,30 @@ export default function EditEntryPage({ params }: EditEntryPageProps) {
               entryId={entryId || undefined}
             />
 
+            <EntryMetadata
+              entry={entry}
+              needsReview={formData.needsReview || false}
+              onNeedsReviewChange={(value) => setFormData({ ...formData, needsReview: value })}
+              onMarkAsReviewed={handleMarkAsReviewed}
+            />
+
             <StatusSelector
               value={formData.status}
               onChange={(value) => setFormData({ ...formData, status: value })}
             />
           </div>
 
-          <div className="flex justify-end space-x-4 pt-8 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex flex-col sm:flex-row sm:justify-end space-y-3 sm:space-y-0 sm:space-x-4 pt-6 sm:pt-8 border-t border-gray-200 dark:border-gray-700">
             <Link
               href="/admin/entries"
-              className="px-6 py-3 text-base font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 transition-colors"
+              className="w-full sm:w-auto text-center px-6 py-3 text-base font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 transition-colors"
             >
               Cancel
             </Link>
             <button
               type="submit"
               disabled={saving || !formData.word.trim() || !formData.meanings[0]?.definitions[0]?.definition?.trim()}
-              className="px-8 py-3 text-base font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-full sm:w-auto px-8 py-3 text-base font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {saving ? 'Saving Changes...' : 'Save Changes'}
             </button>

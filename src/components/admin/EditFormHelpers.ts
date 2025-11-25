@@ -20,6 +20,8 @@ export interface EditFormData {
   word: string;
   meanings: FormMeaning[];
   status: 'published' | 'draft' | 'archived';
+  needsReview?: boolean;
+  lastReviewed?: string;
 }
 
 // Convert entry data to form data
@@ -49,7 +51,9 @@ export const entryToFormData = (entry: AdminDictionaryEntry): EditFormData => {
             ]
           }
         ],
-    status: entry.status || 'published'
+    status: entry.status || 'published',
+    needsReview: entry.needsReview || false,
+    lastReviewed: entry.lastReviewed
   };
 };
 
@@ -66,7 +70,9 @@ export const formDataToEntry = (formData: EditFormData) => {
     })).filter(meaning => 
       meaning.definitions.length > 0 || meaning.partOfSpeech.trim()
     ), // Remove empty meanings
-    status: formData.status
+    status: formData.status,
+    needsReview: formData.needsReview,
+    lastReviewed: formData.lastReviewed
   };
 };
 
