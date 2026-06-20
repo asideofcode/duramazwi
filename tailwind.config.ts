@@ -3,7 +3,7 @@ import type { Config } from "tailwindcss";
 const { fontFamily } = require("tailwindcss/defaultTheme");
 
 export default {
-  darkMode: "media",
+  darkMode: ["selector", '[data-theme="dark"]'],
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -18,8 +18,17 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        background: "var(--color-background)",
+        foreground: "var(--color-text)",
+        primary: "var(--color-primary)",
+        accent: "var(--color-accent)",
+        danger: "var(--color-danger)",
+        surface: "var(--color-surface)",
+        "surface-raised": "var(--color-surface-raised)",
+        "theme-text": "var(--color-text)",
+        muted: "var(--color-muted)",
+        "theme-border": "var(--color-border)",
+        "hero-text": "var(--color-hero-text)",
       },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],

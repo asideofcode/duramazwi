@@ -92,7 +92,7 @@ export default function ChallengeHero({
 
       {/* Subtitle if provided */}
       {subtitle && (
-        <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
+        <p className="text-sm text-[var(--color-muted)] text-center">
           {subtitle}
         </p>
       )}

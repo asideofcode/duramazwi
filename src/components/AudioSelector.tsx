@@ -157,7 +157,7 @@ export default function AudioSelector({
         type="button"
         onClick={(e) => isPlaying ? stopAudio(e) : playAudio(e)}
         disabled={!selectedRecording}
-        className="w-8 h-8 flex items-center justify-center bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-full transition-colors"
+        className="w-8 h-8 flex items-center justify-center bg-[var(--color-primary)] hover:brightness-95 disabled:bg-[var(--color-border)] disabled:text-[var(--color-muted)] text-[var(--color-hero-text)] rounded-full transition-colors"
         title={isPlaying ? 'Stop audio' : 'Play audio'}
       >
         {isPlaying ? (
@@ -183,7 +183,7 @@ export default function AudioSelector({
               stopAudio();
             }
           }}
-          className="text-xs px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-1 focus:ring-blue-500"
+          className="text-xs px-2 py-1 border border-[var(--color-border)] rounded bg-[var(--color-surface-raised)] text-[var(--color-text)] focus:ring-1 focus:ring-[var(--color-accent)]"
         >
           {recordings.map((recording, index) => (
             <option key={recording.id} value={recording.id}>
@@ -195,7 +195,7 @@ export default function AudioSelector({
 
       {/* Single Recording Label */}
       {recordings.length === 1 && (
-        <span className="text-xs text-gray-600 dark:text-gray-400">
+        <span className="text-xs text-[var(--color-muted)]">
           {formatRecordingLabel(recordings[0], 0)}
         </span>
       )}
@@ -205,7 +205,7 @@ export default function AudioSelector({
         <button
           type="button"
           onClick={handleDelete}
-          className="text-red-500 hover:text-red-700 text-xs p-1"
+          className="text-[var(--color-danger)] hover:brightness-90 text-xs p-1"
           title="Delete recording"
         >
           ×

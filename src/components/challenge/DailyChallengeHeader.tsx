@@ -22,11 +22,11 @@ export default function DailyChallengeHeader({ date }: DailyChallengeHeaderProps
     <div className="mb-8">
       <div className="flex items-start justify-between mb-2">
         <div className="flex-1">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-3xl font-bold text-[var(--color-primary)]">
             Daily Shona Challenge
           </h1>
           <div className="flex items-center gap-2 mt-1 flex-wrap">
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-[var(--color-muted)]">
               {new Date(date).toLocaleDateString('en-US', { 
                 weekday: 'long', 
                 year: 'numeric', 
@@ -35,7 +35,7 @@ export default function DailyChallengeHeader({ date }: DailyChallengeHeaderProps
               })}
             </p>
             {isPast && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-md">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium text-[var(--color-danger)] bg-[var(--color-surface-raised)] border border-[var(--color-danger)] rounded-md">
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -45,7 +45,7 @@ export default function DailyChallengeHeader({ date }: DailyChallengeHeaderProps
             {isToday && (
               <a
                 href={`/challenge/daily?date=${yesterdayString}`}
-                className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-md transition-colors"
+                className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-[var(--color-primary)] hover:text-[var(--color-accent)] hover:bg-[var(--color-surface)] rounded-md transition-colors"
                 title="View yesterday's challenge"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -57,7 +57,7 @@ export default function DailyChallengeHeader({ date }: DailyChallengeHeaderProps
             {!isToday && (
               <a
                 href="/challenge/daily"
-                className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-md transition-colors"
+                className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-[var(--color-primary)] hover:text-[var(--color-accent)] hover:bg-[var(--color-surface)] rounded-md transition-colors"
                 title="View today's challenge"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

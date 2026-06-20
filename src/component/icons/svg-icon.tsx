@@ -1,4 +1,5 @@
 import BookIcon from "./book.icon";
+import DeviceIcon from "./device.icon";
 import LightDark from "./light-dark.icon";
 import Play from "./play-pause.icon";
 import PlusIcon from "./plus.icon";
@@ -6,7 +7,7 @@ import SearchIcon from "./search.icon";
 import ToggleIcon from "./toggle.icon";
 import SpaceInvaderIcon from "./space-invader.icon";
 import TrophyIcon from "./trophy.icon";
-type Icons = "Book" | "Toggle" | "Search" | "LightDark" | "Play" | "Plus" | "SpaceInvader" | "Trophy";
+type Icons = "Book" | "Device" | "Toggle" | "Search" | "LightDark" | "Play" | "Plus" | "SpaceInvader" | "Trophy";
 
 export type SvgIconSize =
   | 1
@@ -82,6 +83,8 @@ function getSVGIcon(
   switch (icon) {
     case "Book":
       return <BookIcon size={size} className={className} />;
+    case "Device":
+      return <DeviceIcon size={size} className={className} />;
     case "Toggle":
       return (
         <ToggleIcon

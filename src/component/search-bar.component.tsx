@@ -37,7 +37,7 @@ export default function SearchBar({}:
       window.history.pushState(null, '', `?${params.toString()}`)
     } else {
     // Complete routing
-      router.push(`/?q=${keyword}`); 
+      router.push(`/?q=${keyword}`);
     }
   };
 
@@ -76,7 +76,7 @@ export default function SearchBar({}:
           id="search-input"
           ref={inputRef}
           type="search"
-          className="peer w-full bg-surface outline-none placeholder:text-sm theme-text-sub1"
+          className="peer w-full bg-[var(--color-surface-raised)] outline-none placeholder:text-sm text-[var(--color-text)] placeholder:text-[var(--color-placeholder)]"
           placeholder="Search Shona meanings or get translations."
           required={true}
           onChange={(e) => {
@@ -88,18 +88,18 @@ export default function SearchBar({}:
           aria-label="Search Shona dictionary"
         />
         {
-          status === "loading" 
+          status === "loading"
             ?
           <div role="status" aria-label="Searching...">
             <Loading className="h-6 w-6"/>
             <span className="sr-only">Searching...</span>
           </div>
-            : 
+            :
           (
-            <button 
+            <button
               type="submit"
-              className="h-6 w-6 theme-text-sub1 select-none" 
-              title="Search dictionary" 
+              className="h-6 w-6 text-[var(--color-primary)] select-none"
+              title="Search dictionary"
               aria-label="Search dictionary"
               onClick={handleButtonClick}
             >
@@ -109,7 +109,7 @@ export default function SearchBar({}:
         }
       </div>
     </form>
-    <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-700"></hr>
+    <hr className="h-px my-4 bg-[var(--color-border)] border-0"></hr>
     </>
   );
 }

@@ -49,7 +49,7 @@ export default function SearchResults({ query }: SearchResultsProps) {
     return (
       <div className="flex items-center justify-center py-12">
         <Loading className="h-8 w-8" />
-        <span className="ml-3 text-gray-600 dark:text-gray-400">Searching...</span>
+        <span className="ml-3 text-[var(--color-muted)]">Searching...</span>
       </div>
     );
   }
@@ -57,12 +57,12 @@ export default function SearchResults({ query }: SearchResultsProps) {
   if (error) {
     return (
       <div className="text-center py-12">
-        <div className="text-red-600 dark:text-red-400 mb-4">
+        <div className="text-[var(--color-danger)] mb-4">
           {error}
         </div>
         <button
           onClick={() => window.location.reload()}
-          className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline"
+          className="theme-link underline"
           title="Reload page to try search again"
         >
           Try again
@@ -78,12 +78,12 @@ export default function SearchResults({ query }: SearchResultsProps) {
   if (results.length === 0) {
     return (
       <div className="text-center py-12">
-        <div className="text-gray-600 dark:text-gray-400 mb-4">
+        <div className="text-[var(--color-muted)] mb-4">
           No results found for "{query}"
         </div>
         <div className="space-y-2 text-sm">
           <p>Try:</p>
-          <ul className="list-disc list-inside space-y-1 text-gray-500 dark:text-gray-500">
+          <ul className="list-disc list-inside space-y-1 text-[var(--color-placeholder)]">
             <li>Checking your spelling</li>
             <li>Using different keywords</li>
             <li>Searching for a simpler term</li>
@@ -92,7 +92,7 @@ export default function SearchResults({ query }: SearchResultsProps) {
         <div className="mt-6">
           <Link
             href="/browse"
-            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline"
+            className="theme-link underline"
             title="Browse all dictionary entries"
             aria-label="Browse all dictionary entries"
           >
@@ -106,10 +106,10 @@ export default function SearchResults({ query }: SearchResultsProps) {
   return (
     <div>
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+        <h2 className="text-2xl font-bold text-[var(--color-primary)] mb-2">
           Search Results
         </h2>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-[var(--color-muted)]">
           Found {results.length} result{results.length !== 1 ? 's' : ''} for "{query}"
         </p>
       </div>
@@ -118,13 +118,13 @@ export default function SearchResults({ query }: SearchResultsProps) {
         {results.map((entry, index) => (
           <div
             key={`${entry.word}-${index}`}
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+            className="theme-card rounded-lg p-6"
           >
             <DictionaryEntryClean entry={entry} />
-            <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="mt-4 pt-4 border-t border-[var(--color-border)]">
               <Link
                 href={`/word/${encodeURIComponent(entry.word.toLowerCase())}`}
-                className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm font-medium"
+                className="theme-link text-sm font-medium"
                 title={`View full definition of "${entry.word}"`}
                 aria-label={`View full definition of "${entry.word}"`}
               >

@@ -19,20 +19,20 @@ export default function ChallengeProgress({ current, completed, total, score, re
   const progressPercentage = (completed / total) * 100;
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
+    <div className="theme-card rounded-lg p-6">
       {/* Progress Bar */}
       <div className="flex items-center justify-between mb-4">
-        <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+        <span className="text-sm font-medium text-[var(--color-muted)]">
           Question {current} of {total}
         </span>
-        <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
+        <span className="text-sm font-medium text-[var(--color-primary)]">
           {score} points
         </span>
       </div>
       
-      <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 mb-4">
+      <div className="theme-progress-track w-full rounded-full h-3 mb-4">
         <div 
-          className="bg-gradient-to-r from-blue-500 to-indigo-600 h-3 rounded-full transition-all duration-500 ease-out"
+          className="theme-progress-fill h-full rounded-full transition-all duration-500 ease-out"
           style={{ width: `${progressPercentage}%` }}
         />
       </div>
@@ -53,15 +53,15 @@ export default function ChallengeProgress({ current, completed, total, score, re
               className={`w-3 h-3 rounded-full transition-colors duration-300 ${
                 hasResult
                   ? result.isCorrect 
-                    ? 'bg-green-500' // Correct answer (after continue)
-                    : 'bg-red-500' // Wrong answer (after continue)
+                    ? 'bg-[var(--color-primary)]' // Correct answer (after continue)
+                    : 'bg-[var(--color-danger)]' // Wrong answer (after continue)
                   : showCurrentAnswer
                   ? currentAnswerCorrect
-                    ? 'bg-green-500' // Correct answer (before continue)
-                    : 'bg-red-500' // Wrong answer (before continue)
+                    ? 'bg-[var(--color-primary)]' // Correct answer (before continue)
+                    : 'bg-[var(--color-danger)]' // Wrong answer (before continue)
                   : isCurrentQuestion
-                  ? 'bg-blue-500' // Current/In progress (not answered yet)
-                  : 'bg-gray-300 dark:bg-gray-600' // Upcoming
+                  ? 'bg-[var(--color-accent)]' // Current/In progress (not answered yet)
+                  : 'bg-[var(--color-border)]' // Upcoming
               }`}
             />
           );

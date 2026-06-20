@@ -50,7 +50,7 @@ export default function BrowseEntries({ currentWords }: BrowseEntriesProps) {
           key={`${entry.word}-${index}`}
           prefetch={false}
           href={`/word/${encodeURIComponent(entry.word)}`}
-          className="block p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500"
+          className="block p-4 bg-[var(--color-background)] dark:bg-[var(--color-surface)] rounded-lg shadow-[var(--shadow-card)] hover:shadow-md transition-shadow duration-200 border border-[var(--color-border)] hover:border-[var(--color-primary)]"
           title={`View full definition of "${entry.word}"`}
         >
           <DictionaryEntryCompact entry={entry} />

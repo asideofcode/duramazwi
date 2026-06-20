@@ -127,11 +127,6 @@ export async function GET(request: NextRequest) {
                   shonadictionary.com
                 </div>
               </div>
-              
-              {/* Decorative element */}
-              <div tw="flex text-9xl" style={{ opacity: 0.1 }}>
-                📖
-              </div>
             </div>
           </div>
         </div>

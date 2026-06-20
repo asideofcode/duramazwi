@@ -303,7 +303,7 @@ export default function DailyChallengeContainer({ challenge, isPreview = false }
     return (
       <div className="py-8">
         {renderHeader()}
-        <div className="bg-gray-200 dark:bg-gray-700 rounded-lg h-screen animate-pulse"></div>
+        <div className="theme-panel rounded-lg h-screen animate-pulse"></div>
       </div>
     );
   }
@@ -313,7 +313,7 @@ export default function DailyChallengeContainer({ challenge, isPreview = false }
     return (
       <div className="py-8 min-h-screen">
         {renderHeader()}
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-8 shadow-lg text-center">
+        <div className="theme-card rounded-lg p-8 text-center">
 
           {/* Challenge Info */}
           <div className="mb-8">
@@ -329,39 +329,39 @@ export default function DailyChallengeContainer({ challenge, isPreview = false }
               </div>
             </div>
             
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+            <h2 className="text-2xl font-bold text-[var(--color-primary)] mb-3">
               Ready for Today's Challenge?
             </h2>
             
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
+            <p className="text-[var(--color-muted)] mb-6">
               Test your Shona skills with today's mix of questions. Each challenge helps you improve your vocabulary, pronunciation, and comprehension. 🎯
             </p>
 
             {/* Challenge Stats */}
             <div className="grid grid-cols-3 gap-4 mb-8">
-              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-                <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-1">
+              <div className="theme-panel rounded-lg p-4">
+                <div className="text-2xl font-bold text-[var(--color-primary)] mb-1">
                   {challenge.challenges.length}
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
+                <div className="text-sm text-[var(--color-muted)]">
                   Questions
                 </div>
               </div>
               
-              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-                <div className="text-2xl font-bold text-green-600 dark:text-green-400 mb-1">
+              <div className="theme-panel rounded-lg p-4">
+                <div className="text-2xl font-bold text-[var(--color-primary)] mb-1">
                   {challenge.totalPoints || challenge.challenges.reduce((sum, c) => sum + c.points, 0)}
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
+                <div className="text-sm text-[var(--color-muted)]">
                   Total Points
                 </div>
               </div>
               
-              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-                <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-1">
+              <div className="theme-panel rounded-lg p-4">
+                <div className="text-2xl font-bold text-[var(--color-primary)] mb-1">
                   {challenge.estimatedTime || Math.ceil(challenge.challenges.length * 0.5)}
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
+                <div className="text-sm text-[var(--color-muted)]">
                   Minutes
                 </div>
               </div>
@@ -374,7 +374,7 @@ export default function DailyChallengeContainer({ challenge, isPreview = false }
                 setHasStarted(true);
                 setSession(prev => ({ ...prev, startTime: Date.now() }));
               }}
-              className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-lg transition-colors shadow-lg touch-manipulation select-none border-b-4 border-blue-800 hover:border-blue-900"
+              className="w-full py-4 theme-button-accent hover:brightness-95 rounded-lg font-medium text-lg transition-colors shadow-lg touch-manipulation select-none border-b-4"
               aria-label="Start today's challenge"
             >
               Start Challenge
@@ -382,8 +382,8 @@ export default function DailyChallengeContainer({ challenge, isPreview = false }
           </div>
 
           {/* Tips */}
-          <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
-            <p className="text-blue-700 dark:text-blue-300 text-sm">
+          <div className="theme-panel rounded-lg p-4">
+            <p className="text-[var(--color-muted)] text-sm">
               💡 <strong>Tip:</strong> Take your time and think carefully about each answer. You can only complete this challenge once per day!
             </p>
           </div>
@@ -410,7 +410,7 @@ export default function DailyChallengeContainer({ challenge, isPreview = false }
                 }));
                 setJustCompleted(false);
               }}
-              className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors flex items-center gap-2"
+              className="px-4 py-2 theme-button-primary hover:brightness-95 rounded-md transition-colors flex items-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -499,7 +499,7 @@ export default function DailyChallengeContainer({ challenge, isPreview = false }
               }
             }}
             disabled={!session.isComplete && session.currentChallengeIndex === 0}
-            className="px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-md transition-colors flex items-center gap-2"
+            className="px-4 py-2 theme-button-primary hover:brightness-95 disabled:bg-[var(--color-surface)] disabled:text-[var(--color-placeholder)] disabled:border-[var(--color-border)] disabled:cursor-not-allowed rounded-md transition-colors flex items-center gap-2"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -527,7 +527,7 @@ export default function DailyChallengeContainer({ challenge, isPreview = false }
               }
             }}
             disabled={session.isComplete}
-            className="px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-md transition-colors flex items-center gap-2"
+            className="px-4 py-2 theme-button-primary hover:brightness-95 disabled:bg-[var(--color-surface)] disabled:text-[var(--color-placeholder)] disabled:border-[var(--color-border)] disabled:cursor-not-allowed rounded-md transition-colors flex items-center gap-2"
           >
             {session.currentChallengeIndex === session.challenges.length - 1 ? 'View Results' : 'Next'}
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

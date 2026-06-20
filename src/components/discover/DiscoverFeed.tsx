@@ -109,8 +109,8 @@ export default function DiscoverFeed() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Loading words...</p>
+          <div className="animate-spin h-12 w-12 border-4 border-[var(--color-primary)] border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-[var(--color-muted)]">Loading words...</p>
         </div>
       </div>
     );
@@ -159,8 +159,8 @@ export default function DiscoverFeed() {
 
       {/* Scroll hint */}
       <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 pointer-events-none opacity-50 transition-opacity">
-        <div className="animate-bounce bg-white dark:bg-gray-800 rounded-full p-3 shadow-lg">
-          <svg className="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="animate-bounce bg-[var(--color-surface-raised)] rounded-full p-3 shadow-[var(--shadow-card)] border border-[var(--color-border)]">
+          <svg className="w-6 h-6 text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
           </svg>
         </div>

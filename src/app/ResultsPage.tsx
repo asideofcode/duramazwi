@@ -161,10 +161,10 @@ function SearchResults({ searchQuery, onError, router }: any) {
     <div className="max-w-4xl mx-auto px-4">
       {/* Search Results Header with inline X button */}
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Search results</h1>
+        <h1 className="text-3xl font-bold text-[var(--color-primary)]">Search results</h1>
         <Link 
           href="/"
-          className="flex-shrink-0 p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md"
+          className="flex-shrink-0 p-2 text-[var(--color-muted)] hover:text-[var(--color-primary)] transition-colors duration-200 hover:bg-[var(--color-surface)] rounded-md"
           aria-label="Clear search"
           title="Clear search and go home"
         >
@@ -176,7 +176,7 @@ function SearchResults({ searchQuery, onError, router }: any) {
       
       {searchResults && searchResults.length > 0 ? (
         <>
-          <p className="text-lg text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+          <p className="text-lg text-[var(--color-muted)] mb-6 leading-relaxed">
             Found {searchResults.length} result{searchResults.length !== 1 ? 's' : ''} for "{searchQuery}". Click on a word to view more.
           </p>
       
@@ -194,7 +194,7 @@ function SearchResults({ searchQuery, onError, router }: any) {
                 {currentPage > 1 ? (
                   <button
                     onClick={() => navigateToPage(currentPage - 1, false)}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors select-none"
+                    className="px-4 py-2 text-sm font-medium text-[var(--color-text)] bg-[var(--color-surface-raised)] border border-[var(--color-border)] rounded-md hover:bg-[var(--color-surface)] transition-colors select-none"
                     title={`Go to page ${currentPage - 1}`}
                     aria-label={`Go to previous page ${currentPage - 1}`}
                   >
@@ -207,10 +207,10 @@ function SearchResults({ searchQuery, onError, router }: any) {
               
               {/* Center - Page info */}
               <div className="flex flex-col items-center space-y-1">
-                <span className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">
+                <span className="px-4 py-2 text-sm text-[var(--color-text)]">
                   Page {currentPage} of {totalPages}
                 </span>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
+                <div className="text-sm text-[var(--color-muted)]">
                   Showing {startIndex + 1}-{Math.min(endIndex, searchResults.length)} of {searchResults.length} results
                 </div>
               </div>
@@ -220,7 +220,7 @@ function SearchResults({ searchQuery, onError, router }: any) {
                 {currentPage < totalPages ? (
                   <button
                     onClick={() => navigateToPage(currentPage + 1, false)}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors select-none"
+                    className="px-4 py-2 text-sm font-medium text-[var(--color-text)] bg-[var(--color-surface-raised)] border border-[var(--color-border)] rounded-md hover:bg-[var(--color-surface)] transition-colors select-none"
                     title={`Go to page ${currentPage + 1}`}
                     aria-label={`Go to next page ${currentPage + 1}`}
                   >
@@ -256,7 +256,7 @@ function SearchResults({ searchQuery, onError, router }: any) {
                       source: "search_results",
                     });
                   }}
-                  className="block p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500"
+                  className="block p-4 bg-[var(--color-background)] dark:bg-[var(--color-surface)] rounded-lg shadow-[var(--shadow-card)] hover:shadow-md transition-shadow duration-200 border border-[var(--color-border)] hover:border-[var(--color-primary)]"
                 >
                   <DictionaryEntryCompact entry={word} />
                 </Link>
@@ -271,7 +271,7 @@ function SearchResults({ searchQuery, onError, router }: any) {
                     {currentPage > 1 ? (
                       <button
                         onClick={() => navigateToPage(currentPage - 1)}
-                        className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors select-none"
+                        className="px-4 py-2 text-sm font-medium text-[var(--color-text)] bg-[var(--color-surface-raised)] border border-[var(--color-border)] rounded-md hover:bg-[var(--color-surface)] transition-colors select-none"
                         title={`Go to page ${currentPage - 1}`}
                         aria-label={`Go to previous page ${currentPage - 1}`}
                       >
@@ -284,10 +284,10 @@ function SearchResults({ searchQuery, onError, router }: any) {
                   
                   {/* Center - Page info */}
                   <div className="flex flex-col items-center space-y-1">
-                    <span className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">
+                    <span className="px-4 py-2 text-sm text-[var(--color-text)]">
                       Page {currentPage} of {totalPages}
                     </span>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                    <div className="text-sm text-[var(--color-muted)]">
                       Showing {startIndex + 1}-{Math.min(endIndex, searchResults.length)} of {searchResults.length} results
                     </div>
                   </div>
@@ -297,7 +297,7 @@ function SearchResults({ searchQuery, onError, router }: any) {
                     {currentPage < totalPages ? (
                       <button
                         onClick={() => navigateToPage(currentPage + 1)}
-                        className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors select-none"
+                        className="px-4 py-2 text-sm font-medium text-[var(--color-text)] bg-[var(--color-surface-raised)] border border-[var(--color-border)] rounded-md hover:bg-[var(--color-surface)] transition-colors select-none"
                         title={`Go to page ${currentPage + 1}`}
                         aria-label={`Go to next page ${currentPage + 1}`}
                       >

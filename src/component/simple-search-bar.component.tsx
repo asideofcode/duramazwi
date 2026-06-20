@@ -10,7 +10,7 @@ interface SimpleSearchBarProps {
   initialQuery?: string;
 }
 
-export default function SimpleSearchBar({ 
+export default function SimpleSearchBar({
   placeholder = "Search Shona meanings or get translations.",
   className = "",
   initialQuery = ""
@@ -57,7 +57,7 @@ export default function SimpleSearchBar({
         <input
           ref={inputRef}
           type="search"
-          className="peer w-full bg-surface outline-none placeholder:text-sm theme-text-sub1"
+          className="peer w-full bg-[var(--color-surface-raised)] outline-none placeholder:text-sm text-[var(--color-text)] placeholder:text-[var(--color-placeholder)]"
           placeholder={placeholder}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -65,10 +65,10 @@ export default function SimpleSearchBar({
           enterKeyHint="search"
           required
         />
-        <button 
+        <button
           type="submit"
           onClick={handleButtonClick}
-          className="h-6 w-6 theme-text-sub1" 
+          className="h-6 w-6 text-[var(--color-primary)]"
           title="Search word"
         >
           <SvgIcon icon="Search" />

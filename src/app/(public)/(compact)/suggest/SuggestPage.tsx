@@ -3,28 +3,35 @@
 import { useState } from "react";
 
 export default function SuggestPage() {
-  const [message, setMessage] = useState<{ text: string; type: "success" | "error" | "" }>({ text: "", type: "" });
+  const [message, setMessage] = useState<{
+    text: string;
+    type: "success" | "error" | "";
+  }>({ text: "", type: "" });
 
   return (
     <>
-    <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Make a suggestion</h1>
-      <p className="text-base text-gray-600 dark:text-gray-400 mb-4">
+      <h1 className="text-3xl font-bold text-[var(--color-text)] mb-2">
+        Make a suggestion
+      </h1>
+      <p className="text-base text-[var(--color-muted)] mb-4">
         We rely on community contributions to ensure our dictionary is accurate
         and comprehensive. Share your suggestions for new words, corrections, or
         additional details below.
       </p>
 
-       {message.text && (
+      {message.text && (
         <div
-          className={`mb-4 rounded ${
-            message.type === "success" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+          className={`mb-4 rounded p-3 ${
+            message.type === "success"
+              ? "theme-feedback-correct text-[var(--color-primary)]"
+              : "theme-feedback-incorrect text-[var(--color-danger)]"
           }`}
         >
           {message.text}
         </div>
       )}
       <SuggestionForm
-        onSubmit={async (suggestion: string, resetForm:any) => {
+        onSubmit={async (suggestion: string, resetForm: any) => {
           setMessage({ text: "Submitting your suggestion...", type: "" });
           try {
             const response = await fetch("/api/suggestions", {
@@ -34,12 +41,15 @@ export default function SuggestPage() {
             });
 
             if (response.ok) {
-              setMessage({ text: "🎉 Thank you! Your suggestion was submitted successfully. Our team will review it, and we’ll inform you of the outcome via email.", type: "success" });
+              setMessage({
+                text: "Thank you! Your suggestion was submitted successfully. Our team will review it, and we’ll inform you of the outcome via email.",
+                type: "success",
+              });
               resetForm(); // Clear the form after success
             } else {
               const errorData = await response.json();
               setMessage({
-                text: `We encountered an error 😭... ${errorData.message || "An unknown error occurred."}`,
+                text: `We encountered an error. ${errorData.message || "An unknown error occurred."}`,
                 type: "error",
               });
             }
@@ -82,13 +92,14 @@ function SuggestionForm({ onSubmit }: any) {
 
   // Basic validation - require at least word and definition
   const isFormValid = word.trim() && definition.trim();
-  
-  const suggestedWordClassList = "theme-input w-full p-2 rounded peer bg-surface outline-none placeholder:text-sm theme-text-sub1"
+
+  const suggestedWordClassList =
+    "theme-input w-full p-2 rounded peer bg-surface outline-none placeholder:text-sm theme-text-sub1";
   return (
     <form onSubmit={handleSubmit} className="mb-4 rounded ">
       <div className="mb-4">
-        <label className="block font-medium mb-2 text-gray-700 dark:text-gray-300">
-          Word <span className="text-red-500">*</span>
+        <label className="block font-medium mb-2 text-[var(--color-text)]">
+          Word <span className="text-[var(--color-danger)]">*</span>
         </label>
         <input
           type="text"
@@ -100,8 +111,8 @@ function SuggestionForm({ onSubmit }: any) {
         />
       </div>
       <div className="mb-4">
-        <label className="block font-medium mb-2 text-gray-700 dark:text-gray-300">
-          Definition/s <span className="text-red-500">*</span>
+        <label className="block font-medium mb-2 text-[var(--color-text)]">
+          Definition/s <span className="text-[var(--color-danger)]">*</span>
         </label>
         <textarea
           value={definition}
@@ -112,7 +123,9 @@ function SuggestionForm({ onSubmit }: any) {
         />
       </div>
       <div className="mb-4">
-        <label className="block font-medium mb-2 text-gray-700 dark:text-gray-300">Example/s</label>
+        <label className="block font-medium mb-2 text-[var(--color-text)]">
+          Example/s
+        </label>
         <textarea
           value={example}
           placeholder="Provide an example sentence using the word, if applicable."
@@ -121,7 +134,9 @@ function SuggestionForm({ onSubmit }: any) {
         />
       </div>
       <div className="mb-4">
-        <label className="block font-medium mb-2 text-gray-700 dark:text-gray-300">Your Email</label>
+        <label className="block font-medium mb-2 text-[var(--color-text)]">
+          Your Email
+        </label>
         <input
           type="email"
           value={email}
@@ -133,11 +148,15 @@ function SuggestionForm({ onSubmit }: any) {
       <button
         type="submit"
         disabled={!isFormValid}
-        title={isFormValid ? "Submit your word suggestion" : "Please fill in all required fields"}
+        title={
+          isFormValid
+            ? "Submit your word suggestion"
+            : "Please fill in all required fields"
+        }
         className={`px-6 py-2 rounded font-medium transition-colors ${
           isFormValid
-            ? "bg-blue-600 hover:bg-blue-700 text-white"
-            : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+            ? "theme-button-accent hover:brightness-95  hover:text-[var(--color-accent)] hover:bg-[var(--color-primary)]"
+            : "bg-[var(--color-border)] text-[var(--color-muted)] cursor-not-allowed"
         }`}
       >
         Send it over!

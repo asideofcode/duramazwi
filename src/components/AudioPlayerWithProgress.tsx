@@ -48,8 +48,8 @@ export default function AudioPlayerWithProgress({
       aria-describedby={loadState !== 'loaded' ? 'audio-status' : undefined}
       className={`relative w-20 h-20 rounded-full flex items-center justify-center transition-all duration-200 shadow-lg select-none ${
         loadState === 'loaded'
-          ? 'bg-blue-500 hover:bg-blue-600 text-white'
-          : 'bg-blue-400 text-white cursor-not-allowed'
+          ? 'bg-[var(--color-accent)] hover:brightness-95 text-[#1B1B1B] dark:text-[#0F1115]'
+          : 'bg-[var(--color-surface)] text-[var(--color-placeholder)] cursor-not-allowed border border-[var(--color-border)]'
       } ${className}`}
     >
       {/* Progress ring */}
@@ -63,7 +63,8 @@ export default function AudioPlayerWithProgress({
             cx="40"
             cy="40"
             r="36"
-            stroke="rgba(255, 255, 255, 0.2)"
+            stroke="currentColor"
+            opacity="0.22"
             strokeWidth="4"
             fill="none"
           />
@@ -72,7 +73,8 @@ export default function AudioPlayerWithProgress({
             cx="40"
             cy="40"
             r="36"
-            stroke="rgba(255, 255, 255, 0.8)"
+            stroke="currentColor"
+            opacity="0.8"
             strokeWidth="4"
             fill="none"
             strokeDasharray="226.19"
@@ -89,7 +91,7 @@ export default function AudioPlayerWithProgress({
       {/* Play/Loading icon */}
       <div className="relative z-10">
         {loadState === 'loading' ? (
-          <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full" aria-hidden="true" />
+          <div className="animate-spin w-8 h-8 border-2 border-current border-t-transparent rounded-full" aria-hidden="true" />
         ) : loadState === 'error' ? (
           <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
             <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />

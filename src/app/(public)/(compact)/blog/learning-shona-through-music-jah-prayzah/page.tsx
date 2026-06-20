@@ -3,6 +3,7 @@ import SearchBar from '@/component/search-bar.component';
 import LyricsDisplay, { LyricBlock } from '@/components/blog/LyricsDisplay';
 import StickyVideo from '@/components/blog/StickyVideo';
 import { Metadata } from 'next';
+import InlineIcon from '@/components/InlineIcon';
 
 /* 
  * NEW STRUCTURED FORMAT EXAMPLE:
@@ -259,27 +260,27 @@ export default function JahPrayzahBlogPost() {
       {/* Blog Post Content */}
       <div className="container mx-auto max-w-4xl">
         {/* Breadcrumb */}
-        <nav className="mb-8 text-sm text-gray-600 dark:text-gray-400">
-          <Link href="/" className="hover:text-blue-600 dark:hover:text-blue-400">
+        <nav className="mb-8 text-sm text-[var(--color-muted)]">
+          <Link href="/" className="hover:text-[var(--color-primary)]">
             Home
           </Link>
           <span className="mx-2">/</span>
-          <Link href="/blog" className="hover:text-blue-600 dark:hover:text-blue-400">
+          <Link href="/blog" className="hover:text-[var(--color-primary)]">
             Blog
           </Link>
           <span className="mx-2">/</span>
-          <span className="text-gray-900 dark:text-white">Learning Shona Through Music</span>
+          <span className="text-[var(--color-text)]">Learning Shona Through Music</span>
         </nav>
 
         {/* Header */}
         <header className="mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold text-[var(--color-text)] mb-4">
             Learning Shona Through Music: "Mdhara Vachauya"
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-6">
+          <p className="text-xl text-[var(--color-muted)] mb-6">
             Explore the beautiful Shona language through "Mdhara Vachauya" by Jah Prayzah, Zimbabwe's musical icon
           </p>
-          <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+          <div className="flex items-center gap-4 text-sm text-[var(--color-muted)]">
             <time dateTime="2025-11-06">November 6, 2025</time>
             <span>•</span>
             <span>6 min read</span>
@@ -288,7 +289,7 @@ export default function JahPrayzahBlogPost() {
 
         {/* Introduction */}
         <div className="prose prose-lg dark:prose-invert max-w-none mb-12">
-          <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
+          <p className="text-lg text-[var(--color-text)] leading-relaxed">
             Jah Prayzah, known as "Musoja" (The Soldier), is one of Zimbabwe's most celebrated musicians. His songs 
             blend traditional Shona wisdom with contemporary sounds, making them perfect for language learners who 
             want to understand the depth and beauty of Shona poetry and metaphor.
@@ -309,25 +310,25 @@ export default function JahPrayzahBlogPost() {
 
         {/* Key Phrases Section */}
         <div className="prose prose-lg dark:prose-invert max-w-none mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-2xl font-bold text-[var(--color-text)] mb-4">
             Key Phrases to Learn
           </h2>
           
-          <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-6 mb-8">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+          <div className="bg-[var(--color-surface)] border-l-4 border-[var(--color-primary)] p-6 mb-8">
+            <h3 className="text-lg font-semibold text-[var(--color-text)] mb-3">
               Cultural Note: "Mudhara wacho ishumba inoruma"
             </h3>
-            <p className="text-gray-700 dark:text-gray-300">
+            <p className="text-[var(--color-text)]">
               This powerful metaphor compares a man to a lion whose bite is real. It speaks to strength, 
               authority, and the consequences of one's actions.
             </p>
           </div>
 
-          <div className="bg-purple-50 dark:bg-purple-900/20 border-l-4 border-purple-500 p-6 mb-8">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+          <div className="bg-[var(--color-surface)] border-l-4 border-[var(--color-primary)] p-6 mb-8">
+            <h3 className="text-lg font-semibold text-[var(--color-text)] mb-3">
               Poetic Language: "Kamoto kerudo"
             </h3>
-            <p className="text-gray-700 dark:text-gray-300">
+            <p className="text-[var(--color-text)]">
               "The little flame of love" - Jah Prayzah uses diminutives (ka-) to create tender, intimate imagery. 
               This is a hallmark of Shona love poetry, where small things carry great emotional weight.
             </p>
@@ -336,7 +337,7 @@ export default function JahPrayzahBlogPost() {
 
         {/* Lyrics Section */}
         <div id="lyrics-section" className="mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
+          <h2 className="text-3xl font-bold text-[var(--color-text)] mb-8">
             Lyrics with Translations
           </h2>
           
@@ -344,48 +345,51 @@ export default function JahPrayzahBlogPost() {
         </div>
 
         {/* Learning Tips */}
-        <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-xl p-8 mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-            💡 Learning Tips
+        <div className="bg-[var(--color-surface)] rounded-xl p-8 mb-12">
+          <h2 className="text-2xl font-bold text-[var(--color-text)] mb-4">
+            <span className="inline-flex items-center gap-2">
+              <InlineIcon className="h-6 w-6 text-[var(--color-accent)]" name="tip" />
+              Learning Tips
+            </span>
           </h2>
-          <ul className="space-y-3 text-gray-700 dark:text-gray-300">
+          <ul className="space-y-3 text-[var(--color-text)]">
             <li className="flex items-start gap-3">
-              <span className="text-blue-600 dark:text-blue-400 font-bold">1.</span>
+              <span className="text-[var(--color-primary)] font-bold">1.</span>
               <span>Pay attention to the metaphors—Shona uses nature imagery extensively</span>
             </li>
             <li className="flex items-start gap-3">
-              <span className="text-blue-600 dark:text-blue-400 font-bold">2.</span>
+              <span className="text-[var(--color-primary)] font-bold">2.</span>
               <span>Notice the diminutives (ka-, chi-) that add emotional nuance</span>
             </li>
             <li className="flex items-start gap-3">
-              <span className="text-blue-600 dark:text-blue-400 font-bold">3.</span>
+              <span className="text-[var(--color-primary)] font-bold">3.</span>
               <span>Listen for the rhythm—Shona is a tonal language and music helps with pronunciation</span>
             </li>
             <li className="flex items-start gap-3">
-              <span className="text-blue-600 dark:text-blue-400 font-bold">4.</span>
+              <span className="text-[var(--color-primary)] font-bold">4.</span>
               <span>Click on the blue words to see their dictionary definitions and usage examples</span>
             </li>
           </ul>
         </div>
 
         {/* Call to Action */}
-        <div className="text-center py-12 border-t border-gray-200 dark:border-gray-700">
-          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+        <div className="text-center py-12 border-t border-[var(--color-border)]">
+          <h3 className="text-2xl font-bold text-[var(--color-text)] mb-4">
             Want to learn more Shona?
           </h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
+          <p className="text-[var(--color-muted)] mb-6">
             Explore our dictionary and take the daily challenge to improve your skills!
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
               href="/"
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+              className="px-6 py-3 theme-button-accent hover:brightness-95 rounded-lg font-medium transition-colors"
             >
               Browse Dictionary
             </Link>
             <Link
               href="/challenge/daily"
-              className="px-6 py-3 bg-gray-600 hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-white rounded-lg font-medium transition-colors"
+              className="px-6 py-3 bg-[var(--color-primary)] hover:brightness-95 text-[var(--color-hero-text)] rounded-lg font-medium transition-colors"
             >
               Take Daily Shona Challenge
             </Link>

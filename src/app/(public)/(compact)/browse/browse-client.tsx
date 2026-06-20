@@ -5,6 +5,7 @@ import { Suspense, useEffect } from "react";
 import Link from "next/link";
 import dataService from "@/services/dataService";
 import BrowseEntries from "@/component/browse-entries.component";
+import InlineIcon from "@/components/InlineIcon";
 
 const ENTRIES_PER_PAGE = 10;
 
@@ -53,10 +54,10 @@ function BrowseContent() {
     <div>
       {/* Page Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+        <h1 className="text-3xl font-bold text-[var(--color-text)] mb-2">
           Browse Dictionary Entries
         </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">
+        <p className="text-lg text-[var(--color-muted)] mb-6">
           {letter 
             ? `Showing entries starting with "${letter.toUpperCase()}" (${totalEntries} entries)`
             : `Browse all ${totalEntries} dictionary entries`
@@ -72,8 +73,8 @@ function BrowseContent() {
             href="/browse"
             className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
               !letter
-                ? "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300"
-                : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                ? "bg-[var(--color-surface)] text-[var(--color-primary)]"
+                : "text-[var(--color-muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface)]"
             }`}
             title="Show all dictionary entries"
           >
@@ -85,8 +86,8 @@ function BrowseContent() {
               href={`/browse?letter=${char.toLowerCase()}`}
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                 letter?.toLowerCase() === char.toLowerCase()
-                  ? "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300"
-                  : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  ? "bg-[var(--color-surface)] text-[var(--color-primary)]"
+                  : "text-[var(--color-muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface)]"
               }`}
               title={`Show words starting with "${char}"`}
             >
@@ -105,7 +106,7 @@ function BrowseContent() {
             {currentPage > 1 ? (
               <Link
                 href={`/browse?page=${currentPage - 1}${letter ? `&letter=${letter}` : ''}`}
-                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="px-4 py-2 text-sm font-medium text-[var(--color-text)] bg-[var(--color-surface-raised)] border border-[var(--color-border)] rounded-md hover:bg-[var(--color-surface)] transition-colors"
                 title={`Go to page ${currentPage - 1}`}
                 aria-label={`Go to previous page ${currentPage - 1}${letter ? ` of entries starting with ${letter.toUpperCase()}` : ''}`}
                 scroll={false}
@@ -119,10 +120,10 @@ function BrowseContent() {
           
           {/* Center - Page info */}
           <div className="flex flex-col items-center space-y-1">
-            <span className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">
+            <span className="px-4 py-2 text-sm text-[var(--color-text)]">
               Page {currentPage} of {totalPages}
             </span>
-            <div className="text-sm text-gray-600 dark:text-gray-400">
+            <div className="text-sm text-[var(--color-muted)]">
               {totalEntries} total entries
             </div>
           </div>
@@ -132,7 +133,7 @@ function BrowseContent() {
             {currentPage < totalPages ? (
               <Link
                 href={`/browse?page=${currentPage + 1}${letter ? `&letter=${letter}` : ''}`}
-                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="px-4 py-2 text-sm font-medium text-[var(--color-text)] bg-[var(--color-surface-raised)] border border-[var(--color-border)] rounded-md hover:bg-[var(--color-surface)] transition-colors"
                 title={`Go to page ${currentPage + 1}`}
                 aria-label={`Go to next page ${currentPage + 1}${letter ? ` of entries starting with ${letter.toUpperCase()}` : ''}`}
                 scroll={false}
@@ -152,20 +153,20 @@ function BrowseContent() {
         <BrowseEntries currentWords={currentWords} />
       ) : (
         <div className="flex flex-col my-16 text-center">
-          <div className="text-6xl mb-4">📚</div>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+          <InlineIcon className="mx-auto mb-4 h-16 w-16 text-[var(--color-primary)]" name="book" />
+          <h3 className="text-xl font-semibold text-[var(--color-text)] mb-2">
             {letter 
               ? `No entries starting with "${letter.toUpperCase()}"` 
               : "No entries found"
             }
           </h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
+          <p className="text-[var(--color-muted)] mb-4">
             {letter 
               ? `We don't have any Shona words that start with the letter "${letter.toUpperCase()}" yet.`
               : "No dictionary entries match your current filter."
             }
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-500">
+          <p className="text-sm text-[var(--color-muted)]">
             Try selecting a different letter or browse all entries.
           </p>
         </div>
@@ -180,7 +181,7 @@ function BrowseContent() {
             {currentPage > 1 ? (
               <Link
                 href={`/browse?page=${currentPage - 1}${letter ? `&letter=${letter}` : ''}`}
-                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="px-4 py-2 text-sm font-medium text-[var(--color-text)] bg-[var(--color-surface-raised)] border border-[var(--color-border)] rounded-md hover:bg-[var(--color-surface)] transition-colors"
                 title={`Go to page ${currentPage - 1}`}
                 aria-label={`Go to previous page ${currentPage - 1}${letter ? ` of entries starting with ${letter.toUpperCase()}` : ''}`}
               >
@@ -193,10 +194,10 @@ function BrowseContent() {
           
           {/* Center - Page info */}
           <div className="flex flex-col items-center space-y-1">
-            <span className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">
+            <span className="px-4 py-2 text-sm text-[var(--color-text)]">
               Page {currentPage} of {totalPages}
             </span>
-            <div className="text-sm text-gray-600 dark:text-gray-400">
+            <div className="text-sm text-[var(--color-muted)]">
               {totalEntries} total entries
             </div>
           </div>
@@ -206,7 +207,7 @@ function BrowseContent() {
             {currentPage < totalPages ? (
               <Link
                 href={`/browse?page=${currentPage + 1}${letter ? `&letter=${letter}` : ''}`}
-                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="px-4 py-2 text-sm font-medium text-[var(--color-text)] bg-[var(--color-surface-raised)] border border-[var(--color-border)] rounded-md hover:bg-[var(--color-surface)] transition-colors"
                 title={`Go to page ${currentPage + 1}`}
                 aria-label={`Go to next page ${currentPage + 1}${letter ? ` of entries starting with ${letter.toUpperCase()}` : ''}`}
               >

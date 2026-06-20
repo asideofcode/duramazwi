@@ -43,8 +43,8 @@ export default function EmailNotificationSignup() {
 
   if (status === 'success') {
     return (
-      <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-        <div className="flex items-center gap-2 text-green-700 dark:text-green-300">
+      <div className="p-3 theme-feedback-correct rounded-lg">
+        <div className="flex items-center gap-2 text-[var(--color-primary)]">
           <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
           </svg>
@@ -55,15 +55,15 @@ export default function EmailNotificationSignup() {
   }
 
   return (
-    <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+    <div className="p-4 theme-panel rounded-lg">
       <div className="text-center mb-3">
-        <div className="inline-flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-1">
+        <div className="inline-flex items-center gap-2 text-[var(--color-primary)] mb-1">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
           </svg>
           <span className="text-sm font-medium">Get daily reminders</span>
         </div>
-        <p className="text-xs text-gray-500 dark:text-gray-400">
+        <p className="text-xs text-[var(--color-muted)]">
           We'll email you when tomorrow's challenge is ready
         </p>
       </div>
@@ -74,13 +74,13 @@ export default function EmailNotificationSignup() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="your@email.com"
-          className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent"
+          className="w-full px-3 py-2 text-sm border border-[var(--color-border)] rounded-md bg-[var(--color-surface-raised)] text-[var(--color-text)] placeholder:text-[var(--color-placeholder)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent"
           disabled={status === 'loading'}
         />
         <button
           type="submit"
           disabled={status === 'loading'}
-          className="w-full px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed text-white rounded-md font-medium transition-colors"
+          className="w-full px-4 py-2 text-sm theme-button-accent hover:brightness-95 disabled:opacity-60 disabled:cursor-not-allowed rounded-md font-medium transition-colors"
         >
           {status === 'loading' ? (
             <span className="flex items-center justify-center gap-2">
@@ -96,7 +96,7 @@ export default function EmailNotificationSignup() {
         </button>
 
         {status === 'error' && (
-          <p className="text-xs text-red-600 dark:text-red-400 text-center">
+          <p className="text-xs text-[var(--color-danger)] text-center">
             {message}
           </p>
         )}
